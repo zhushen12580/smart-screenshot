@@ -1,0 +1,197 @@
+/* 基础样式重置 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* 变量 - shadcn风格的紫色主题 */
+:root {
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #7c3aed; /* 主题色 */
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #f9fafb;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #7c3aed;
+  --radius: 0.5rem;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  width: 320px;
+  height: 420px;
+  overflow-x: hidden;
+}
+
+/* App容器 */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1rem;
+}
+
+/* 标题栏 */
+.app-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.app-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+/* 比例选择区域 */
+.ratio-selector {
+  margin-bottom: 1.5rem;
+}
+
+.ratio-selector h2 {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.preset-ratios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ratio-btn {
+  background-color: var(--secondary);
+  color: var(--secondary-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ratio-btn:hover {
+  background-color: var(--accent);
+}
+
+.ratio-btn.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
+}
+
+.custom-ratio {
+  margin-top: 1rem;
+}
+
+.custom-ratio label {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.ratio-input-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.ratio-input-group input {
+  width: 4rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* 截图操作区域 */
+.screenshot-actions {
+  margin-bottom: 1.5rem;
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.primary-btn:hover {
+  opacity: 0.9;
+}
+
+.screenshot-options {
+  margin-top: 1rem;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.option-item label {
+  margin-left: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.option-item select {
+  margin-left: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--background);
+}
+
+/* 页脚 */
+.app-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+.text-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.text-btn:hover {
+  text-decoration: underline;
+}
+
+.shortcuts-hint {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+} 
