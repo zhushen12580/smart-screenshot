@@ -92,3 +92,15 @@ graph TD
     C --> F[Canvas Processing]
     D --> G[chrome.storage API]
 ```
+
+## 开源协议
+本项目采用 [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/) 开源协议。
+
+### 协议要点
+- ✅ 必须保留原作者署名
+- ❌ 禁止商业使用
+- ❌ 禁止修改和再分发修改版
+- 📝 任何使用均需获得作者授权
+
+### 使用授权
+如需商业使用本项目，请联系作者获取授权。未经授权的任何商业使用行为都将被视为侵权。
