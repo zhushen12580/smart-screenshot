@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>精准截图 - 设置</title>
+  <style>
+    :root {
+      --primary-color: #6d28d9;
+      --primary-dark: #5b21b6;
+      --primary-light: #8b5cf6;
+      --black: #18181b;
+      --white: #ffffff;
+      --gray-100: #f4f4f5;
+      --gray-200: #e4e4e7;
+      --gray-300: #d4d4d8;
+      --shadow-offset: 4px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      background-color: rgba(245, 243, 255, 0.9);
+      color: var(--black);
+      margin: 0;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    header {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 14px;
+      font-size: 28px;
+      font-weight: 800;
+      background-color: rgba(109, 40, 217, 0.9);
+      color: var(--white);
+      padding: 12px;
+      border: 3px solid var(--black);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      transform: rotate(-1deg);
+      display: inline-block;
+    }
+    
+    h2 {
+      font-size: 22px;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      border-bottom: 3px solid var(--primary-color);
+      padding-bottom: 5px;
+    }
+    
+    .card {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 20px;
+      border: 3px solid var(--black);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      margin-bottom: 20px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    
+    .info-box {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: rgba(139, 92, 246, 0.1);
+      border: 2px solid var(--primary-light);
+      border-radius: 4px;
+    }
+    
+    .info-box h3 {
+      margin-top: 0;
+      color: var(--primary-dark);
+    }
+    
+    .info-box ul {
+      margin-bottom: 0;
+      padding-left: 20px;
+    }
+    
+    .info-box li {
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>精准截图</h1>
+      <p>一个高效的网页截图工具</p>
+    </header>
+    
+    <div class="card">
+      <h2>关于</h2>
+      <p>精准截图是一款Chrome扩展，可以帮助您按照特定比例捕获网页内容。</p>
+      
+      <div class="info-box">
+        <h3>键盘快捷键</h3>
+        <ul>
+          <li><strong>Ctrl+Shift+S</strong>: 开始截图</li>
+          <li><strong>Enter</strong>: 确认截图</li>
+          <li><strong>Escape</strong>: 取消截图</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html> 

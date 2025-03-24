@@ -7,7 +7,8 @@
     "activeTab",
     "downloads",
     "scripting",
-    "tabs"
+    "tabs",
+    "storage"
   ],
   "host_permissions": [
     "<all_urls>"
@@ -23,9 +24,27 @@
   "background": {
     "service_worker": "background/background.js"
   },
+  "options_page": "options/options.html",
   "icons": {
     "16": "assets/icons/icon16.png",
     "48": "assets/icons/icon48.png",
     "128": "assets/icons/icon128.png"
+  },
+  "commands": {
+    "_execute_action": {
+      "description": "打开扩展弹出窗口"
+    },
+    "screenshot_start": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+S"
+      },
+      "description": "开始截图"
+    },
+    "screenshot_confirm": {
+      "description": "确认截图"
+    },
+    "screenshot_cancel": {
+      "description": "取消截图"
+    }
   }
 } 

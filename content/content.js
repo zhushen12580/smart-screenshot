@@ -1,7 +1,20 @@
 // 简化版内容脚本 - 保留按精准截图和连续截图功能
+// 使用全局变量保存实例
+let ratioScreenshotInstance = null;
+
 // 避免重复初始化
 if (window._ratioScreenshotLoaded) {
   console.log("精准截图工具已加载");
+  
+  // 如果页面已经有实例但出现问题，尝试重置
+  if (ratioScreenshotInstance) {
+    try {
+      console.log("重置现有实例");
+      ratioScreenshotInstance.cleanupExistingElements();
+    } catch (e) {
+      console.error("重置实例时出错:", e);
+    }
+  }
 } else {
   window._ratioScreenshotLoaded = true;
   
@@ -61,17 +74,51 @@ if (window._ratioScreenshotLoaded) {
     // 初始化消息监听
     initMessageListener() {
       chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-        console.log("内容脚本收到消息:", message);
-        if (message.action === 'initiateScreenshot') {
-          try {
-            this.start(message.options || {});
-            sendResponse({ success: true });
-          } catch (error) {
-            console.error("启动截图失败:", error);
-            sendResponse({ success: false, error: error.message });
+        try {
+          console.log("内容脚本收到消息:", message);
+          if (message.action === 'initiateScreenshot') {
+            // 先确保清理现有元素
+            this.cleanupExistingElements();
+            
+            try {
+              this.start(message.options || {});
+              sendResponse({ success: true });
+            } catch (error) {
+              console.error("启动截图失败:", error);
+              sendResponse({ success: false, error: error.message });
+              
+              // 发生错误时，尝试清理
+              this.end();
+            }
+          } 
+          else if (message.action === 'screenshotConfirm') {
+            // 如果有选择框，执行确认操作
+            if (this.selection && this.isActive) {
+              console.log("通过快捷键执行确认截图");
+              this.captureAndSave();
+              sendResponse({ success: true });
+            } else {
+              console.log("无法执行确认截图，截图模式未激活或无选择框");
+              sendResponse({ success: false, error: "截图模式未激活" });
+            }
           }
+          else if (message.action === 'screenshotCancel') {
+            // 如果正在截图，执行取消操作
+            if (this.isActive) {
+              console.log("通过快捷键执行取消截图");
+              this.end();
+              sendResponse({ success: true });
+            } else {
+              console.log("无法执行取消截图，截图模式未激活");
+              sendResponse({ success: false, error: "截图模式未激活" });
+            }
+          }
+          return true;
+        } catch (e) {
+          console.error("处理消息时发生错误:", e);
+          sendResponse({ success: false, error: e.message });
+          return true;
         }
-        return true;
       });
     }
     
@@ -95,7 +142,7 @@ if (window._ratioScreenshotLoaded) {
           left: 0;
           width: 100%;
           height: 100%;
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: transparent;
           z-index: 9999;
           cursor: crosshair;
         }
@@ -103,10 +150,63 @@ if (window._ratioScreenshotLoaded) {
         #ratio-screenshot-selection {
           position: fixed;
           border: 3px solid var(--white);
-          background-color: rgba(109, 40, 217, 0.1);
-          box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+          background-color: transparent;
+          box-shadow: none;
           z-index: 10000;
           pointer-events: auto;
+          box-sizing: border-box;
+          /* 添加外层阴影效果使边框在任何背景下都清晰可见 */
+          outline: 1px solid rgba(0, 0, 0, 0.5);
+        }
+        
+        #ratio-screenshot-info {
+          position: absolute;
+          left: 0;
+          background-color: rgba(24, 24, 27, 0.7);
+          color: var(--white);
+          padding: 2px 6px;
+          border-radius: 2px;
+          font-size: 11px;
+          font-weight: normal;
+          white-space: nowrap;
+          z-index: 10002;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+          pointer-events: none;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          bottom: -25px; /* 默认显示在底部外侧 */
+          opacity: 0.85;
+          font-family: 'Consolas', monospace;
+          transition: opacity 0.2s;
+        }
+        
+        #ratio-screenshot-info:hover {
+          opacity: 1;
+        }
+        
+        .ratio-screenshot-shortcut-info {
+          display: flex;
+          align-items: center;
+          margin-left: 10px;
+          font-size: 11px;
+          color: var(--black);
+          white-space: nowrap;
+          opacity: 0.9;
+          background-color: rgba(244, 244, 245, 0.9);
+          padding: 4px 8px;
+          border: 2px solid var(--black);
+          box-shadow: 2px 2px 0 var(--black);
+        }
+        
+        .ratio-screenshot-shortcut-info span {
+          display: inline-block;
+          background-color: rgba(109, 40, 217, 0.2);
+          border: 1px solid var(--primary-color);
+          border-radius: 2px;
+          padding: 1px 4px;
+          margin: 0 2px;
+          font-family: monospace;
+          font-size: 10px;
+          font-weight: bold;
         }
         
         .ratio-screenshot-selection-saved {
@@ -117,28 +217,15 @@ if (window._ratioScreenshotLoaded) {
           pointer-events: none;
         }
         
-        #ratio-screenshot-info {
-          position: absolute;
-          top: -35px;
-          left: 0;
-          background-color: var(--black);
-          color: var(--white);
-          padding: 4px 10px;
-          border-radius: 0;
-          font-size: 14px;
-          font-weight: bold;
-          border: 2px solid var(--white);
-        }
-        
         #ratio-screenshot-toolbar {
           position: fixed;
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          background-color: rgba(255, 255, 255, 0.1);
+          background-color: transparent;
           border-radius: 0;
-          border: 3px solid var(--black);
-          box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+          border: none;
+          box-shadow: none;
           padding: 12px;
           display: flex;
           flex-wrap: wrap;
@@ -162,7 +249,7 @@ if (window._ratioScreenshotLoaded) {
           font-weight: bold;
           border: 3px solid var(--black);
           cursor: pointer;
-          background-color: rgba(244, 244, 245, 0.8);
+          background-color: rgba(244, 244, 245, 0.9);
           color: var(--black);
           box-shadow: 3px 3px 0 var(--black);
           transition: transform 0.2s, box-shadow 0.2s;
@@ -179,7 +266,7 @@ if (window._ratioScreenshotLoaded) {
         }
         
         .ratio-screenshot-button.primary {
-          background-color: rgba(109, 40, 217, 0.9);
+          background-color: rgba(109, 40, 217, 0.95);
           color: var(--white);
         }
         
@@ -321,6 +408,10 @@ if (window._ratioScreenshotLoaded) {
     // 开始截图流程
     start(options) {
       console.log("开始截图流程, 选项:", options);
+      
+      // 先确保清理任何可能存在的旧截图元素
+      this.cleanupExistingElements();
+      
       // 如果已经在活动状态，先结束当前截图
       if (this.isActive) {
         this.end();
@@ -329,7 +420,7 @@ if (window._ratioScreenshotLoaded) {
       // 设置比例和选项
       this.ratio = options.ratio || '16:9';
       this.saveFormat = options.saveFormat || 'png';
-      this.imageQuality = options.imageQuality || 0.95; // 使用传入的图片质量或默认值
+      this.imageQuality = options.imageQuality || 1.0; // 使用传入的图片质量或默认值
       this.isContinuousMode = options.continuousMode !== false; // 默认为true
       
       // 清空保存的选择
@@ -343,6 +434,38 @@ if (window._ratioScreenshotLoaded) {
       
       // 设置活动状态
       this.isActive = true;
+    }
+    
+    // 清理现有截图相关元素
+    cleanupExistingElements() {
+      const elementsToRemove = [
+        'ratio-screenshot-overlay',
+        'ratio-screenshot-selection',
+        'ratio-screenshot-toolbar',
+        'ratio-screenshot-notification'
+      ];
+      
+      // 检查并移除所有指定ID的元素
+      elementsToRemove.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          console.log(`预清理: 移除元素 ${id}`);
+          element.remove();
+        }
+      });
+      
+      // 清理所有辅助性元素
+      document.querySelectorAll('.ratio-screenshot-magnetic-guide').forEach(el => el.remove());
+      document.querySelectorAll('.ratio-screenshot-element-highlight').forEach(el => el.remove());
+      document.querySelectorAll('.ratio-screenshot-resize-handle').forEach(el => el.remove());
+      document.querySelectorAll('.ratio-screenshot-selection-saved').forEach(el => el.remove());
+    }
+    
+    // 自动创建选择区域（已弃用 - 现在让用户自己选择区域）
+    autoCreateSelection(centerX, centerY) {
+      // 此方法已不再使用，保留代码仅供参考
+      // 现在用户需要通过鼠标拖动自己创建选择区域
+      console.log("autoCreateSelection方法已弃用");
     }
     
     // 创建截图遮罩层
@@ -366,8 +489,8 @@ if (window._ratioScreenshotLoaded) {
       this.selection.id = 'ratio-screenshot-selection';
       this.selection.style.left = `${x}px`;
       this.selection.style.top = `${y}px`;
-      this.selection.style.width = '0';
-      this.selection.style.height = '0';
+      this.selection.style.width = '10px';  // 使用更合理的初始尺寸，避免选框太小
+      this.selection.style.height = '10px'; // 使用更合理的初始尺寸，避免选框太小
       
       // 创建信息面板
       this.infoPanel = document.createElement('div');
@@ -474,6 +597,11 @@ if (window._ratioScreenshotLoaded) {
       saveButton.textContent = '保存此区域';
       saveButton.addEventListener('click', () => this.captureAndSave());
       
+      // 添加快捷键提示
+      const shortcutInfo = document.createElement('div');
+      // shortcutInfo.className = 'ratio-screenshot-shortcut-info';
+      // shortcutInfo.innerHTML = '快捷键: <span>Enter</span> 确认, <span>Esc</span> 取消, <span>↑↓←→</span> 移动';
+      
       // 保存全部按钮
       const saveAllButton = document.createElement('button');
       saveAllButton.className = 'ratio-screenshot-button primary';
@@ -518,7 +646,9 @@ if (window._ratioScreenshotLoaded) {
         primaryRow.appendChild(saveAllButton);
       }
       primaryRow.appendChild(saveButton);
+      primaryRow.appendChild(keepButton);
       primaryRow.appendChild(cancelButton);
+      primaryRow.appendChild(shortcutInfo);
       
       // 创建第二行 - 配置选项
       const configRow = document.createElement('div');
@@ -532,13 +662,16 @@ if (window._ratioScreenshotLoaded) {
       // 添加比例选项
       const ratioOptions = [
         { value: 'free', text: '自由比例' },
-        { value: '16:9', text: '16:9' },
-        { value: '4:3', text: '4:3' },
-        { value: '1:1', text: '1:1' },
-        { value: '2:1', text: '2:1' },
-        { value: '3:2', text: '3:2' },
-        { value: '9:16', text: '9:16 (竖屏)' },
-        { value: '3:4', text: '3:4 (竖屏)' }
+        { value: '16:9', text: '16:9 (视频/屏幕)' },
+        { value: '4:3', text: '4:3 (传统屏幕)' },
+        { value: '1:1', text: '1:1 (正方形/Instagram)' },
+        { value: '9:16', text: '9:16 (手机竖屏/故事)' },
+        { value: '3:4', text: '3:4 (小红书/iPad)' },
+        { value: '2:1', text: '2:1 (小红书/Twitter横图)' },
+        { value: '1:2', text: '1:2 (Pinterest)' },
+        { value: '4:5', text: '4:5 (Instagram竖图)' },
+        { value: '3:2', text: '3:2 (SNS封面)' },
+        { value: '21:9', text: '21:9 (超宽屏)' }
       ];
       
       ratioOptions.forEach(option => {
@@ -1057,6 +1190,9 @@ if (window._ratioScreenshotLoaded) {
         }
       }
       
+      // 添加调整大小的手柄
+      this.addResizeHandles();
+      
       // 创建工具栏
       this.createToolbar();
       
@@ -1149,7 +1285,15 @@ if (window._ratioScreenshotLoaded) {
         
         // 更新信息面板
         if (this.infoPanel) {
-          this.infoPanel.textContent = `${Math.round(width)} × ${Math.round(height)} (${this.ratio})`;
+          // 更新信息内容 - 添加比例但简洁展示
+          let infoText = `${Math.round(width)}×${Math.round(height)}`;
+          
+          // 如果不是自由比例，添加比例信息
+          if (this.ratio && this.ratio !== 'free') {
+            infoText += ` (${this.ratio})`;
+          }
+          
+          this.infoPanel.textContent = infoText;
         }
       };
       
@@ -1281,38 +1425,74 @@ if (window._ratioScreenshotLoaded) {
     
     // 处理键盘事件
     handleKeyDown(e) {
+      // 如果没有选择框，不处理键盘事件
+      if (!this.selection) return;
+      
       // ESC键取消
       if (e.key === 'Escape') {
         this.end();
+        return;
       }
       
       // Enter键确认
-      if (e.key === 'Enter' && this.selection) {
+      if (e.key === 'Enter') {
         this.captureAndSave();
+        return;
+      }
+      
+      // 箭头键移动选择框
+      const moveStep = e.shiftKey ? 10 : 1; // 按住Shift键时移动更大步长
+      let didMove = false;
+      
+      switch (e.key) {
+        case 'ArrowUp':
+          this.startY -= moveStep;
+          this.endY -= moveStep;
+          didMove = true;
+          break;
+        case 'ArrowDown':
+          this.startY += moveStep;
+          this.endY += moveStep;
+          didMove = true;
+          break;
+        case 'ArrowLeft':
+          this.startX -= moveStep;
+          this.endX -= moveStep;
+          didMove = true;
+          break;
+        case 'ArrowRight':
+          this.startX += moveStep;
+          this.endX += moveStep;
+          didMove = true;
+          break;
+      }
+      
+      // 如果移动了选择框，更新显示
+      if (didMove) {
+        e.preventDefault(); // 防止页面滚动
+        this.updateSelectionSize(this.startX, this.startY, this.endX, this.endY);
       }
     }
     
     // 更新选择框大小
-    updateSelectionSize() {
+    updateSelectionSize(startX, startY, endX, endY) {
       if (!this.selection) return;
       
+      // 使用传入的参数或使用实例变量
+      const x1 = startX !== undefined ? startX : this.startX;
+      const y1 = startY !== undefined ? startY : this.startY;
+      const x2 = endX !== undefined ? endX : this.endX;
+      const y2 = endY !== undefined ? endY : this.endY;
+      
       // 计算在文档中的绝对位置和尺寸
-      const absLeft = Math.min(this.startX, this.endX);
-      const absTop = Math.min(this.startY, this.endY);
-      const width = Math.abs(this.endX - this.startX);
-      const height = Math.abs(this.endY - this.startY);
+      const absLeft = Math.min(x1, x2);
+      const absTop = Math.min(y1, y2);
+      const width = Math.abs(x2 - x1);
+      const height = Math.abs(y2 - y1);
       
       // 转换为视口相对坐标(因为position:fixed是相对于视口的)
       const viewportLeft = absLeft - window.scrollX;
       const viewportTop = absTop - window.scrollY;
-      
-      // 调试输出所有坐标
-      console.log({
-        "文档绝对坐标": { left: absLeft, top: absTop },
-        "视口相对坐标": { left: viewportLeft, top: viewportTop },
-        "尺寸": { width, height },
-        "当前滚动": { x: window.scrollX, y: window.scrollY }
-      });
       
       // 更新选择框样式(使用视口相对坐标)
       this.selection.style.left = `${viewportLeft}px`;
@@ -1322,7 +1502,55 @@ if (window._ratioScreenshotLoaded) {
       
       // 更新信息面板
       if (this.infoPanel) {
-        this.infoPanel.textContent = `${Math.round(width)} × ${Math.round(height)} (${this.ratio})`;
+        // 更新信息内容 - 添加比例但简洁展示
+        let infoText = `${Math.round(width)}×${Math.round(height)}`;
+        
+        // 如果不是自由比例，添加比例信息
+        if (this.ratio && this.ratio !== 'free') {
+          infoText += ` (${this.ratio})`;
+        }
+        
+        this.infoPanel.textContent = infoText;
+        
+        // 智能定位信息面板，根据选择框位置自动调整
+        // 检查屏幕边缘位置，避免信息面板超出屏幕范围
+        const topSpace = viewportTop;
+        const bottomSpace = window.innerHeight - (viewportTop + height);
+        const leftSpace = viewportLeft;
+        const rightSpace = window.innerWidth - (viewportLeft + width);
+        
+        // 重置之前可能设置的样式
+        this.infoPanel.style.top = '';
+        this.infoPanel.style.bottom = '';
+        this.infoPanel.style.left = '';
+        this.infoPanel.style.right = '';
+        
+        // 优先尝试放在底部，如果空间不足再考虑放在顶部
+        if (bottomSpace >= 30) {
+          this.infoPanel.style.bottom = '-25px';
+        } else if (topSpace >= 30) {
+          this.infoPanel.style.top = '-25px';
+        } else {
+          // 如果顶部和底部都没有足够空间，则放在选择框内的右下角
+          this.infoPanel.style.bottom = '5px';
+          this.infoPanel.style.right = '5px';
+          // 增加背景不透明度，确保在内部时更容易阅读
+          this.infoPanel.style.backgroundColor = 'rgba(24, 24, 27, 0.85)';
+          return; // 内部显示时，不需要进一步调整水平位置
+        }
+        
+        // 水平方向调整，优先放在左侧，如果空间不足考虑右侧
+        if (leftSpace + width/2 >= this.infoPanel.offsetWidth/2) {
+          // 居中或靠左放置
+          this.infoPanel.style.left = '0';
+          // 如果选择框很窄，可能需要移动到左侧中点
+          if (width < this.infoPanel.offsetWidth) {
+            this.infoPanel.style.left = `-${(this.infoPanel.offsetWidth - width) / 2}px`;
+          }
+        } else {
+          // 放在右侧
+          this.infoPanel.style.right = '0';
+        }
       }
     }
     
@@ -2132,69 +2360,83 @@ if (window._ratioScreenshotLoaded) {
     end() {
       console.log("结束截图流程");
       
-      try {
-        // 移除滚动事件监听（以防万一）
-        window.removeEventListener('scroll', this.handleScroll);
-        
-        // 清除当前选择框
-        this.clearCurrentSelection();
-        
-        // 清除磁性辅助线
-        this.clearMagneticGuides();
-        
-        // 清除所有已保存的选择预览
-        this.selections.forEach(selection => {
-          if (selection.element) {
-            selection.element.remove();
-          }
-        });
-        this.selections = [];
-        
-        // 移除遮罩层
-        if (this.overlay) {
-          this.overlay.remove();
-          this.overlay = null;
+      // 移除事件监听器
+      this.removeEventListeners();
+      
+      // 清除当前选择框
+      this.clearCurrentSelection();
+      
+      // 清除磁性辅助线
+      this.clearMagneticGuides();
+      
+      // 清除所有已保存的选择预览
+      this.selections.forEach(selection => {
+        if (selection.element) {
+          selection.element.remove();
         }
+      });
+      
+      // 重置状态
+      this.isActive = false;
+      this.isSelecting = false;
+      this.startX = 0;
+      this.startY = 0;
+      this.endX = 0;
+      this.endY = 0;
+      this.isLockSize = false;
+      this.lockedWidth = 0;
+      this.lockedHeight = 0;
+      this.nearestEdges = null;
+      
+      try {
+        // 清理所有DOM元素 - 使用安全的方式进行
+        this.safeRemove('ratio-screenshot-overlay');
+        this.safeRemove('ratio-screenshot-selection');
+        this.safeRemove('ratio-screenshot-toolbar');
         
-        // 移除事件监听
-        this.removeEventListeners();
+        // 清理所有类名元素
+        this.safeRemoveAll('.ratio-screenshot-magnetic-guide');
+        this.safeRemoveAll('.ratio-screenshot-element-highlight');
+        this.safeRemoveAll('.ratio-screenshot-resize-handle');
+        this.safeRemoveAll('.ratio-screenshot-selection-saved');
+        this.safeRemoveAll('.ratio-screenshot-notification');
         
-        // 重置状态
-        this.isActive = false;
-        this.isSelecting = false;
-        this.isLockSize = false;
-        this.lockedWidth = 0;
-        this.lockedHeight = 0;
-        this.nearestEdges = null;
-        
-        // 额外检查，确保所有DOM元素都被移除
-        const checkAndRemove = (id) => {
-          const element = document.getElementById(id);
-          if (element) {
-            console.warn(`发现未清理的元素 ${id}，正在强制清理`);
-            element.remove();
-          }
-        };
-        
-        // 检查并移除所有可能残留的辅助线
-        document.querySelectorAll('.ratio-screenshot-magnetic-guide').forEach(el => el.remove());
-        document.querySelectorAll('.ratio-screenshot-element-highlight').forEach(el => el.remove());
-        
-        // 检查是否有遗留的元素
-        checkAndRemove('ratio-screenshot-overlay');
-        checkAndRemove('ratio-screenshot-selection');
-        checkAndRemove('ratio-screenshot-toolbar');
+        // 清空引用
+        this.overlay = null;
+        this.selection = null;
+        this.infoPanel = null;
+        this.toolbar = null;
+        this.selections = [];
         
         console.log("截图流程已结束，所有资源已清理");
       } catch (error) {
-        console.error("结束截图流程时出错:", error);
-        // 即使出错，也确保状态重置
-        this.isActive = false;
-        this.isSelecting = false;
-        this.isLockSize = false;
-        this.lockedWidth = 0;
-        this.lockedHeight = 0;
-        this.nearestEdges = null;
+        console.error("清理资源时出错:", error);
+        
+        // 即使出错也尝试强制清理
+        this.cleanupExistingElements();
+      }
+    }
+    
+    // 安全移除单个元素
+    safeRemove(id) {
+      try {
+        const element = document.getElementById(id);
+        if (element) {
+          element.remove();
+        }
+      } catch (e) {
+        console.warn(`移除元素 ${id} 时出错:`, e);
+      }
+    }
+    
+    // 安全移除多个元素
+    safeRemoveAll(selector) {
+      try {
+        document.querySelectorAll(selector).forEach(el => {
+          el.remove();
+        });
+      } catch (e) {
+        console.warn(`移除选择器 ${selector} 的元素时出错:`, e);
       }
     }
     
@@ -2355,5 +2597,8 @@ if (window._ratioScreenshotLoaded) {
   }
 
   // 创建截图工具实例
-  window.ratioScreenshot = new RatioScreenshot();
+  ratioScreenshotInstance = new RatioScreenshot();
 } 
+
+// 同时保留向后兼容性
+window.ratioScreenshot = ratioScreenshotInstance;

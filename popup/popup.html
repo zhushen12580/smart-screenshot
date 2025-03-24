@@ -152,10 +152,61 @@
       color: var(--primary-dark);
       font-weight: 600;
     }
+    
+    .shortcut-info {
+      margin-top: 15px;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 12px;
+      border: 3px solid var(--black);
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+    }
+    
+    .shortcut-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    
+    .shortcut-header a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 14px;
+    }
+    
+    .shortcut-header a:hover {
+      text-decoration: underline;
+    }
+    
+    .shortcuts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    
+    .shortcut-item {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    
+    .shortcut-key {
+      font-family: monospace;
+      background-color: var(--gray-100);
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid var(--gray-300);
+    }
+    
+    .title-link {
+      text-decoration: none;
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <a href="https://puzzledu.com/" target="_blank" style="text-decoration: none; display: block;">
+  <a href="https://puzzledu.com/" class="title-link" id="title-link">
     <h1>精准截图</h1>
   </a>
   
@@ -165,12 +216,25 @@
         <label for="ratio-select">选择比例</label>
         <div class="select-wrapper">
           <select id="ratio-select">
-            <option value="16:9">16:9</option>
-            <option value="4:3">4:3</option>
-            <option value="1:1">1:1</option>
-            <option value="3:4">3:4</option>
-            <option value="9:16">9:16</option>
-            <option value="free">自由比例</option>
+            <optgroup label="常用比例">
+              <option value="16:9">16:9 (视频/屏幕)</option>
+              <option value="4:3">4:3 (传统屏幕)</option>
+              <option value="1:1">1:1 (正方形/Instagram)</option>
+            </optgroup>
+            <optgroup label="手机/竖屏">
+              <option value="9:16">9:16 (手机竖屏/故事)</option>
+              <option value="3:4">3:4 (小红书/iPad)</option>
+            </optgroup>
+            <optgroup label="社交媒体">
+              <option value="2:1">2:1 (小红书/Twitter横图)</option>
+              <option value="1:2">1:2 (Pinterest)</option>
+              <option value="4:5">4:5 (Instagram竖图)</option>
+              <option value="3:2">3:2 (SNS封面)</option>
+            </optgroup>
+            <optgroup label="其他">
+              <option value="21:9">21:9 (超宽屏)</option>
+              <option value="free">自由比例</option>
+            </optgroup>
           </select>
         </div>
       </div>
@@ -193,8 +257,8 @@
     <label for="image-quality">图片质量</label>
     <div class="select-wrapper">
       <select id="image-quality">
-        <option value="1.0">原图质量 (最佳)</option>
-        <option value="0.95" selected>高清晰度</option>
+        <option value="1.0" selected>原图质量 (最佳)</option>
+        <option value="0.95">高清晰度</option>
         <option value="0.85">标准质量</option>
         <option value="0.7">轻量文件 (~100KB)</option>
       </select>
@@ -205,6 +269,26 @@
   
   <div class="app-footer">
     精准截图 v1.0 - 高效截取特定比例的内容
+  </div>
+  
+  <div class="shortcut-info">
+    <div class="shortcut-header">
+      <span>快捷键</span>
+    </div>
+    <div class="shortcuts-list">
+      <div class="shortcut-item">
+        <span class="shortcut-name">开始截图:</span>
+        <span class="shortcut-key" data-command="screenshot_start">Ctrl+Shift+S</span>
+      </div>
+      <div class="shortcut-item">
+        <span class="shortcut-name">确认截图:</span>
+        <span class="shortcut-key">Enter</span>
+      </div>
+      <div class="shortcut-item">
+        <span class="shortcut-name">取消截图:</span>
+        <span class="shortcut-key">Esc</span>
+      </div>
+    </div>
   </div>
   
   <script src="popup.js"></script>

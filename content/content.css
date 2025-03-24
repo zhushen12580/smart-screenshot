@@ -15,7 +15,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: transparent;
   z-index: 9999;
   cursor: crosshair;
 }
@@ -23,16 +23,17 @@
 #ratio-screenshot-selection {
   position: fixed;
   border: 3px solid var(--white);
-  background-color: rgba(109, 40, 217, 0.1);
-  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+  background-color: transparent;
+  box-shadow: none;
   z-index: 10000;
   pointer-events: auto;
+  outline: 1px solid rgba(0, 0, 0, 0.5);
 }
 
 .ratio-screenshot-selection-saved {
   position: absolute;
   border: 3px dashed var(--primary-color);
-  background-color: rgba(139, 92, 246, 0.1);
+  background-color: transparent;
   z-index: 9998;
   pointer-events: none;
 }
@@ -55,12 +56,10 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  background-color: transparent;
   border-radius: 0;
-  border: 3px solid var(--black);
-  box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+  border: none;
+  box-shadow: none;
   padding: 12px;
   display: flex;
   flex-wrap: wrap;
@@ -84,7 +83,7 @@
   font-weight: bold;
   border: 3px solid var(--black);
   cursor: pointer;
-  background-color: rgba(244, 244, 245, 0.8);
+  background-color: rgba(244, 244, 245, 0.9);
   color: var(--black);
   box-shadow: 3px 3px 0 var(--black);
   transition: transform 0.2s, box-shadow 0.2s;
@@ -101,7 +100,7 @@
 }
 
 .ratio-screenshot-button.primary {
-  background-color: rgba(109, 40, 217, 0.9);
+  background-color: rgba(109, 40, 217, 0.95);
   color: var(--white);
 }
 

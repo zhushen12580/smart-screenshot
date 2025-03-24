@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>精准截图 - 智能比例截图工具</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <style>
+        :root {
+            --primary: #956bf7;
+            --primary-dark: #7a4fd0;
+            --secondary: #ff6b6b;
+            --accent: #4ecca3;
+            --dark: #232931;
+            --light: #f9f7f7;
+            --shadow-offset: 4px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f0f0f0;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Neobrutalism 风格元素 */
+        .neo-box {
+            background-color: white;
+            border: 3px solid black;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .neo-box:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 black;
+        }
+        
+        .neo-button {
+            background-color: var(--primary);
+            color: white;
+            border: 3px solid black;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .neo-button:hover {
+            background-color: var(--primary-dark);
+            transform: translate(-2px, -2px);
+            box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 black;
+        }
+        
+        .neo-button:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 black;
+        }
+        
+        /* 导航栏 */
+        header {
+            background-color: var(--primary);
+            padding: 20px 0;
+            margin-bottom: 40px;
+            border-bottom: 3px solid black;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            text-decoration: none;
+            background-color: var(--primary-dark);
+            padding: 5px 15px;
+            border: 3px solid black;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 5px 10px;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .nav-links a:hover {
+            border-bottom: 2px solid white;
+        }
+        
+        /* 英雄区域 */
+        .hero {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .hero-content {
+            flex: 1;
+        }
+        
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            border: 3px solid black;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero h1 span {
+            color: var(--primary);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .hero h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-color: var(--accent);
+            z-index: -1;
+            opacity: 0.5;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        /* 特性部分 */
+        .features {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 40px;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background-color: var(--primary);
+            z-index: -1;
+            opacity: 0.3;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border: 3px solid black;
+            padding: 30px;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            transition: all 0.2s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 black;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+            background-color: rgba(149, 107, 247, 0.1);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid black;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        /* 用户案例 */
+        .use-cases {
+            margin-bottom: 60px;
+        }
+        
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+        
+        .use-case-card {
+            background-color: white;
+            border: 3px solid black;
+            padding: 20px;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            transition: all 0.2s ease;
+        }
+        
+        .use-case-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 black;
+        }
+        
+        .use-case-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        /* 下载部分 */
+        .download {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .download-box {
+            background-color: var(--primary);
+            color: white;
+            padding: 50px;
+            border: 3px solid black;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            margin-bottom: 30px;
+        }
+        
+        .download-box h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .download-box p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .download-button {
+            background-color: white;
+            color: var(--primary);
+            border: 3px solid black;
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .download-button:hover {
+            background-color: var(--light);
+            transform: translate(-2px, -2px);
+            box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 black;
+        }
+        
+        /* 页脚 */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 40px 0;
+            border-top: 3px solid black;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .footer-links h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 8px;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+        
+        /* 用户评价部分样式 */
+        .testimonials {
+            margin-bottom: 60px;
+        }
+        
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background-color: white;
+            border: 3px solid black;
+            padding: 30px;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .testimonial-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: calc(var(--shadow-offset) + 2px) calc(var(--shadow-offset) + 2px) 0 black;
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.2;
+            font-family: serif;
+            line-height: 1;
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid black;
+            object-fit: cover;
+        }
+        
+        .author-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* 评分星星 */
+        .rating {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .star {
+            color: #FFD700;
+            font-size: 1.2rem;
+            margin-right: 2px;
+        }
+        
+        /* 动画过渡效果 */
+        .fade-up {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* 交错动画延迟 */
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+        
+        /* 应用场景案例样式 */
+        .case-studies {
+            margin-bottom: 80px;
+        }
+        
+        .case-study {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+            align-items: center;
+        }
+        
+        .case-study.reverse {
+            flex-direction: row-reverse;
+        }
+        
+        .case-study-content {
+            flex: 1;
+        }
+        
+        .case-study-image {
+            flex: 1;
+            border: 3px solid black;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .case-study-image:hover {
+            transform: translate(-3px, -3px);
+            box-shadow: calc(var(--shadow-offset) + 3px) calc(var(--shadow-offset) + 3px) 0 black;
+        }
+        
+        .case-study-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        
+        .case-study-image:hover img {
+            transform: scale(1.03);
+        }
+        
+        .case-study h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+        
+        .case-study p {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+        
+        .case-benefits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .benefit {
+            background-color: rgba(149, 107, 247, 0.1);
+            border: 2px solid black;
+            padding: 8px 15px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            box-shadow: 2px 2px 0 black;
+            transition: all 0.2s ease;
+        }
+        
+        .benefit:hover {
+            transform: translateY(-2px);
+            box-shadow: 2px 4px 0 black;
+        }
+        
+        .benefit-icon {
+            font-size: 1.2rem;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .case-study, .case-study.reverse {
+                flex-direction: column;
+            }
+            
+            .case-study-image {
+                margin-top: 20px;
+                width: 100%;
+            }
+            
+            .case-benefits {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav data-aos="fade-down">
+                <a href="#" class="logo">精准截图</a>
+                <div class="nav-links">
+                    <a href="#features">功能特点</a>
+                    <a href="#use-cases">使用场景</a>
+                    <a href="#download">立即下载</a>
+                    <a href="#faq">常见问题</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="hero">
+            <div class="hero-content" data-aos="fade-right">
+                <h1>智能<span>比例截图</span>工具，提升你的工作效率</h1>
+                <p>告别繁琐的截图调整！精准截图让你一键获取完美比例的网页截图，支持预设比例、连续截图、一键保存，为设计师和内容创作者量身打造。</p>
+                <a href="#download" class="neo-button">立即安装 Chrome 插件</a>
+            </div>
+            <div class="hero-image" data-aos="fade-left" data-aos-delay="200">
+                <img src="https://github.com/user-attachments/assets/089decc8-6402-4a2d-9dcc-53c454cb6436" alt="精准截图插件演示">
+            </div>
+        </section>
+        
+        <section class="features" id="features">
+            <h2 class="section-title" data-aos="fade-up">核心功能</h2>
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">📏</div>
+                    <h3>智能比例设置</h3>
+                    <p>预设多种常用比例（1:1、4:3、16:9等），还支持自定义比例，满足各种截图需求。</p>
+                </div> 
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="150">
+                    <div class="feature-icon">🔄</div>
+                    <h3>连续截图模式</h3>
+                    <p>无需退出截图模式即可连续截取多张图片，大幅提高工作效率。</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">✋</div>
+                    <h3>自由拖拽调整</h3>
+                    <p>支持拖拽调整截图区域大小和位置，同时保持所选比例不变。</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="feature-icon">💾</div>
+                    <h3>多种保存方式</h3>
+                    <p>支持保存到本地、复制到剪贴板，还可自定义图片格式和质量。</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">⌨️</div>
+                    <h3>快捷键支持</h3>
+                    <p>提供便捷的快捷键操作，让截图过程更加流畅高效。</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="350">
+                    <div class="feature-icon">🔍</div>
+                    <h3>实时尺寸显示</h3>
+                    <p>截图时实时显示当前区域的尺寸信息，让你掌握精确数据。</p>
+                </div>
+            </div>
+        </section>
+
+        
+        <section class="use-cases" id="use-cases">
+            <h2 class="section-title" data-aos="fade-up">适用场景</h2>
+            <div class="use-cases-grid">
+                <div class="use-case-card" data-aos="fade-up" data-aos-delay="100">
+                    <h3>设计师</h3>
+                    <p>快速获取特定比例的网页素材，为设计项目收集灵感和参考资料。</p>
+                </div>
+                <div class="use-case-card" data-aos="fade-up" data-aos-delay="150">
+                    <h3>内容创作者</h3>
+                    <p>为不同平台准备符合规格的图片素材，提高内容制作效率。</p>
+                </div>
+                <div class="use-case-card" data-aos="fade-up" data-aos-delay="200">
+                    <h3>电商卖家</h3>
+                    <p>制作统一规格的产品图片，保持店铺视觉一致性。</p>
+                </div>
+                <div class="use-case-card" data-aos="fade-up" data-aos-delay="250">
+                    <h3>社交媒体运营</h3>
+                    <p>快速截取适合各平台尺寸要求的图片，优化发布效果。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="case-studies" id="case-studies">
+            <h2 class="section-title" data-aos="fade-up">应用场景案例</h2>
+            
+            <div class="case-study neo-box" data-aos="fade-up" data-aos-delay="100">
+                <div class="case-study-content">
+                    <h3>社交媒体内容创作</h3>
+                    <p>小红书博主李明需要为不同平台准备内容。使用精准截图前，她需要先截图再用PS调整比例，耗时且繁琐。</p>
+                    <p>使用精准截图后，她只需选择预设的小红书比例（2:3）或微信公众号比例（16:9），一键截取完美尺寸的图片，发布效率提升了3倍。</p>
+                    <div class="case-benefits">
+                        <div class="benefit">
+                            <span class="benefit-icon">⏱️</span>
+                            <span class="benefit-text">节省70%处理时间</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">📱</span>
+                            <span class="benefit-text">适配多平台尺寸</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">👍</span>
+                            <span class="benefit-text">互动率提升25%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="case-study-image" data-aos="fade-left" data-aos-delay="150">
+                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop" alt="社交媒体内容创作案例">
+                </div>
+            </div>
+            
+            <div class="case-study neo-box reverse" data-aos="fade-up" data-aos-delay="200">
+                <div class="case-study-image" data-aos="fade-right" data-aos-delay="250">
+                    <img src="https://images.unsplash.com/photo-1559028012-481c04fa702d?w=600&auto=format&fit=crop" alt="电商产品展示案例">
+                </div>
+                <div class="case-study-content">
+                    <h3>电商产品展示优化</h3>
+                    <p>淘宝店主王强需要为200多件产品拍摄统一规格的展示图。传统方式下，他需要逐一调整每张图片，耗时数天。</p>
+                    <p>使用精准截图的连续截图模式和1:1比例预设，他只用了半天时间就完成了所有产品图的处理，并保持了完美的视觉一致性。</p>
+                    <div class="case-benefits">
+                        <div class="benefit">
+                            <span class="benefit-icon">🔄</span>
+                            <span class="benefit-text">批量处理效率提升</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🎯</span>
+                            <span class="benefit-text">视觉一致性增强</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">💰</span>
+                            <span class="benefit-text">转化率提升15%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="case-study neo-box" data-aos="fade-up" data-aos-delay="300">
+                <div class="case-study-content">
+                    <h3>UI设计师灵感收集</h3>
+                    <p>UI设计师张伟需要收集大量网页界面参考。以前他使用普通截图工具，经常需要额外处理才能保持设计稿的一致性。</p>
+                    <p>使用精准截图后，他可以使用16:9比例快速截取界面元素，并通过连续截图模式一次性收集多个参考，极大提高了设计前期的效率。</p>
+                    <div class="case-benefits">
+                        <div class="benefit">
+                            <span class="benefit-icon">💡</span>
+                            <span class="benefit-text">灵感收集更高效</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">📐</span>
+                            <span class="benefit-text">保持设计比例一致</span>
+                        </div>
+                        <div class="benefit">
+                            <span class="benefit-icon">🚀</span>
+                            <span class="benefit-text">项目启动速度提升</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="case-study-image" data-aos="fade-left" data-aos-delay="350">
+                    <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600&auto=format&fit=crop" alt="UI设计师灵感收集案例">
+                </div>
+            </div>
+        </section>
+        
+        <section class="testimonials" id="testimonials">
+            <h2 class="section-title" data-aos="fade-up">用户评价</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-content">"这是我用过的最好的截图工具！智能比例功能让我在准备社交媒体素材时节省了大量时间，再也不用手动调整尺寸了。"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="用户头像" class="author-avatar">
+                        <div class="author-info">
+                            <h4>李小明</h4>
+                            <p>社交媒体运营 @科技公司</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                    </div>
+                    <p class="testimonial-content">"作为UI设计师，我需要频繁截取网页参考图。精准截图的连续截图模式让我能快速收集灵感，大大提高了工作效率。"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="用户头像" class="author-avatar">
+                        <div class="author-info">
+                            <h4>张设计</h4>
+                            <p>UI设计师 @创意工作室</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="rating">
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">★</span>
+                        <span class="star">☆</span>
+                    </div>
+                    <p class="testimonial-content">"我经营一家电商店铺，需要制作大量产品图片。精准截图帮我保持了所有图片的一致比例，客户反馈明显改善。"</p>
+                    <div class="testimonial-author">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="用户头像" class="author-avatar">
+                        <div class="author-info">
+                            <h4>王店长</h4>
+                            <p>电商店主 @精品百货</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="download neo-box" id="download" data-aos="fade-up">
+            <div class="download-box">
+                <h2>立即体验精准截图</h2>
+                <p>只需一键安装，即可享受高效、精准的网页截图体验。完全免费，无广告，注重隐私保护。</p>
+                <a href="https://chrome.google.com/webstore/detail/精准截图/[插件ID]" class="download-button">
+                    添加至 Chrome
+                </a>
+            </div>
+            <div class="open-source-info" style="text-align: center; margin-top: 20px;">
+                <h3 style="margin-bottom: 15px;">开源项目</h3>
+                <p>精准截图是一个开源项目，遵循 MIT 许可证。欢迎查看源代码、提交问题或贡献代码。</p>
+                <a href="https://github.com/zhushen12580/short" class="neo-button" style="margin-top: 15px; background-color: #333;">
+                    <span style="margin-right: 8px;">⭐</span> GitHub 仓库
+                </a>
+            </div>
+        </section>
+        
+        <section class="faq" id="faq">
+            <h2 class="section-title" data-aos="fade-up">常见问题</h2>
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="100">
+                <h3>精准截图需要付费吗？</h3>
+                <p>不需要，精准截图是完全免费的Chrome浏览器插件。</p>
+            </div>
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="150">
+                <h3>插件会收集我的个人数据吗？</h3>
+                <p>不会。我们非常重视用户隐私，截图内容仅在本地处理，不会上传至任何服务器。</p>
+            </div>
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="200">
+                <h3>如何使用自定义比例功能？</h3>
+                <p>点击插件弹出窗口中的"自定义比例"选项，输入您需要的宽高比值即可。</p>
+            </div>
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="250">
+                <h3>支持哪些浏览器？</h3>
+                <p>目前支持Chrome浏览器及基于Chromium的浏览器，如Edge、Brave等。</p>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-info" data-aos="fade-up" data-aos-delay="100">
+                    <div class="footer-logo">精准截图</div>
+                    <p>智能比例截图工具 - 自由/16:9等比例任选，<br>拖拽调整+连续截取模式，高效采集网页内容</p>
+                </div>
+                <div class="footer-links" data-aos="fade-up" data-aos-delay="150">
+                    <h3>功能</h3>
+                    <ul>
+                        <li><a href="#features">比例设置</a></li>
+                        <li><a href="#features">连续截图</a></li>
+                        <li><a href="#features">图片保存</a></li>
+                        <li><a href="#features">快捷键支持</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links" data-aos="fade-up" data-aos-delay="200">
+                    <h3>资源</h3>
+                    <ul>
+                        <li><a href="#">使用教程</a></li>
+                        <li><a href="#">常见问题</a></li>
+                        <li><a href="#">更新日志</a></li>
+                        <li><a href="#">联系我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links" data-aos="fade-up" data-aos-delay="250">
+                    <h3>关注我们</h3>
+                    <ul>
+                        <li><a href="https://github.com/zhushen12580/short">GitHub</a></li>
+                        <li><a href="https://web.okjike.com/u/283a9733-9dca-431a-b34c-daaef0b4cf19">即刻</a></li>
+                        <li><a href="https://space.bilibili.com/486158714">Bilibili</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright" data-aos="fade-up" data-aos-delay="300">
+                <p>© 2025 精准截图 | 采用 CC BY-NC-ND 4.0 开源协议</p>
+                <p style="margin-top: 10px;">源代码采用 <a href="https://opensource.org/licenses/MIT" style="color: var(--primary);">MIT 许可证</a> 开放</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // 初始化 AOS 动画库
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-out',
+                once: true,
+                offset: 100  // 元素距离视口底部100px时触发动画
+            });
+        });
+    </script>
+</body>
+</html> 

@@ -1,6 +1,74 @@
 // 简化版后台脚本 - 只保留核心功能
 console.log("精准截图扩展启动");
 
+// 默认设置
+const DEFAULT_SETTINGS = {
+  ratio: "16:9",
+  saveFormat: "png",
+  imageQuality: 1.0
+};
+
+// 监听键盘命令
+chrome.commands.onCommand.addListener((command) => {
+  console.log("收到键盘命令:", command);
+  
+  // 处理开始截图快捷键
+  if (command === 'screenshot_start') {
+    console.log("触发开始截图快捷键");
+    
+    // 从存储中获取最近使用的比例和其他设置
+    chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality'], (data) => {
+      // 使用最近一次使用的比例，如果没有则使用16:9作为默认值
+      const ratio = data.lastUsedRatio || "16:9";
+      
+      const screenshotOptions = {
+        ratio: ratio,
+        saveFormat: data.saveFormat || DEFAULT_SETTINGS.saveFormat,
+        imageQuality: data.imageQuality || DEFAULT_SETTINGS.imageQuality
+      };
+      
+      console.log("开始截图选项:", screenshotOptions);
+      
+      // 启动截图流程
+      startScreenshotProcess(screenshotOptions);
+    });
+  }
+  // 处理确认截图快捷键
+  else if (command === 'screenshot_confirm') {
+    console.log("触发确认截图快捷键");
+    
+    // 向当前活动标签页发送确认命令
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (!tabs || tabs.length === 0) return;
+      
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'screenshotConfirm'
+      }).catch(error => {
+        console.log("发送确认命令失败，可能截图模式未启动:", error);
+      });
+    });
+  }
+  // 处理取消截图快捷键
+  else if (command === 'screenshot_cancel') {
+    console.log("触发取消截图快捷键");
+    
+    // 向当前活动标签页发送取消命令
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (!tabs || tabs.length === 0) return;
+      
+      chrome.tabs.sendMessage(tabs[0].id, {
+        action: 'screenshotCancel'
+      }).catch(error => {
+        console.log("发送取消命令失败，可能截图模式未启动:", error);
+      });
+    });
+  }
+  // 处理默认的扩展图标快捷键 - 这里不再执行任何操作，默认会显示弹出窗口
+  else if (command === '_execute_action') {
+    console.log("触发默认扩展图标快捷键 - 打开弹出窗口");
+  }
+});
+
 // 监听消息
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("收到消息:", message.action);
@@ -9,34 +77,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'startScreenshot') {
     sendResponse({ success: true });
     
-    // 获取当前标签页并注入内容脚本
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (!tabs || tabs.length === 0) return;
-      const tab = tabs[0];
-      
-      // 检查是否是有效页面
-      if (!tab.url || tab.url.startsWith('chrome://') || 
-          tab.url.startsWith('edge://') || tab.url.startsWith('about:')) {
-        console.log("无法在浏览器内部页面上使用");
-        return;
-      }
-      
-      // 注入内容脚本
-      chrome.scripting.executeScript({
-        target: { tabId: tab.id },
-        files: ['content/content.js']
-      }).then(() => {
-        // 发送截图命令
-        setTimeout(() => {
-          chrome.tabs.sendMessage(tab.id, {
-            action: 'initiateScreenshot',
-            options: message.options
-          });
-        }, 100);
-      }).catch(error => {
-        console.error("内容脚本注入失败", error);
+    // 保存当前设置到存储中
+    if (message.options) {
+      chrome.storage.sync.set({
+        ratio: message.options.ratio || DEFAULT_SETTINGS.ratio,
+        saveFormat: message.options.saveFormat || DEFAULT_SETTINGS.saveFormat,
+        imageQuality: message.options.imageQuality || DEFAULT_SETTINGS.imageQuality
       });
-    });
+    }
+    
+    // 启动截图流程，直接使用消息中的选项
+    startScreenshotProcess(message.options || {});
   }
   
   // 处理屏幕捕获命令
@@ -56,6 +107,38 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   return true;
 });
+
+// 启动截图流程的统一函数
+function startScreenshotProcess(options) {
+  // 获取当前标签页并注入内容脚本
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    if (!tabs || tabs.length === 0) return;
+    const tab = tabs[0];
+    
+    // 检查是否是有效页面
+    if (!tab.url || tab.url.startsWith('chrome://') || 
+        tab.url.startsWith('edge://') || tab.url.startsWith('about:')) {
+      console.log("无法在浏览器内部页面上使用");
+      return;
+    }
+    
+    // 注入内容脚本
+    chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ['content/content.js']
+    }).then(() => {
+      // 发送截图命令
+      setTimeout(() => {
+        chrome.tabs.sendMessage(tab.id, {
+          action: 'initiateScreenshot',
+          options: options
+        });
+      }, 100);
+    }).catch(error => {
+      console.error("内容脚本注入失败", error);
+    });
+  });
+}
 
 // 捕获当前屏幕内容
 function captureScreen(sendResponse) {
@@ -248,7 +331,7 @@ function saveScreenshot(request, sendResponse) {
       }
     });
   } catch (error) {
-    console.error("保存截图时出错:", error);
+    console.error("保存过程出错:", error);
     sendResponse({ success: false, error: error.message });
   }
   
