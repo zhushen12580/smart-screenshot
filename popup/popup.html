@@ -203,12 +203,51 @@
       text-decoration: none;
       display: block;
     }
+    
+    .mode-switch {
+      display: flex;
+      margin-bottom: 15px;
+      gap: 10px;
+    }
+    
+    .mode-switch button {
+      flex: 1;
+      padding: 10px;
+      background-color: var(--white);
+      color: var(--black);
+      border: 3px solid var(--black);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 14px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .mode-switch button.active {
+      background-color: rgba(109, 40, 217, 0.9);
+      color: var(--white);
+
+      box-shadow: 6px 6px 0 var(--black);
+    }
+    
+    .mode-switch button:hover:not(.active) {
+      box-shadow: 6px 6px 0 var(--black);
+    }
+    
+    .mode-switch button:active:not(.active) {
+      box-shadow: 2px 2px 0 var(--black);
+    }
   </style>
 </head>
 <body>
   <a href="https://puzzledu.com/" class="title-link" id="title-link">
     <h1>精准截图</h1>
   </a>
+  
+  <div class="mode-switch">
+    <button id="normal-mode" class="active">普通模式</button>
+    <button id="inspect-mode">智能模式</button>
+  </div>
   
   <div class="form-row">
     <div class="form-col">
@@ -250,18 +289,6 @@
           </select>
         </div>
       </div>
-    </div>
-  </div>
-  
-  <div class="form-group">
-    <label for="image-quality">图片质量</label>
-    <div class="select-wrapper">
-      <select id="image-quality">
-        <option value="1.0" selected>原图质量 (最佳)</option>
-        <option value="0.95">高清晰度</option>
-        <option value="0.85">标准质量</option>
-        <option value="0.7">轻量文件 (~100KB)</option>
-      </select>
     </div>
   </div>
   

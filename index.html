@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>精准截图 - 智能比例截图工具</title>
+    <title>精准截图 - 一键智能截图工具</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
@@ -606,7 +606,8 @@
             <nav data-aos="fade-down">
                 <a href="#" class="logo">精准截图</a>
                 <div class="nav-links">
-                    <a href="#features">功能特点</a>
+                    <a href="#features">功能介绍</a>
+                    <a href="#smart-capture">智能截图</a>
                     <a href="#use-cases">使用场景</a>
                     <a href="#download">立即下载</a>
                     <a href="#faq">常见问题</a>
@@ -618,8 +619,8 @@
     <main class="container">
         <section class="hero">
             <div class="hero-content" data-aos="fade-right">
-                <h1>智能<span>比例截图</span>工具，提升你的工作效率</h1>
-                <p>告别繁琐的截图调整！精准截图让你一键获取完美比例的网页截图，支持预设比例、连续截图、一键保存，为设计师和内容创作者量身打造。</p>
+                <h1>智能一键<span>精准截图</span>，让截图更轻松</h1>
+                <p>告别繁琐的截图调整！精准截图让你一键获取完美比例的网页截图，支持智能识别、自动对齐、连续截图，让截图变得简单又高效。</p>
                 <a href="#download" class="neo-button">立即安装 Chrome 插件</a>
             </div>
             <div class="hero-image" data-aos="fade-left" data-aos-delay="200">
@@ -631,38 +632,114 @@
             <h2 class="section-title" data-aos="fade-up">核心功能</h2>
             <div class="features-grid">
                 <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon">📏</div>
-                    <h3>智能比例设置</h3>
-                    <p>预设多种常用比例（1:1、4:3、16:9等），还支持自定义比例，满足各种截图需求。</p>
-                </div> 
+                    <div class="feature-icon">🔍</div>
+                    <h3>智能识别</h3>
+                    <p>自动识别网页内容，鼠标悬停就能看到要截取的区域，点击即可精准截取，不用手动框选。</p>
+                </div>
                 <div class="feature-card" data-aos="fade-up" data-aos-delay="150">
-                    <div class="feature-icon">🔄</div>
-                    <h3>连续截图模式</h3>
-                    <p>无需退出截图模式即可连续截取多张图片，大幅提高工作效率。</p>
+                    <div class="feature-icon">🧲</div>
+                    <h3>自动对齐</h3>
+                    <p>截图区域会自动对齐到页面内容边缘，显示辅助线帮你调整位置，让截图更整齐。</p>
                 </div>
                 <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">📏</div>
+                    <h3>比例设置</h3>
+                    <p>预设多种常用比例（正方形、横屏、竖屏等），也可以自定义比例，满足各种截图需求。</p>
+                </div> 
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="250">
+                    <div class="feature-icon">🔄</div>
+                    <h3>连续截图模式</h3>
+                    <p>即便截图过程中，你也可以滚动页面连续截图，不用退出截图模式。</p>
+                </div>
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
                     <div class="feature-icon">✋</div>
                     <h3>自由拖拽调整</h3>
                     <p>支持拖拽调整截图区域大小和位置，同时保持所选比例不变。</p>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="250">
-                    <div class="feature-icon">💾</div>
-                    <h3>多种保存方式</h3>
-                    <p>支持保存到本地、复制到剪贴板，还可自定义图片格式和质量。</p>
-                </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="350">
                     <div class="feature-icon">⌨️</div>
                     <h3>快捷键支持</h3>
                     <p>提供便捷的快捷键操作，让截图过程更加流畅高效。</p>
                 </div>
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="350">
-                    <div class="feature-icon">🔍</div>
-                    <h3>实时尺寸显示</h3>
-                    <p>截图时实时显示当前区域的尺寸信息，让你掌握精确数据。</p>
-                </div>
             </div>
         </section>
 
+        <!-- 新增智能截图专栏 -->
+        <section class="smart-capture" id="smart-capture">
+            <h2 class="section-title" data-aos="fade-up">智能截图体验</h2>
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="100" style="padding: 0; overflow: hidden; margin-bottom: 40px;">
+                <div style="padding: 30px; background-color: var(--primary); color: white;">
+                    <h3 style="font-size: 1.8rem; margin-bottom: 20px;">告别手动框选，智能识别网页内容</h3>
+                    <p style="font-size: 1.1rem; margin-bottom: 20px;">精准截图带来全新的智能识别技术，只需鼠标悬停，自动识别和高亮显示要截取的内容，点击即可精准截取，不用手动调整。</p>
+                    <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 30px;">
+                        <div style="background-color: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; flex: 1; min-width: 200px;">
+                            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">智能识别内容</h4>
+                            <p>自动识别按钮、图片、文字等网页内容，准确显示截取范围</p>
+                        </div>
+                        <div style="background-color: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; flex: 1; min-width: 200px;">
+                            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">实时预览</h4>
+                            <p>悬停时实时显示内容大小，帮你快速找到要截取的部分</p>
+                        </div>
+                        <div style="background-color: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; flex: 1; min-width: 200px;">
+                            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">一键截取</h4>
+                            <p>点击即可截取当前高亮内容，不用手动框选和调整</p>
+                        </div>
+                    </div>
+                </div>
+                <img src="https://images.unsplash.com/photo-1481487196290-c152efe083f5?w=800&auto=format&fit=crop" alt="智能元素识别截图" style="width: 100%; height: auto; object-fit: cover;">
+            </div>
+            
+            <div class="features-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="neo-box" data-aos="fade-right" data-aos-delay="150" style="display: flex; flex-direction: column; height: 100%;">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--primary);">智能磁性吸附功能</h3>
+                    <p style="margin-bottom: 20px;">截图区域会智能吸附到页面元素边缘，自动对齐辅助你创建完美的截图。系统会显示辅助对齐线，让你的截图更加精准。</p>
+                    <ul style="list-style-type: none; margin-bottom: 20px;">
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="color: var(--primary); font-weight: bold; margin-right: 10px;">✓</span> 
+                            自动吸附到元素边缘
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="color: var(--primary); font-weight: bold; margin-right: 10px;">✓</span>
+                            显示对齐辅助线
+                        </li>
+                        <li style="margin-bottom: 10px; display: flex; align-items: center;">
+                            <span style="color: var(--primary); font-weight: bold; margin-right: 10px;">✓</span>
+                            可调节吸附强度
+                        </li>
+                    </ul>
+                    <img src="https://images.unsplash.com/photo-1507721999472-8ed4421c4af2?w=400&auto=format&fit=crop" alt="磁性吸附功能" style="width: 100%; height: auto; margin-top: auto; border: 2px solid black; box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;">
+                </div>
+                
+                <div class="neo-box" data-aos="fade-left" data-aos-delay="200" style="display: flex; flex-direction: column; height: 100%;">
+                    <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--primary);">多场景智能截图模式</h3>
+                    <p style="margin-bottom: 20px;">针对不同场景，我们提供多种智能截图模式，满足各种专业需求。从UI组件提取到完整页面区域截取，精准截图都能智能适应。</p>
+                    <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px; background-color: rgba(149, 107, 247, 0.1); padding: 10px; border-radius: 6px;">
+                            <span style="font-size: 1.5rem;">🎯</span>
+                            <div>
+                                <strong>智能模式</strong><br>
+                                <small>精准识别按钮、卡片等UI元素</small>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px; background-color: rgba(149, 107, 247, 0.1); padding: 10px; border-radius: 6px;">
+                            <span style="font-size: 1.5rem;">📐</span>
+                            <div>
+                                <strong>比例锁定模式</strong><br>
+                                <small>保持固定比例的区域截图</small>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px; background-color: rgba(149, 107, 247, 0.1); padding: 10px; border-radius: 6px;">
+                            <span style="font-size: 1.5rem;">🔄</span>
+                            <div>
+                                <strong>连续截图模式</strong><br>
+                                <small>无需退出即可连续捕获多个元素</small>
+                            </div>
+                        </div>
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&auto=format&fit=crop" alt="多场景智能截图" style="width: 100%; height: auto; margin-top: auto; border: 2px solid black; box-shadow: var(--shadow-offset) var(--shadow-offset) 0 black;">
+                </div>
+            </div>
+        </section>
         
         <section class="use-cases" id="use-cases">
             <h2 class="section-title" data-aos="fade-up">适用场景</h2>
@@ -691,26 +768,26 @@
             
             <div class="case-study neo-box" data-aos="fade-up" data-aos-delay="100">
                 <div class="case-study-content">
-                    <h3>社交媒体内容创作</h3>
-                    <p>小红书博主李明需要为不同平台准备内容。使用精准截图前，她需要先截图再用PS调整比例，耗时且繁琐。</p>
-                    <p>使用精准截图后，她只需选择预设的小红书比例（2:3）或微信公众号比例（16:9），一键截取完美尺寸的图片，发布效率提升了3倍。</p>
+                    <h3>设计师灵感收集</h3>
+                    <p>设计师张伟需要收集大量网页参考。以前他用普通截图工具，很难准确截取想要的内容。</p>
+                    <p>使用精准截图的<strong>智能识别</strong>功能后，他只需把鼠标放在想要的内容上，系统自动显示截取范围，点击就能准确截取，大大提高了收集效率。</p>
                     <div class="case-benefits">
                         <div class="benefit">
-                            <span class="benefit-icon">⏱️</span>
-                            <span class="benefit-text">节省70%处理时间</span>
+                            <span class="benefit-icon">🎯</span>
+                            <span class="benefit-text">准确识别内容</span>
                         </div>
                         <div class="benefit">
-                            <span class="benefit-icon">📱</span>
-                            <span class="benefit-text">适配多平台尺寸</span>
+                            <span class="benefit-icon">⚡</span>
+                            <span class="benefit-text">截图效率提升80%</span>
                         </div>
                         <div class="benefit">
-                            <span class="benefit-icon">👍</span>
-                            <span class="benefit-text">互动率提升25%</span>
+                            <span class="benefit-icon">🧩</span>
+                            <span class="benefit-text">快速收集素材</span>
                         </div>
                     </div>
                 </div>
                 <div class="case-study-image" data-aos="fade-left" data-aos-delay="150">
-                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop" alt="社交媒体内容创作案例">
+                    <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600&auto=format&fit=crop" alt="UI设计师灵感收集案例">
                 </div>
             </div>
             
@@ -741,26 +818,26 @@
             
             <div class="case-study neo-box" data-aos="fade-up" data-aos-delay="300">
                 <div class="case-study-content">
-                    <h3>UI设计师灵感收集</h3>
-                    <p>UI设计师张伟需要收集大量网页界面参考。以前他使用普通截图工具，经常需要额外处理才能保持设计稿的一致性。</p>
-                    <p>使用精准截图后，他可以使用16:9比例快速截取界面元素，并通过连续截图模式一次性收集多个参考，极大提高了设计前期的效率。</p>
+                    <h3>社交媒体内容创作</h3>
+                    <p>小红书博主李明需要为不同平台准备内容。使用普通截图工具时，她需要先截图再用PS调整比例，耗时且繁琐。</p>
+                    <p>使用精准截图后，她在<strong>智能截图模式</strong>下可以快速识别网页元素，同时利用预设的小红书比例（2:3）或微信公众号比例（16:9），一键截取完美尺寸的图片，发布效率提升了3倍。</p>
                     <div class="case-benefits">
                         <div class="benefit">
-                            <span class="benefit-icon">💡</span>
-                            <span class="benefit-text">灵感收集更高效</span>
+                            <span class="benefit-icon">⏱️</span>
+                            <span class="benefit-text">节省70%处理时间</span>
                         </div>
                         <div class="benefit">
-                            <span class="benefit-icon">📐</span>
-                            <span class="benefit-text">保持设计比例一致</span>
+                            <span class="benefit-icon">📱</span>
+                            <span class="benefit-text">适配多平台尺寸</span>
                         </div>
                         <div class="benefit">
-                            <span class="benefit-icon">🚀</span>
-                            <span class="benefit-text">项目启动速度提升</span>
+                            <span class="benefit-icon">👍</span>
+                            <span class="benefit-text">互动率提升25%</span>
                         </div>
                     </div>
                 </div>
                 <div class="case-study-image" data-aos="fade-left" data-aos-delay="350">
-                    <img src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?w=600&auto=format&fit=crop" alt="UI设计师灵感收集案例">
+                    <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=600&auto=format&fit=crop" alt="社交媒体内容创作案例">
                 </div>
             </div>
         </section>
@@ -776,7 +853,7 @@
                         <span class="star">★</span>
                         <span class="star">★</span>
                     </div>
-                    <p class="testimonial-content">"这是我用过的最好的截图工具！智能比例功能让我在准备社交媒体素材时节省了大量时间，再也不用手动调整尺寸了。"</p>
+                    <p class="testimonial-content">"精准截图的智能元素识别功能太棒了！我只需将鼠标放在想要的元素上，点击即可精准截取，再也不用手动调整边界，节省了我大量时间。"</p>
                     <div class="testimonial-author">
                         <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="用户头像" class="author-avatar">
                         <div class="author-info">
@@ -794,7 +871,7 @@
                         <span class="star">★</span>
                         <span class="star">★</span>
                     </div>
-                    <p class="testimonial-content">"作为UI设计师，我需要频繁截取网页参考图。精准截图的连续截图模式让我能快速收集灵感，大大提高了工作效率。"</p>
+                    <p class="testimonial-content">"作为UI设计师，我需要频繁截取网页参考图。精准截图的智能识别和磁性吸附功能让我能精确捕捉UI组件，大大提高了工作效率。"</p>
                     <div class="testimonial-author">
                         <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="用户头像" class="author-avatar">
                         <div class="author-info">
@@ -844,20 +921,20 @@
         <section class="faq" id="faq">
             <h2 class="section-title" data-aos="fade-up">常见问题</h2>
             <div class="neo-box" data-aos="fade-up" data-aos-delay="100">
+                <h3>精准截图的智能识别功能是怎么工作的？</h3>
+                <p>智能识别功能会自动分析网页内容，找出可以截取的部分。你只需要把鼠标放在想要截取的内容上，系统会自动显示截取范围，点击就能准确截取，不用手动框选。</p>
+            </div>
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="150">
                 <h3>精准截图需要付费吗？</h3>
                 <p>不需要，精准截图是完全免费的Chrome浏览器插件。</p>
             </div>
-            <div class="neo-box" data-aos="fade-up" data-aos-delay="150">
+            <div class="neo-box" data-aos="fade-up" data-aos-delay="200">
                 <h3>插件会收集我的个人数据吗？</h3>
                 <p>不会。我们非常重视用户隐私，截图内容仅在本地处理，不会上传至任何服务器。</p>
             </div>
-            <div class="neo-box" data-aos="fade-up" data-aos-delay="200">
-                <h3>如何使用自定义比例功能？</h3>
-                <p>点击插件弹出窗口中的"自定义比例"选项，输入您需要的宽高比值即可。</p>
-            </div>
             <div class="neo-box" data-aos="fade-up" data-aos-delay="250">
-                <h3>支持哪些浏览器？</h3>
-                <p>目前支持Chrome浏览器及基于Chromium的浏览器，如Edge、Brave等。</p>
+                <h3>如何切换不同的截图模式？</h3>
+                <p>在插件弹出窗口中，您可以选择"智能元素检测模式"或"比例截图模式"。在截图过程中也可以通过工具栏切换不同模式。</p>
             </div>
         </section>
     </main>
@@ -867,15 +944,15 @@
             <div class="footer-content">
                 <div class="footer-info" data-aos="fade-up" data-aos-delay="100">
                     <div class="footer-logo">精准截图</div>
-                    <p>智能比例截图工具 - 自由/16:9等比例任选，<br>拖拽调整+连续截取模式，高效采集网页内容</p>
+                    <p>智能一键截图工具 - 自动识别内容，<br>自动对齐+连续截图，让截图更轻松</p>
                 </div>
                 <div class="footer-links" data-aos="fade-up" data-aos-delay="150">
                     <h3>功能</h3>
                     <ul>
+                        <li><a href="#features">智能识别</a></li>
+                        <li><a href="#features">自动对齐</a></li>
                         <li><a href="#features">比例设置</a></li>
                         <li><a href="#features">连续截图</a></li>
-                        <li><a href="#features">图片保存</a></li>
-                        <li><a href="#features">快捷键支持</a></li>
                     </ul>
                 </div>
                 <div class="footer-links" data-aos="fade-up" data-aos-delay="200">

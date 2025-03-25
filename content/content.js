@@ -1,6 +1,6 @@
 // 简化版内容脚本 - 保留按精准截图和连续截图功能
 // 使用全局变量保存实例
-let ratioScreenshotInstance = null;
+var ratioScreenshotInstance = window.ratioScreenshotInstance || null;
 
 // 避免重复初始化
 if (window._ratioScreenshotLoaded) {
@@ -20,11 +20,20 @@ if (window._ratioScreenshotLoaded) {
   
   class RatioScreenshot {
     constructor() {
+      // 智能检查模式相关属性
+      this.isInspecting = false;
+      this.highlightElement = null;
+      this.currentElement = null;
+      
+      // 现有属性
+      this.ratio = null;
+      this.saveFormat = 'png';
+      this.imageQuality = 1.0;
+      
       // 状态变量
       this.isActive = false;
       this.isSelecting = false;
       this.isContinuousMode = true; // 默认支持连续截图
-      this.ratio = '16:9';
       this.startX = 0;
       this.startY = 0;
       this.endX = 0;
@@ -106,6 +115,13 @@ if (window._ratioScreenshotLoaded) {
             // 如果正在截图，执行取消操作
             if (this.isActive) {
               console.log("通过快捷键执行取消截图");
+              
+              // 如果在智能检查模式下，先禁用检查
+              if (this.isInspecting) {
+                console.log("关闭智能检查模式");
+                this.disableInspection();
+              }
+              
               this.end();
               sendResponse({ success: true });
             } else {
@@ -407,33 +423,38 @@ if (window._ratioScreenshotLoaded) {
     
     // 开始截图流程
     start(options) {
-      console.log("开始截图流程, 选项:", options);
-      
-      // 先确保清理任何可能存在的旧截图元素
-      this.cleanupExistingElements();
-      
-      // 如果已经在活动状态，先结束当前截图
+      // 如果已经处于活动状态，先清理现有元素
       if (this.isActive) {
-        this.end();
+        this.cleanupExistingElements();
       }
       
-      // 设置比例和选项
-      this.ratio = options.ratio || '16:9';
+      // 设置选项
+      this.ratio = options.ratio || 'free';
       this.saveFormat = options.saveFormat || 'png';
-      this.imageQuality = options.imageQuality || 1.0; // 使用传入的图片质量或默认值
-      this.isContinuousMode = options.continuousMode !== false; // 默认为true
+      this.imageQuality = options.imageQuality || 1.0;
       
-      // 清空保存的选择
-      this.selections = [];
+      // 保存检查模式的设置，除非显式传入了false
+      if (options.isInspectMode !== undefined) {
+        this.isInspectMode = !!options.isInspectMode;
+      }
       
-      // 创建UI元素
+      // 如果是智能检查模式，启用元素检查
+      if (options.isInspectMode) {
+        this.enableInspection();
+        return;
+      }
+      
+      // 普通模式的处理逻辑
+      this.isActive = true;
+      
+      // 创建覆盖层
       this.createOverlay();
       
-      // 添加事件监听
+      // 添加事件监听器
       this.addEventListeners();
       
-      // 设置活动状态
-      this.isActive = true;
+      // 显示工具栏
+      this.createToolbar();
     }
     
     // 清理现有截图相关元素
@@ -502,78 +523,77 @@ if (window._ratioScreenshotLoaded) {
     
     // 将当前选择框保存为预览
     saveCurrentSelectionAsPreview() {
+      // 如果没有选区，直接返回
       if (!this.selection) return;
       
-      const rect = this.selection.getBoundingClientRect();
-      if (rect.width < 10 || rect.height < 10) return; // 忽略太小的选择
+      // 创建预览元素
+      const preview = document.createElement('div');
+      preview.className = 'ratio-screenshot-selection-saved';
       
-      // 计算选择框在文档中的绝对位置（相对于文档而非视口）
-      const absoluteLeft = Math.min(this.startX, this.endX);
-      const absoluteTop = Math.min(this.startY, this.endY);
-      const width = Math.abs(this.endX - this.startX);
-      const height = Math.abs(this.endY - this.startY);
+      // 复制选区的位置和大小
+      const selectionRect = this.selection.getBoundingClientRect();
+      const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
       
-      // 创建一个新的div作为已保存选择的预览
-      const savedSelection = document.createElement('div');
-      savedSelection.className = 'ratio-screenshot-selection-saved';
+      preview.style.left = `${this.startX}px`;
+      preview.style.top = `${this.startY}px`;
+      preview.style.width = `${this.endX - this.startX}px`;
+      preview.style.height = `${this.endY - this.startY}px`;
       
-      // 使用绝对位置，让选择框跟随页面内容滚动
-      savedSelection.style.left = `${absoluteLeft}px`;
-      savedSelection.style.top = `${absoluteTop}px`;
-      savedSelection.style.width = `${width}px`;
-      savedSelection.style.height = `${height}px`;
+      // 添加到页面
+      document.body.appendChild(preview);
       
-      // 添加标号
-      const selectionNumber = document.createElement('div');
-      selectionNumber.className = 'ratio-screenshot-selection-info';
-      selectionNumber.textContent = `区域 ${this.selections.length + 1}`;
-      savedSelection.appendChild(selectionNumber);
-      
-      document.body.appendChild(savedSelection);
-      
-      // 保存选择信息和DOM元素（使用绝对坐标）
+      // 保存到选区列表
       this.selections.push({
-        element: savedSelection,
+        element: preview,
         rect: {
-          // 使用页面绝对坐标存储，便于后续截图处理
-          left: absoluteLeft,
-          top: absoluteTop,
-          width: width,
-          height: height,
-          // 存储选择时的滚动信息（用于调试）
-          scrollX: window.scrollX,
-          scrollY: window.scrollY,
-          // 存储当前使用的比例，以便后续处理时保持一致
-          ratio: this.ratio
+          left: this.startX,
+          top: this.startY,
+          width: this.endX - this.startX,
+          height: this.endY - this.startY
         }
       });
       
-      // 移除当前选择框
+      // 保存当前模式状态，确保连续截图保持相同模式
+      const currentIsInspectMode = this.isInspectMode;
+      
+      // 清理当前选区
       this.clearCurrentSelection();
       
-      // 如果启用了尺寸锁定，显示提示信息
-      this.startNewSelection();
+      // 如果是智能检查模式，重新启用检查
+      if (currentIsInspectMode) {
+        // 保持智能检查模式标志
+        this.isInspectMode = true;
+        // 重新启用检查功能
+        this.enableInspection();
+      }
     }
     
     // 清除当前选择框（不影响已保存的选择）
     clearCurrentSelection() {
+      // 移除选区
       if (this.selection) {
-        // 移除移动事件监听器（如果存在）
-        if (this.selectionMoveHandler) {
-          this.selection.removeEventListener('mousedown', this.selectionMoveHandler);
-          this.selectionMoveHandler = null;
-        }
-        
         this.selection.remove();
         this.selection = null;
       }
       
+      // 移除工具栏
       if (this.toolbar) {
         this.toolbar.remove();
         this.toolbar = null;
       }
       
-      this.infoPanel = null;
+      // 重置状态
+      this.isSelecting = false;
+      this.startX = 0;
+      this.startY = 0;
+      this.endX = 0;
+      this.endY = 0;
+      
+      // 清理磁性吸附相关状态
+      this.nearestEdges = null;
+      this.lastMagneticPosition = null;
+      this.clearMagneticGuides();
     }
     
     // 创建工具栏
@@ -613,7 +633,11 @@ if (window._ratioScreenshotLoaded) {
       keepButton.className = 'ratio-screenshot-button';
       keepButton.textContent = '保持此区域并继续';
       keepButton.addEventListener('click', () => {
+        // 记录当前是否处于智能检查模式
+        console.log(`保持区域并继续，当前模式: ${this.isInspectMode ? '智能检查' : '普通'}`);
+        
         this.saveCurrentSelectionAsPreview();
+        
         // 隐藏工具栏
         if (this.toolbar) {
           this.toolbar.style.display = 'none';
@@ -2360,6 +2384,11 @@ if (window._ratioScreenshotLoaded) {
     end() {
       console.log("结束截图流程");
       
+      // 如果处于智能检查模式，先禁用它
+      if (this.isInspecting) {
+        this.disableInspection();
+      }
+      
       // 移除事件监听器
       this.removeEventListeners();
       
@@ -2393,6 +2422,7 @@ if (window._ratioScreenshotLoaded) {
         this.safeRemove('ratio-screenshot-overlay');
         this.safeRemove('ratio-screenshot-selection');
         this.safeRemove('ratio-screenshot-toolbar');
+        this.safeRemove('ratio-screenshot-inspect-cancel');
         
         // 清理所有类名元素
         this.safeRemoveAll('.ratio-screenshot-magnetic-guide');
@@ -2593,6 +2623,264 @@ if (window._ratioScreenshotLoaded) {
       }, duration);
       
       return notification;
+    }
+
+    // 启用元素检查模式
+    enableInspection() {
+      this.isInspecting = true;
+      this.isActive = true; // 添加这一行，标记截图模式为激活状态
+      
+      // 创建高亮显示的元素
+      this.highlightElement = document.createElement('div');
+      this.highlightElement.style.cssText = `
+        position: absolute;
+        pointer-events: none;
+        z-index: 10000;
+        background: rgba(130, 180, 230, 0.2);
+        border: 2px solid #5166d6;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
+        display: none;
+        transition: all 0.2s ease;
+        border-radius: 3px;
+      `;
+      
+      // 添加尺寸指示器
+      const sizeIndicator = document.createElement('div');
+      sizeIndicator.style.cssText = `
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #5166d6;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+        pointer-events: none;
+        white-space: nowrap;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      `;
+      this.highlightElement.appendChild(sizeIndicator);
+      this.sizeIndicator = sizeIndicator;
+      
+      document.body.appendChild(this.highlightElement);
+      
+      // 添加悬浮的取消按钮
+      const cancelButton = document.createElement('div');
+      cancelButton.id = 'ratio-screenshot-inspect-cancel';
+      cancelButton.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #fff;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 14px;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        z-index: 10001;
+        user-select: none;
+        transition: all 0.2s ease;
+      `;
+      cancelButton.textContent = '取消 (Esc)';
+      
+      // 悬停效果
+      cancelButton.addEventListener('mouseover', () => {
+        cancelButton.style.background = '#f5f5f5';
+      });
+      cancelButton.addEventListener('mouseout', () => {
+        cancelButton.style.background = '#fff';
+      });
+      
+      // 点击事件
+      cancelButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("取消按钮被点击，退出智能检查模式");
+        this.disableInspection();
+        this.end();
+      });
+      
+      document.body.appendChild(cancelButton);
+      this.cancelButton = cancelButton;
+      
+      // 修改鼠标样式
+      document.body.style.cursor = 'crosshair';
+
+      // 添加事件监听器
+      document.addEventListener('mousemove', this.handleInspectorMouseMove.bind(this));
+      document.addEventListener('click', this.handleInspectorClick.bind(this));
+      window.addEventListener('scroll', this.handleInspectorScroll.bind(this));
+      
+      // 显示提示
+      this.showNotification('已启用智能截图模式，点击选择要截图的元素', 2000);
+    }
+
+    // 处理检查模式下的鼠标移动
+    handleInspectorMouseMove(e) {
+      if (!this.isInspecting) return;
+      
+      // 阻止默认事件
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const element = document.elementFromPoint(e.clientX, e.clientY);
+      if (!element) return;
+
+      this.currentElement = element;
+      this.updateHighlight(element);
+    }
+
+    // 更新高亮显示
+    updateHighlight(element) {
+      if (!element || !this.highlightElement) return;
+
+      // 获取元素位置和大小
+      const rect = element.getBoundingClientRect();
+      
+      // 计算页面滚动量
+      const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+      // 更新高亮元素的位置和大小
+      this.highlightElement.style.display = 'block';
+      this.highlightElement.style.top = `${rect.top + scrollY}px`;
+      this.highlightElement.style.left = `${rect.left + scrollX}px`;
+      this.highlightElement.style.width = `${rect.width}px`;
+      this.highlightElement.style.height = `${rect.height}px`;
+      
+      // 更新尺寸指示器
+      if (this.sizeIndicator) {
+        this.sizeIndicator.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
+        this.sizeIndicator.style.opacity = '1';
+        
+        // 如果元素靠近顶部，将尺寸指示器显示在底部
+        if (rect.top < 40) {
+          this.sizeIndicator.style.top = 'auto';
+          this.sizeIndicator.style.bottom = '-25px';
+        } else {
+          this.sizeIndicator.style.top = '-25px';
+          this.sizeIndicator.style.bottom = 'auto';
+        }
+      }
+      
+      // 添加动画效果
+      this.highlightElement.style.transform = 'scale(1.02)';
+      setTimeout(() => {
+        this.highlightElement.style.transform = 'scale(1)';
+      }, 100);
+    }
+
+    // 处理检查模式下的滚动
+    handleInspectorScroll() {
+      if (this.isInspecting && this.currentElement) {
+        this.updateHighlight(this.currentElement);
+      }
+    }
+
+    // 处理检查模式下的点击
+    handleInspectorClick(e) {
+      if (!this.isInspecting) return;
+      
+      e.preventDefault();
+      e.stopPropagation();
+
+      // 确保有选中的元素
+      if (!this.currentElement) {
+        console.log("未找到要截图的元素");
+        return;
+      }
+
+      // 获取选中元素的位置和大小
+      const rect = this.currentElement.getBoundingClientRect();
+      const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+      const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+
+      // 关闭检查模式
+      this.disableInspection();
+
+      // 切换到截图模式，并设置选区
+      this.ratio = 'free'; // 使用自由比例
+      
+      // 设置标志以在连续截图时保持智能检查模式
+      this.isInspectMode = true;
+      
+      // 启动截图流程 - 保持在智能检查模式
+      this.isActive = true;
+
+      // 创建选择框
+      this.selection = document.createElement('div');
+      this.selection.id = 'ratio-screenshot-selection';
+      
+      // 设置选择框的位置和大小
+      const left = rect.left + scrollX;
+      const top = rect.top + scrollY;
+      const width = rect.width;
+      const height = rect.height;
+      
+      // 更新内部坐标记录
+      this.startX = left;
+      this.startY = top;
+      this.endX = left + width;
+      this.endY = top + height;
+      
+      // 创建信息面板
+      this.infoPanel = document.createElement('div');
+      this.infoPanel.id = 'ratio-screenshot-info';
+      this.selection.appendChild(this.infoPanel);
+      
+      document.body.appendChild(this.selection);
+      
+      // 更新选择框显示
+      this.updateSelectionSize();
+      
+      // 添加调整大小的手柄
+      this.addResizeHandles();
+      
+      // 创建工具栏
+      this.createToolbar();
+      
+      // 添加选择框移动功能
+      this.makeSelectionMovable();
+    }
+
+    // 禁用元素检查模式
+    disableInspection() {
+      this.isInspecting = false;
+      // 如果不立即要切换到截图模式，则完全退出
+      if (!this.selection) {
+        this.isActive = false;
+      }
+      
+      // 恢复鼠标样式
+      document.body.style.cursor = '';
+      
+      // 移除事件监听器
+      document.removeEventListener('mousemove', this.handleInspectorMouseMove.bind(this));
+      document.removeEventListener('click', this.handleInspectorClick.bind(this));
+      window.removeEventListener('scroll', this.handleInspectorScroll.bind(this));
+      
+      // 添加淡出动画
+      if (this.highlightElement) {
+        this.highlightElement.style.opacity = '0';
+        setTimeout(() => {
+          if (this.highlightElement) {
+            this.highlightElement.remove();
+            this.highlightElement = null;
+          }
+        }, 200);
+      }
+      
+      // 移除取消按钮
+      if (this.cancelButton) {
+        this.cancelButton.remove();
+        this.cancelButton = null;
+      }
+      
+      this.currentElement = null;
     }
   }
 

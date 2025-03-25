@@ -4,11 +4,29 @@ document.addEventListener('DOMContentLoaded', function() {
   const startScreenshotBtn = document.getElementById('start-screenshot');
   const ratioSelect = document.getElementById('ratio-select');
   const saveFormatSelect = document.getElementById('save-format');
-  const imageQualitySelect = document.getElementById('image-quality');
   const titleLink = document.getElementById('title-link');
+  const normalModeBtn = document.getElementById('normal-mode');
+  const inspectModeBtn = document.getElementById('inspect-mode');
   
-  // 默认比例
-  let selectedRatio = ratioSelect ? ratioSelect.value : '16:9';
+  // 获取截图参数
+  let selectedRatio = ratioSelect.value;
+  let isInspectMode = false;
+  
+  // 监听模式切换
+  normalModeBtn.addEventListener('click', function() {
+    isInspectMode = false;
+    normalModeBtn.classList.add('active');
+    inspectModeBtn.classList.remove('active');
+    ratioSelect.disabled = false;
+  });
+  
+  inspectModeBtn.addEventListener('click', function() {
+    isInspectMode = true;
+    inspectModeBtn.classList.add('active');
+    normalModeBtn.classList.remove('active');
+    ratioSelect.value = 'free';
+    ratioSelect.disabled = true;
+  });
   
   // 监听比例选择改变
   if (ratioSelect) {
@@ -34,21 +52,21 @@ document.addEventListener('DOMContentLoaded', function() {
     startScreenshotBtn.disabled = true;
     startScreenshotBtn.textContent = "截图中...";
     
-    // 获取图片质量
-    const imageQuality = parseFloat(imageQualitySelect.value) || 1.0;
-    
     // 准备截图选项
     const screenshotOptions = {
       ratio: selectedRatio,
-      saveFormat: saveFormatSelect ? saveFormatSelect.value : 'png',
-      imageQuality: imageQuality
+      saveFormat: saveFormatSelect.value,
+      imageQuality: 1.0,
+      isInspectMode: isInspectMode // 添加模式标志
     };
     
     // 保存当前设置
     saveSettings(screenshotOptions);
     
     // 同时也保存最近使用的比例
-    chrome.storage.sync.set({ lastUsedRatio: selectedRatio });
+    if (!isInspectMode) {
+      chrome.storage.sync.set({ lastUsedRatio: selectedRatio });
+    }
     
     // 发送消息到background启动截图流程
     chrome.runtime.sendMessage({
@@ -64,11 +82,15 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 加载设置
   function loadSettings() {
-    chrome.storage.sync.get(['ratio', 'saveFormat', 'imageQuality'], function(data) {
+    chrome.storage.sync.get(['ratio', 'saveFormat', 'imageQuality', 'isInspectMode'], function(data) {
+      // 设置模式
+      if (data.isInspectMode) {
+        inspectModeBtn.click();
+      }
+      
       // 设置比例
-      if (data.ratio && ratioSelect) {
+      if (data.ratio && ratioSelect && !data.isInspectMode) {
         ratioSelect.value = data.ratio;
-        selectedRatio = data.ratio;
       }
       
       // 设置保存格式
@@ -77,8 +99,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       // 设置图片质量
-      if (data.imageQuality && imageQualitySelect) {
-        imageQualitySelect.value = data.imageQuality.toString();
+      if (data.imageQuality) {
+        // 这里不需要设置 imageQuality，因为我们在截图选项中直接使用固定值
       }
     });
   }
@@ -88,7 +110,8 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.set({
       ratio: options.ratio,
       saveFormat: options.saveFormat,
-      imageQuality: options.imageQuality
+      imageQuality: options.imageQuality,
+      isInspectMode: options.isInspectMode
     });
   }
 }); 
