@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "精准截图",
-  "version": "1.0.0",
-  "description": "智能比例截图工具 - 自由/16:9等比例任选，拖拽调整+连续截取模式，高效采集网页内容",
+  "name": "精准截图 - 智能一键精准截图工具",
+  "version": "1.5.0",
+  "description": "智能识别网页内容，一键完成预设比例截图。支持自动对齐、连续截图模式，让截图更轻松高效。适用于设计师、运营、电商等场景",
   "permissions": [
     "activeTab",
     "downloads",

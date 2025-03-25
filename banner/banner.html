@@ -2,103 +2,241 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>比例截图 - Banner</title>
+    <title>精准截图 - Banner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #956bf7;
+            --primary-dark: #7a4fd0;
+            --dark: #232931;
+            --light: #f9f7f7;
+            --shadow-offset: 4px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         .banner-container {
             width: 1400px;
             height: 560px;
             background-color: #f4f0ff;
             position: relative;
             overflow: hidden;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        .grid-pattern {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(var(--primary-dark) 1px, transparent 1px),
+                            linear-gradient(90deg, var(--primary-dark) 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.1;
+            z-index: 1;
         }
 
         .geometric-shapes {
             position: absolute;
             width: 100%;
             height: 100%;
+            z-index: 2;
+            pointer-events: none;
         }
 
         .shape {
             position: absolute;
-            background-color: #7a3cdd;
-            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.9);
+            background-color: var(--primary);
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 rgba(0, 0, 0, 0.9);
             border: 3px solid #000;
+            transition: all 0.3s ease;
+            opacity: 0.8;
         }
 
         .shape-1 {
-            width: 200px;
-            height: 200px;
-            right: 100px;
-            top: 50px;
-            transform: rotate(15deg);
-        }
-
-        .shape-2 {
-            width: 150px;
-            height: 150px;
-            left: 80px;
-            bottom: 60px;
-            border-radius: 50%;
-        }
-
-        .content {
-            position: relative;
-            padding: 40px;  /* 减小内边距 */
-            z-index: 2;
-        }
-
-        .title {
-            font-size: 64px;  /* 调整标题大小 */
-            font-weight: 900;
-            color: #000;
-            margin-bottom: 16px;  /* 减小底部间距 */
-            text-shadow: 4px 4px 0 #7a3cdd;
-        }
-
-        .subtitle {
-            font-size: 28px;  /* 调整副标题大小 */
-            color: #000;
-            max-width: 500px;  /* 调整最大宽度 */
-            line-height: 1.3;
-            background-color: #fff;
-            padding: 12px;  /* 减小内边距 */
-            border: 3px solid #000;
-            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.9);
-        }
-
-        .screenshot-preview {
-            position: absolute;
-            right: 120px;  /* 调整右侧位置 */
-            top: 50%;
-            transform: translateY(-50%);
-            width: 360px;  /* 调整预览图大小 */
-            height: 270px;
-            background-color: #fff;
-            border: 3px solid #000;
-            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.9);
-            overflow: hidden;
-        }
-
-        .shape-1 {
-            width: 180px;  /* 调整装饰形状大小 */
+            width: 180px;
             height: 180px;
-            right: 80px;
+            right: 500px;
             top: 40px;
             transform: rotate(15deg);
+            animation: float1 6s ease-in-out infinite;
         }
 
         .shape-2 {
-            width: 130px;  /* 调整装饰形状大小 */
+            width: 130px;
             height: 130px;
             left: 60px;
             bottom: 40px;
             border-radius: 50%;
+            animation: float2 6s ease-in-out infinite 1s;
         }
+
+        .shape-3 {
+            width: 100px;
+            height: 100px;
+            left: 300px;
+            top: 80px;
+            transform: rotate(45deg);
+            animation: float3 6s ease-in-out infinite 2s;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translateY(0) rotate(15deg); }
+            50% { transform: translateY(-20px) rotate(20deg); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translateY(0) rotate(0); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translateY(0) rotate(45deg); }
+            50% { transform: translateY(-25px) rotate(50deg); }
+        }
+
+        .content {
+            position: relative;
+            padding: 60px;
+            z-index: 3;
+            animation: fadeIn 1s ease-out;
+            pointer-events: auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .title {
+            font-size: 72px;
+            font-weight: 900;
+            color: var(--dark);
+            margin-bottom: 24px;
+            text-shadow: 4px 4px 0 var(--primary);
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 28px;
+            color: var(--dark);
+            max-width: 600px;
+            line-height: 1.4;
+            background-color: #fff;
+            padding: 16px 24px;
+            border: 3px solid #000;
+            box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.9);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .subtitle:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.9);
+        }
+
+        .screenshot-preview {
+            position: absolute;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-5deg);
+            width: 400px;
+            height: 300px;
+            background-color: #fff;
+            border: 3px solid #000;
+            box-shadow: 12px 12px 0 rgba(0, 0, 0, 0.9);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            animation: slideIn 1s ease-out;
+            z-index: 4;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateX(50px) translateY(-50%) rotate(-5deg); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0) translateY(-50%) rotate(-5deg); 
+            }
+        }
+
+        .screenshot-preview:hover {
+            transform: translateY(-50%) translate(-4px, -4px) rotate(-5deg);
+            box-shadow: 16px 16px 0 rgba(0, 0, 0, 0.9);
+        }
+
         .screenshot-preview img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .screenshot-preview:hover img {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1440px) {
+            .banner-container {
+                width: 100%;
+                height: auto;
+                min-height: 560px;
+            }
+
+            .screenshot-preview {
+                width: 320px;
+                height: 240px;
+                right: 60px;
+            }
+
+            .content {
+                padding: 40px;
+            }
+
+            .title {
+                font-size: 60px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .screenshot-preview {
+                position: relative;
+                right: auto;
+                top: auto;
+                transform: none;
+                margin: 40px auto;
+                width: 80%;
+                height: 300px;
+            }
+
+            .content {
+                text-align: center;
+            }
+
+            .subtitle {
+                margin: 0 auto;
+            }
+
+            .shape-1, .shape-2, .shape-3 {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 48px;
+            }
+
+            .subtitle {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
@@ -108,13 +246,14 @@
         <div class="geometric-shapes">
             <div class="shape shape-1"></div>
             <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
         </div>
         <div class="content">
-            <h1 class="title">精确截图</h1>
-            <p class="subtitle">一键完成预设比例截图，提升工作效率的 Chrome 扩展</p>
+            <h1 class="title">智能一键<br>精准截图</h1>
+            <p class="subtitle">一键完成预设比例截图，智能识别内容，自动对齐，让截图更轻松高效</p>
         </div>
         <div class="screenshot-preview">
-            <img src="a.png" alt="插件截图预览">
+            <img src="a.png" alt="精准截图插件预览">
         </div>
     </div>
 </body>

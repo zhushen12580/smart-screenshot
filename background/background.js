@@ -198,85 +198,408 @@ function captureFullPage(message, tabId, sendResponse) {
     const targetArea = message.targetArea;
     console.log("目标区域:", targetArea);
     
-    // 1. 获取页面原始滚动位置（需要在最后恢复）
-    chrome.scripting.executeScript({
-      target: { tabId: tabId },
-      func: () => {
-        return {
-          scrollX: window.scrollX,
-          scrollY: window.scrollY
-        };
-      }
-    }).then(results => {
-      const originalScroll = results[0].result;
-      console.log("原始滚动位置:", originalScroll);
-      
-      // 2. 滚动到目标区域
-      chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        func: (targetArea) => {
-          // 滚动到目标区域的左上角（留些边距）
-          window.scrollTo({
-            left: Math.max(0, targetArea.left - 50),
-            top: Math.max(0, targetArea.top - 50),
-            behavior: 'auto' // 使用即时滚动，而不是平滑滚动
-          });
-          
-          // 返回当前视口信息，用于后续处理
-          return {
-            scrollX: window.scrollX,
-            scrollY: window.scrollY,
-            viewportWidth: window.innerWidth,
-            viewportHeight: window.innerHeight,
-            dpr: window.devicePixelRatio || 1
-          };
-        },
-        args: [targetArea]
-      }).then(results => {
-        const viewportInfo = results[0].result;
-        console.log("已滚动到目标区域，当前视口信息:", viewportInfo);
-        
-        // 3. 给页面一些时间加载可能的懒加载内容
-        setTimeout(() => {
-          // 4. 截取当前可见区域
-          chrome.tabs.captureVisibleTab(null, { format: 'png', quality: 100 }, (dataUrl) => {
-            if (chrome.runtime.lastError) {
-              console.error("截取可见区域失败:", chrome.runtime.lastError);
-              // 恢复原始滚动位置
-              restoreScrollPosition(tabId, originalScroll);
-              sendResponse({ success: false, error: chrome.runtime.lastError.message });
-              return;
-            }
-            
-            console.log("成功获取区域截图");
-            
-            // 5. 恢复原始滚动位置
-            restoreScrollPosition(tabId, originalScroll);
-            
-            // 6. 返回截图结果和视口信息
-            sendResponse({
-              success: true,
-              dataUrl: dataUrl,
-              viewportInfo: viewportInfo
-            });
-          });
-        }, 200); // 等待200ms，让页面内容完全加载
-      }).catch(error => {
-        console.error("滚动到目标区域失败:", error);
-        // 恢复原始滚动位置
-        restoreScrollPosition(tabId, originalScroll);
-        sendResponse({ success: false, error: error.message });
-      });
-    }).catch(error => {
-      console.error("获取原始滚动位置失败:", error);
-      sendResponse({ success: false, error: error.message });
-    });
+    // 使用分块截图方法
+    captureFullPageByTiles(tabId, targetArea, sendResponse);
   } catch (error) {
     console.error("全页面截图过程出错:", error);
     sendResponse({ success: false, error: error.message });
   }
   
   return true;
+}
+
+// 使用分块截图方法实现全页面截图
+function captureFullPageByTiles(tabId, targetArea, sendResponse) {
+  // 步骤1: 获取页面原始滚动位置和视口信息
+  chrome.scripting.executeScript({
+    target: { tabId: tabId },
+    func: () => {
+      return {
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+        viewportWidth: window.innerWidth,
+        viewportHeight: window.innerHeight,
+        dpr: window.devicePixelRatio || 1
+      };
+    }
+  }).then(results => {
+    const originalInfo = results[0].result;
+    console.log("原始视口信息:", originalInfo);
+    
+    // 步骤2: 计算需要捕获的块数
+    const tilesInfo = calculateTiles(targetArea, originalInfo);
+    console.log("分块信息:", tilesInfo);
+    
+    // 用于存储所有分块的图像数据
+    const tiles = [];
+    
+    // 步骤3: 开始分块捕获过程
+    captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, 0)
+      .then(() => {
+        console.log(`全部 ${tiles.length} 个分块捕获完成`);
+        
+        // 步骤4: 合并所有分块
+        mergeAndProcessTiles(targetArea, originalInfo, tiles, sendResponse, tabId);
+      })
+      .catch(error => {
+        console.error("分块捕获过程失败:", error);
+        restoreScrollPosition(tabId, originalInfo);
+        sendResponse({ success: false, error: error.message });
+      });
+  }).catch(error => {
+    console.error("获取原始滚动位置失败:", error);
+    sendResponse({ success: false, error: error.message });
+  });
+}
+
+// 计算需要的分块
+function calculateTiles(targetArea, viewportInfo) {
+  // 使用更大的分块大小以减少总分块数量
+  // 使用视口尺寸的75%作为分块大小，确保不会生成太多分块
+  const effectiveWidth = Math.max(Math.floor(viewportInfo.viewportWidth * 0.75), 600);
+  const effectiveHeight = Math.max(Math.floor(viewportInfo.viewportHeight * 0.75), 500);
+  
+  console.log(`分块大小: ${effectiveWidth}x${effectiveHeight}, 视口大小: ${viewportInfo.viewportWidth}x${viewportInfo.viewportHeight}`);
+  
+  // 计算总共需要的行数和列数
+  const startCol = Math.floor(targetArea.left / effectiveWidth);
+  const startRow = Math.floor(targetArea.top / effectiveHeight);
+  const endCol = Math.ceil((targetArea.left + targetArea.width) / effectiveWidth);
+  const endRow = Math.ceil((targetArea.top + targetArea.height) / effectiveHeight);
+  
+  // 当区域特别大时，限制最大分块数，防止过多API调用
+  const maxTiles = 9; // 最多3x3的网格
+  const totalTiles = (endRow - startRow) * (endCol - startCol);
+  
+  // 如果分块太多，增大分块尺寸
+  let adjustedEffectiveWidth = effectiveWidth;
+  let adjustedEffectiveHeight = effectiveHeight;
+  
+  if (totalTiles > maxTiles) {
+    console.log(`分块数量过多(${totalTiles})，调整分块大小`);
+    const scale = Math.sqrt(totalTiles / maxTiles);
+    adjustedEffectiveWidth = Math.ceil(effectiveWidth * scale);
+    adjustedEffectiveHeight = Math.ceil(effectiveHeight * scale);
+    
+    console.log(`调整后分块大小: ${adjustedEffectiveWidth}x${adjustedEffectiveHeight}`);
+  }
+  
+  // 构建分块信息
+  const tiles = [];
+  for (let row = startRow; row < endRow; row++) {
+    for (let col = startCol; col < endCol; col++) {
+      tiles.push({
+        row,
+        col,
+        scrollX: col * adjustedEffectiveWidth,
+        scrollY: row * adjustedEffectiveHeight
+      });
+    }
+  }
+  
+  console.log(`生成了 ${tiles.length} 个分块`);
+  
+  return {
+    startCol,
+    startRow,
+    endCol,
+    endRow,
+    rows: endRow - startRow,
+    cols: endCol - startCol,
+    effectiveWidth: adjustedEffectiveWidth,
+    effectiveHeight: adjustedEffectiveHeight,
+    tiles
+  };
+}
+
+// 递归捕获每个分块
+function captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex) {
+  return new Promise((resolve, reject) => {
+    // 所有分块都已处理完成
+    if (currentIndex >= tilesInfo.tiles.length) {
+      resolve();
+      return;
+    }
+    
+    const tile = tilesInfo.tiles[currentIndex];
+    console.log(`准备捕获分块 ${currentIndex + 1}/${tilesInfo.tiles.length}: 行=${tile.row}, 列=${tile.col}`);
+    
+    // 滚动到分块位置
+    chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      func: (scrollX, scrollY) => {
+        try {
+          window.scrollTo({
+            left: scrollX,
+            top: scrollY,
+            behavior: 'auto'
+          });
+          
+          // 返回实际滚动位置 (可能与请求的位置不同)
+          return {
+            actualScrollX: window.scrollX,
+            actualScrollY: window.scrollY,
+            success: true
+          };
+        } catch (error) {
+          return {
+            success: false,
+            error: error.toString()
+          };
+        }
+      },
+      args: [tile.scrollX, tile.scrollY]
+    }).then(scrollResults => {
+      if (!scrollResults || !scrollResults[0] || !scrollResults[0].result) {
+        reject(new Error("滚动操作没有返回结果"));
+        return;
+      }
+      
+      const scrollResult = scrollResults[0].result;
+      
+      if (!scrollResult.success) {
+        reject(new Error(`滚动操作失败: ${scrollResult.error}`));
+        return;
+      }
+      
+      const actualScroll = {
+        actualScrollX: scrollResult.actualScrollX,
+        actualScrollY: scrollResult.actualScrollY
+      };
+      
+      console.log(`已滚动到位置: (${actualScroll.actualScrollX}, ${actualScroll.actualScrollY})`);
+      
+      // 给页面充分的时间来适应滚动和加载内容
+      // 增加延迟以避免超出配额限制
+      const captureDelay = 500 + (currentIndex * 100); // 随着分块数增加延迟
+      
+      console.log(`等待 ${captureDelay}ms 后捕获...`);
+      setTimeout(() => {
+        try {
+          // 捕获当前视口
+          chrome.tabs.captureVisibleTab(null, { format: 'png', quality: 100 }, dataUrl => {
+            if (chrome.runtime.lastError) {
+              const errorMsg = chrome.runtime.lastError.message || "未知错误";
+              console.error(`捕获视口失败: ${errorMsg}`);
+              
+              // 检查是否是配额错误
+              if (errorMsg.includes("MAX_CAPTURE_VISIBLE_TAB_CALLS_PER_SECOND")) {
+                console.log("检测到配额限制，增加更长的延迟后重试...");
+                // 遇到配额限制，增加延迟后重试同一分块
+                setTimeout(() => {
+                  captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex)
+                    .then(resolve)
+                    .catch(reject);
+                }, 2000);  // 增加2秒长延迟后重试
+                return;
+              }
+              
+              reject(new Error(`捕获视口失败: ${errorMsg}`));
+              return;
+            }
+            
+            if (!dataUrl || !dataUrl.startsWith('data:image/')) {
+              reject(new Error("捕获的数据无效"));
+              return;
+            }
+            
+            console.log(`成功捕获分块 ${currentIndex + 1}`);
+            
+            // 记录这个分块的信息
+            tiles.push({
+              dataUrl,
+              position: {
+                scrollX: actualScroll.actualScrollX,
+                scrollY: actualScroll.actualScrollY
+              }
+            });
+            
+            // 为下一个分块添加间隔，避免触发配额限制
+            setTimeout(() => {
+              // 继续下一个分块
+              captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex + 1)
+                .then(resolve)
+                .catch(reject);
+            }, 500);
+          });
+        } catch (error) {
+          console.error("捕获过程中发生异常:", error);
+          reject(error);
+        }
+      }, captureDelay);
+    }).catch(error => {
+      console.error("滚动执行脚本失败:", error);
+      reject(error);
+    });
+  });
+}
+
+// 合并分块并处理最终图像
+function mergeAndProcessTiles(targetArea, originalInfo, tiles, sendResponse, tabId) {
+  try {
+    // 恢复原始滚动位置
+    restoreScrollPosition(tabId, originalInfo);
+    
+    console.log(`准备合并 ${tiles.length} 个分块...`);
+    
+    // 在内容脚本中处理图像合并
+    chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      func: (params) => {
+        try {
+          const { tiles, targetArea, originalInfo } = params;
+          
+          console.log(`内容脚本: 开始合并 ${tiles.length} 个分块, 目标区域: ${targetArea.width}x${targetArea.height}`);
+          
+          // 创建合并用的画布
+          const mergeCanvas = document.createElement('canvas');
+          mergeCanvas.width = targetArea.width * originalInfo.dpr;
+          mergeCanvas.height = targetArea.height * originalInfo.dpr;
+          const ctx = mergeCanvas.getContext('2d');
+          
+          // 用于跟踪加载进度的计数器
+          let loadedCount = 0;
+          const totalTiles = tiles.length;
+          
+          return new Promise((resolve) => {
+            if (totalTiles === 0) {
+              console.warn("没有分块数据，返回空白图像");
+              try {
+                const emptyDataUrl = mergeCanvas.toDataURL('image/png');
+                resolve({ success: true, dataUrl: emptyDataUrl });
+              } catch (error) {
+                console.error("创建空白图像失败:", error);
+                resolve({ success: false, error: `创建空白图像失败: ${error.message || error}` });
+              }
+              return;
+            }
+            
+            // 处理所有图像分块
+            tiles.forEach((tile, index) => {
+              const img = new Image();
+              
+              img.onload = () => {
+                try {
+                  // 计算这个分块的位置
+                  const tilePosition = tile.position;
+                  
+                  // 计算源区域 - 该分块中要提取的区域
+                  const srcX = Math.max(0, targetArea.left - tilePosition.scrollX);
+                  const srcY = Math.max(0, targetArea.top - tilePosition.scrollY);
+                  const srcWidth = Math.min(
+                    originalInfo.viewportWidth, 
+                    targetArea.width, 
+                    originalInfo.viewportWidth - srcX
+                  );
+                  const srcHeight = Math.min(
+                    originalInfo.viewportHeight, 
+                    targetArea.height, 
+                    originalInfo.viewportHeight - srcY
+                  );
+                  
+                  // 计算目标区域 - 这个分块应绘制到画布上的位置
+                  const dstX = Math.max(0, tilePosition.scrollX - targetArea.left) * originalInfo.dpr;
+                  const dstY = Math.max(0, tilePosition.scrollY - targetArea.top) * originalInfo.dpr;
+                  
+                  // 应用设备像素比
+                  const scaledSrcX = srcX * originalInfo.dpr;
+                  const scaledSrcY = srcY * originalInfo.dpr;
+                  const scaledSrcWidth = srcWidth * originalInfo.dpr;
+                  const scaledSrcHeight = srcHeight * originalInfo.dpr;
+                  
+                  console.log(`内容脚本: 处理分块 ${index + 1}/${totalTiles}, 源区域: (${srcX},${srcY},${srcWidth},${srcHeight}), 目标位置: (${dstX},${dstY})`);
+                  
+                  // 绘制到合并画布
+                  ctx.drawImage(
+                    img, 
+                    scaledSrcX, scaledSrcY, scaledSrcWidth, scaledSrcHeight,
+                    dstX, dstY, scaledSrcWidth, scaledSrcHeight
+                  );
+                  
+                  console.log(`内容脚本: 分块 ${index + 1} 已绘制`);
+                } catch (error) {
+                  console.error(`内容脚本: 处理分块 ${index + 1} 时出错:`, error);
+                }
+                
+                // 增加计数器
+                loadedCount++;
+                console.log(`内容脚本: 已处理 ${loadedCount}/${totalTiles} 个分块`);
+                
+                // 检查是否所有分块都已处理
+                checkAllProcessed();
+              };
+              
+              img.onerror = (event) => {
+                console.error(`内容脚本: 分块 ${index + 1} 图像加载失败`, event);
+                loadedCount++;
+                checkAllProcessed();
+              };
+              
+              // 设置图像源
+              img.src = tile.dataUrl;
+            });
+            
+            // 检查所有分块是否都已处理完成
+            function checkAllProcessed() {
+              if (loadedCount === totalTiles) {
+                console.log("内容脚本: 所有分块处理完成，导出最终图像");
+                try {
+                  // 导出最终图像
+                  const finalDataUrl = mergeCanvas.toDataURL('image/png');
+                  console.log(`内容脚本: 成功导出图像，数据大小约 ${Math.round(finalDataUrl.length / 1024)} KB`);
+                  resolve({ success: true, dataUrl: finalDataUrl });
+                } catch (error) {
+                  console.error("内容脚本: 导出最终图像失败:", error);
+                  resolve({ success: false, error: `导出最终图像失败: ${error.message || error}` });
+                }
+              }
+            }
+          });
+        } catch (error) {
+          console.error("内容脚本: 图像合并过程中发生异常:", error);
+          return { success: false, error: `内容脚本合并图像失败: ${error.message || error}` };
+        }
+      },
+      args: [{
+        tiles: tiles,
+        targetArea: targetArea,
+        originalInfo: originalInfo
+      }]
+    }).then(results => {
+      if (results && results[0] && results[0].result) {
+        const result = results[0].result;
+        if (result.success) {
+          console.log("成功合并所有分块");
+          sendResponse({
+            success: true,
+            dataUrl: result.dataUrl,
+            viewportInfo: {
+              scrollX: targetArea.left,
+              scrollY: targetArea.top,
+              viewportWidth: targetArea.width,
+              viewportHeight: targetArea.height,
+              dpr: originalInfo.dpr
+            }
+          });
+        } else {
+          const errorMsg = result.error || "未知错误";
+          console.error("合并分块失败:", errorMsg);
+          sendResponse({ success: false, error: errorMsg });
+        }
+      } else {
+        console.error("合并分块失败: 未获取到结果", results);
+        sendResponse({ success: false, error: "合并分块失败: 未获取到有效结果" });
+      }
+    }).catch(error => {
+      const errorMsg = error.message || error.toString() || "未知错误";
+      console.error("分块合并过程出错:", errorMsg);
+      sendResponse({ success: false, error: errorMsg });
+    });
+  } catch (error) {
+    const errorMsg = error.message || error.toString() || "未知错误";
+    console.error("执行合并操作时出错:", errorMsg);
+    sendResponse({ success: false, error: errorMsg });
+  }
 }
 
 // 恢复滚动位置的辅助函数
