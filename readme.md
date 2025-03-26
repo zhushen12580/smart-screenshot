@@ -1,6 +1,6 @@
-![image](https://github.com/user-attachments/assets/089decc8-6402-4a2d-9dcc-53c454cb6436)
+![1742889920456](https://github.com/user-attachments/assets/227fb804-1b1a-4e89-8127-914efeb1be18)
 
-# 精准截图 - 智能比例截图工具
+# 精准截图 - 一款更懂内容创作者的一键智能精准截图工具
 
 ## 项目概述
 "精准截图"是一款Chrome浏览器插件，旨在解决用户在网页截图时需要频繁调整截图区域比例的问题。该插件允许用户预先设定截图比例，然后进行连续截图操作，每次截图都会自动保持所选比例，大大提高截图效率。
@@ -51,12 +51,10 @@
 
 ### 2. 磁性吸附功能
 - ✅ 自动吸附到页面元素边缘
-- ✅ 辅助对齐指导线
 - ✅ 可调整吸附强度
 
 ### 3. 可视化增强
 - ✅ 尺寸实时显示
-- ✅ 操作指导提示
 - ✅ 截图预览缩略图
 
 ## 技术实现
@@ -75,13 +73,6 @@
 ├── popup/              # 弹出窗口界面
 └── utils/              # 工具函数
 ```
-
-## 项目状态
-✅ 已完成核心功能开发（v1.0.0）  
-✅ 完成智能元素检测功能开发  
-✅ 完成磁性吸附功能实现  
-✅ 通过基础功能测试和兼容性测试  
-🔄 正在准备Chrome应用商店发布材料
 
 ## 技术架构
 ```mermaid
@@ -105,7 +96,7 @@ graph TD
 | 打开插件 | 点击工具栏图标 |
 
 ## 开源协议
-本项目采用 [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/) 开源协议。
+本项目采用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) 开源协议。
 
 ### 协议要点
 - ✅ 必须保留原作者署名
@@ -115,3 +106,5 @@ graph TD
 
 ### 使用授权
 如需商业使用本项目，请联系作者获取授权。未经授权的任何商业使用行为都将被视为侵权。
+
+如果你喜欢我的内容，并且想要给予一些鼓励和支持，欢迎点击 [Buy Me a Coffee](https://buymeacoffee.com/zhushen) 请我喝一杯咖啡！🎉☕
