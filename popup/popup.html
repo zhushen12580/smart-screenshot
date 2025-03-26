@@ -237,6 +237,14 @@
     .mode-switch button:active:not(.active) {
       box-shadow: 2px 2px 0 var(--black);
     }
+    
+    .shortcut-note {
+      font-size: 12px;
+      margin-top: 5px;
+      color: var(--primary-dark);
+      font-style: italic;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -295,7 +303,7 @@
   <button id="start-screenshot">开始截图</button>
   
   <div class="app-footer">
-    精准截图 v1.0 - 高效截取特定比例的内容
+    精准截图 v1.5 - 一键智能精准截图
   </div>
   
   <div class="shortcut-info">
@@ -314,6 +322,10 @@
       <div class="shortcut-item">
         <span class="shortcut-name">取消截图:</span>
         <span class="shortcut-key">Esc</span>
+      </div>
+      <div class="shortcut-item">
+        <span class="shortcut-name">复制到剪贴板:</span>
+        <span class="shortcut-key">Ctrl+C</span>
       </div>
     </div>
   </div>

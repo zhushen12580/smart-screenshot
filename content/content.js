@@ -617,6 +617,13 @@ if (window._ratioScreenshotLoaded) {
       saveButton.textContent = '保存此区域';
       saveButton.addEventListener('click', () => this.captureAndSave());
       
+      // 添加复制按钮
+      const copyButton = document.createElement('button');
+      copyButton.className = 'ratio-screenshot-button';
+      copyButton.textContent = '复制到剪贴板 (Ctrl+C)';
+      copyButton.title = '将截图复制到剪贴板 (快捷键: Ctrl+C)';
+      copyButton.addEventListener('click', () => this.copyToClipboard());
+      
       // 添加快捷键提示
       const shortcutInfo = document.createElement('div');
       // shortcutInfo.className = 'ratio-screenshot-shortcut-info';
@@ -670,6 +677,7 @@ if (window._ratioScreenshotLoaded) {
         primaryRow.appendChild(saveAllButton);
       }
       primaryRow.appendChild(saveButton);
+      primaryRow.appendChild(copyButton); // 添加复制按钮
       primaryRow.appendChild(keepButton);
       primaryRow.appendChild(cancelButton);
       primaryRow.appendChild(shortcutInfo);
@@ -863,7 +871,9 @@ if (window._ratioScreenshotLoaded) {
     // 添加事件监听
     addEventListeners() {
       this.overlay.addEventListener('mousedown', this.handleMouseDown);
-      document.addEventListener('keydown', this.handleKeyDown);
+      // 使用保存的绑定函数实例，以便能正确地移除
+      this.boundHandleKeyDown = this.boundHandleKeyDown || this.handleKeyDown.bind(this);
+      document.addEventListener('keydown', this.boundHandleKeyDown);
     }
     
     // 移除事件监听
@@ -873,7 +883,11 @@ if (window._ratioScreenshotLoaded) {
       }
       document.removeEventListener('mousemove', this.handleMouseMove);
       document.removeEventListener('mouseup', this.handleMouseUp);
-      document.removeEventListener('keydown', this.handleKeyDown);
+      
+      // 移除键盘事件监听器 - 使用保存的绑定函数
+      if (this.boundHandleKeyDown) {
+        document.removeEventListener('keydown', this.boundHandleKeyDown);
+      }
     }
     
     // 处理鼠标按下
@@ -1449,6 +1463,31 @@ if (window._ratioScreenshotLoaded) {
     
     // 处理键盘事件
     handleKeyDown(e) {
+      // 如果在智能检查模式下
+      if (this.isInspecting) {
+        // ESC键取消智能检查
+        if (e.key === 'Escape') {
+          console.log("通过Esc键取消智能检查");
+          this.disableInspection();
+          this.end();
+          return;
+        }
+        
+        // Enter键确认当前选中的元素
+        if (e.key === 'Enter' && this.currentElement) {
+          console.log("通过Enter键确认智能检查元素");
+          // 触发捕获并保存当前元素
+          this.handleInspectorClick({ 
+            target: this.currentElement, 
+            preventDefault: () => {}, 
+            stopPropagation: () => {} 
+          });
+          return;
+        }
+        
+        return; // 智能检查模式下，其他键不处理
+      }
+      
       // 如果没有选择框，不处理键盘事件
       if (!this.selection) return;
       
@@ -1461,6 +1500,14 @@ if (window._ratioScreenshotLoaded) {
       // Enter键确认
       if (e.key === 'Enter') {
         this.captureAndSave();
+        return;
+      }
+      
+      // Ctrl+C 复制到剪贴板
+      if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
+        console.log("通过Ctrl+C快捷键复制到剪贴板");
+        e.preventDefault(); // 阻止默认的复制行为
+        this.copyToClipboard();
         return;
       }
       
@@ -2540,8 +2587,26 @@ if (window._ratioScreenshotLoaded) {
       
       // 隐藏所有相关UI元素
       if (this.overlay) this.overlay.style.visibility = 'hidden';
-      if (this.selection) this.selection.style.visibility = 'hidden';
+      if (this.selection) {
+        // 保存选择框的原始边框样式
+        this.originalSelectionBorder = this.selection.style.border;
+        this.originalSelectionOutline = this.selection.style.outline;
+        // 临时移除选择框的边框和轮廓
+        this.selection.style.border = 'none';
+        this.selection.style.outline = 'none';
+      }
       if (this.toolbar) this.toolbar.style.visibility = 'hidden';
+      
+      // 隐藏所有调整手柄
+      const resizeHandles = document.querySelectorAll('.ratio-screenshot-resize-handle');
+      this.hiddenResizeHandles = [];
+      resizeHandles.forEach(handle => {
+        this.hiddenResizeHandles.push({
+          element: handle,
+          originalVisibility: handle.style.visibility
+        });
+        handle.style.visibility = 'hidden';
+      });
       
       // 隐藏所有通知消息
       const notifications = document.querySelectorAll('.ratio-screenshot-notification');
@@ -2572,12 +2637,31 @@ if (window._ratioScreenshotLoaded) {
         this.overlay.style.visibility = this.originalOverlayVisibility;
       }
       
-      if (this.selection && this.originalSelectionVisibility !== null) {
-        this.selection.style.visibility = this.originalSelectionVisibility;
+      if (this.selection) {
+        if (this.originalSelectionVisibility !== null) {
+          this.selection.style.visibility = this.originalSelectionVisibility;
+        }
+        // 恢复选择框的边框和轮廓
+        if (this.originalSelectionBorder !== undefined) {
+          this.selection.style.border = this.originalSelectionBorder;
+        }
+        if (this.originalSelectionOutline !== undefined) {
+          this.selection.style.outline = this.originalSelectionOutline;
+        }
       }
       
       if (this.toolbar && this.originalToolbarVisibility !== null) {
         this.toolbar.style.visibility = this.originalToolbarVisibility;
+      }
+      
+      // 恢复调整手柄的可见性
+      if (this.hiddenResizeHandles && this.hiddenResizeHandles.length > 0) {
+        this.hiddenResizeHandles.forEach(item => {
+          if (item.element) {
+            item.element.style.visibility = item.originalVisibility;
+          }
+        });
+        this.hiddenResizeHandles = [];
       }
       
       // 恢复通知消息的可见性
@@ -2715,8 +2799,13 @@ if (window._ratioScreenshotLoaded) {
       document.addEventListener('click', this.handleInspectorClick.bind(this));
       window.addEventListener('scroll', this.handleInspectorScroll.bind(this));
       
+      // 添加键盘事件监听器 - 使用bind确保this指向正确
+      // 确保同一个函数实例被用于添加和移除事件监听器
+      this.boundHandleKeyDown = this.handleKeyDown.bind(this);
+      document.addEventListener('keydown', this.boundHandleKeyDown);
+      
       // 显示提示
-      this.showNotification('已启用智能截图模式，点击选择要截图的元素', 2000);
+      this.showNotification('已启用智能截图模式，点击选择要截图的元素 (Enter确认, Esc取消)', 2000);
     }
 
     // 处理检查模式下的鼠标移动
@@ -2845,6 +2934,10 @@ if (window._ratioScreenshotLoaded) {
       
       // 添加选择框移动功能
       this.makeSelectionMovable();
+      
+      // 重新添加键盘事件监听器，确保快捷键正常工作
+      this.boundHandleKeyDown = this.boundHandleKeyDown || this.handleKeyDown.bind(this);
+      document.addEventListener('keydown', this.boundHandleKeyDown);
     }
 
     // 禁用元素检查模式
@@ -2858,10 +2951,16 @@ if (window._ratioScreenshotLoaded) {
       // 恢复鼠标样式
       document.body.style.cursor = '';
       
-      // 移除事件监听器
+      // 移除事件监听器 - 使用匿名函数会导致无法正确移除事件
+      // 因此我们必须使用绑定的实例方法
       document.removeEventListener('mousemove', this.handleInspectorMouseMove.bind(this));
       document.removeEventListener('click', this.handleInspectorClick.bind(this));
       window.removeEventListener('scroll', this.handleInspectorScroll.bind(this));
+      
+      // 移除键盘事件监听器 - 使用保存的绑定函数
+      if (this.boundHandleKeyDown) {
+        document.removeEventListener('keydown', this.boundHandleKeyDown);
+      }
       
       // 添加淡出动画
       if (this.highlightElement) {
@@ -2881,6 +2980,257 @@ if (window._ratioScreenshotLoaded) {
       }
       
       this.currentElement = null;
+    }
+
+    // 将选定区域的截图复制到剪贴板
+    copyToClipboard() {
+      if (!this.selection) {
+        console.error("未找到选择框，无法复制");
+        return;
+      }
+      
+      console.log("开始复制当前选择区域到剪贴板");
+      
+      // 显示处理中提示
+      const copyMsg = this.showNotification("正在处理复制...");
+      
+      // 使用我们跟踪的绝对坐标进行截图
+      const captureRect = {
+        left: Math.min(this.startX, this.endX),
+        top: Math.min(this.startY, this.endY),
+        width: Math.abs(this.endX - this.startX),
+        height: Math.abs(this.endY - this.startY)
+      };
+      
+      console.log("复制区域坐标(绝对):", captureRect);
+      
+      // 获取当前的滚动位置和视口尺寸
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // 检查选择区域是否在视口范围内
+      const isRectVisible = (
+        captureRect.left >= scrollX && 
+        captureRect.top >= scrollY && 
+        captureRect.left + captureRect.width <= scrollX + viewportWidth &&
+        captureRect.top + captureRect.height <= scrollY + viewportHeight
+      );
+      
+      // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
+      this.hideUIElementsForCapture();
+      
+      // 根据区域是否在当前视口内，选择不同的截图方法
+      if (isRectVisible) {
+        console.log("选择区域在当前视口内，使用标准截图方法");
+        
+        // 区域在视口内，使用常规方法截图
+        chrome.runtime.sendMessage({ 
+          action: 'captureScreen'
+        }, response => {
+          // 恢复UI元素
+          this.restoreUIElementsAfterCapture();
+          
+          if (response && response.success) {
+            // 处理截图数据
+            const image = new Image();
+            image.onload = () => {
+              // 将绝对坐标转换为图像相对坐标 (为了应对设备像素比)
+              const devicePixelRatio = window.devicePixelRatio || 1;
+              const imageRect = {
+                left: Math.round((captureRect.left - scrollX) * devicePixelRatio),
+                top: Math.round((captureRect.top - scrollY) * devicePixelRatio),
+                width: Math.round(captureRect.width * devicePixelRatio),
+                height: Math.round(captureRect.height * devicePixelRatio)
+              };
+              
+              // 剪切并转换为blob
+              this.processImageForClipboard(image, imageRect, copyMsg);
+            };
+            
+            image.onerror = () => {
+              console.error("图像加载失败");
+              copyMsg.textContent = "复制失败: 图像加载失败";
+              setTimeout(() => copyMsg.remove(), 2000);
+            };
+            
+            // 加载图像
+            image.src = response.dataUrl;
+          } else {
+            console.error("截图失败:", response?.error || "未知错误");
+            copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
+            setTimeout(() => copyMsg.remove(), 2000);
+          }
+        });
+      } else {
+        console.log("选择区域不完全在当前视口内，使用滚动截图方法");
+        
+        // 区域不完全在视口内，通知后台脚本使用分块截图
+        chrome.runtime.sendMessage({
+          action: 'captureFullPage',
+          targetArea: captureRect
+        }, response => {
+          // 恢复UI元素
+          this.restoreUIElementsAfterCapture();
+          
+          if (response && response.success) {
+            // 处理截图数据
+            const image = new Image();
+            image.onload = () => {
+              this.processImageForClipboard(image, {
+                left: 0,
+                top: 0,
+                width: image.width,
+                height: image.height
+              }, copyMsg);
+            };
+            
+            image.onerror = () => {
+              console.error("图像加载失败");
+              copyMsg.textContent = "复制失败: 图像加载失败";
+              setTimeout(() => copyMsg.remove(), 2000);
+            };
+            
+            // 加载图像
+            image.src = response.dataUrl;
+          } else {
+            console.error("全页面截图失败:", response?.error || "未知错误");
+            copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
+            setTimeout(() => copyMsg.remove(), 2000);
+          }
+        });
+      }
+    }
+    
+    // 处理图像并复制到剪贴板
+    processImageForClipboard(image, rect, notification) {
+      try {
+        // 创建Canvas并裁剪图像
+        const canvas = document.createElement('canvas');
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+          console.error("无法获取Canvas上下文");
+          notification.textContent = "复制失败: 无法获取Canvas上下文";
+          setTimeout(() => notification.remove(), 2000);
+          return;
+        }
+        
+        // 确保裁剪区域在图像范围内
+        if (rect.left >= 0 && rect.top >= 0 && 
+            rect.left + rect.width <= image.width && 
+            rect.top + rect.height <= image.height) {
+            
+          // 绘制裁剪区域
+          ctx.drawImage(
+            image,
+            rect.left, rect.top, rect.width, rect.height,
+            0, 0, rect.width, rect.height
+          );
+          
+          // 转换Canvas为Blob并复制到剪贴板
+          canvas.toBlob(blob => {
+            if (blob) {
+              try {
+                // 创建ClipboardItem并复制到剪贴板
+                const clipboardItem = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([clipboardItem])
+                  .then(() => {
+                    console.log("成功复制到剪贴板");
+                    notification.textContent = "已复制到剪贴板";
+                    setTimeout(() => notification.remove(), 2000);
+                  })
+                  .catch(err => {
+                    console.error("复制到剪贴板失败:", err);
+                    notification.textContent = `复制失败: ${err.message || "剪贴板访问被拒绝"}`;
+                    setTimeout(() => notification.remove(), 2000);
+                  });
+              } catch (error) {
+                console.error("创建ClipboardItem失败:", error);
+                notification.textContent = `复制失败: ${error.message || "不支持剪贴板API"}`;
+                setTimeout(() => notification.remove(), 2000);
+                
+                // 尝试使用旧版方法
+                this.copyImageFallback(canvas, notification);
+              }
+            } else {
+              console.error("无法创建Blob");
+              notification.textContent = "复制失败: 无法创建图像数据";
+              setTimeout(() => notification.remove(), 2000);
+            }
+          }, 'image/png');
+        } else {
+          console.warn("裁剪区域超出可见范围");
+          notification.textContent = "复制失败: 选择区域超出可见范围";
+          setTimeout(() => notification.remove(), 2000);
+        }
+      } catch (error) {
+        console.error("处理图像时出错:", error);
+        notification.textContent = `复制失败: ${error.message || "处理图像出错"}`;
+        setTimeout(() => notification.remove(), 2000);
+      }
+    }
+    
+    // 尝试使用替代方法复制图像（兼容性更好但功能有限）
+    copyImageFallback(canvas, notification) {
+      try {
+        // 尝试创建临时链接并模拟点击下载
+        const dataUrl = canvas.toDataURL('image/png');
+        
+        // 提示用户使用右键复制
+        const imagePreview = document.createElement('div');
+        imagePreview.style.cssText = `
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background: #fff;
+          padding: 20px;
+          border: 2px solid #333;
+          box-shadow: 0 0 20px rgba(0,0,0,0.5);
+          z-index: 99999;
+          text-align: center;
+          max-width: 80vw;
+          max-height: 80vh;
+          overflow: auto;
+        `;
+        
+        const closeButton = document.createElement('button');
+        closeButton.textContent = '关闭';
+        closeButton.style.cssText = `
+          padding: 5px 10px;
+          margin-top: 10px;
+          cursor: pointer;
+        `;
+        closeButton.onclick = () => imagePreview.remove();
+        
+        const helpText = document.createElement('p');
+        helpText.textContent = '现代浏览器中可直接右键点击图像并选择"复制图像"';
+        helpText.style.marginBottom = '10px';
+        
+        const img = document.createElement('img');
+        img.src = dataUrl;
+        img.style.maxWidth = '100%';
+        img.style.maxHeight = '60vh';
+        img.style.border = '1px solid #ccc';
+        
+        imagePreview.appendChild(helpText);
+        imagePreview.appendChild(img);
+        imagePreview.appendChild(document.createElement('br'));
+        imagePreview.appendChild(closeButton);
+        
+        document.body.appendChild(imagePreview);
+        
+        notification.textContent = "已显示图像预览，请右键复制";
+        setTimeout(() => notification.remove(), 2000);
+      } catch (error) {
+        console.error("替代复制方法失败:", error);
+        notification.textContent = `复制失败: ${error.message}`;
+        setTimeout(() => notification.remove(), 2000);
+      }
     }
   }
 

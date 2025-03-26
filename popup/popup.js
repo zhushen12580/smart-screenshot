@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const titleLink = document.getElementById('title-link');
   const normalModeBtn = document.getElementById('normal-mode');
   const inspectModeBtn = document.getElementById('inspect-mode');
+  const shortcutKey = document.querySelector('[data-command="screenshot_start"]');
   
   // 获取截图参数
   let selectedRatio = ratioSelect.value;
@@ -18,6 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
     normalModeBtn.classList.add('active');
     inspectModeBtn.classList.remove('active');
     ratioSelect.disabled = false;
+    
+    // 保存模式设置，以便快捷键可以使用正确的模式
+    chrome.storage.sync.set({ isInspectMode: false });
   });
   
   inspectModeBtn.addEventListener('click', function() {
@@ -26,6 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     normalModeBtn.classList.remove('active');
     ratioSelect.value = 'free';
     ratioSelect.disabled = true;
+    
+    // 保存模式设置，以便快捷键可以使用正确的模式
+    chrome.storage.sync.set({ isInspectMode: true });
   });
   
   // 监听比例选择改变

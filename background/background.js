@@ -5,7 +5,8 @@ console.log("精准截图扩展启动");
 const DEFAULT_SETTINGS = {
   ratio: "16:9",
   saveFormat: "png",
-  imageQuality: 1.0
+  imageQuality: 1.0,
+  isInspectMode: false
 };
 
 // 监听键盘命令
@@ -16,15 +17,16 @@ chrome.commands.onCommand.addListener((command) => {
   if (command === 'screenshot_start') {
     console.log("触发开始截图快捷键");
     
-    // 从存储中获取最近使用的比例和其他设置
-    chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality'], (data) => {
+    // 从存储中获取最近使用的比例和其他设置，包括智能模式设置
+    chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality', 'isInspectMode'], (data) => {
       // 使用最近一次使用的比例，如果没有则使用16:9作为默认值
-      const ratio = data.lastUsedRatio || "16:9";
+      const ratio = data.isInspectMode ? "free" : (data.lastUsedRatio || "16:9");
       
       const screenshotOptions = {
         ratio: ratio,
         saveFormat: data.saveFormat || DEFAULT_SETTINGS.saveFormat,
-        imageQuality: data.imageQuality || DEFAULT_SETTINGS.imageQuality
+        imageQuality: data.imageQuality || DEFAULT_SETTINGS.imageQuality,
+        isInspectMode: data.isInspectMode || DEFAULT_SETTINGS.isInspectMode
       };
       
       console.log("开始截图选项:", screenshotOptions);
