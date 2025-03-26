@@ -1686,39 +1686,42 @@ if (window._ratioScreenshotLoaded) {
       // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
       this.hideUIElementsForCapture();
       
-      // 根据区域是否在当前视口内，选择不同的截图方法
-      if (isRectVisible) {
-        console.log("选择区域在当前视口内，使用标准截图方法");
-        
-        // 区域在视口内，使用常规方法截图
-        chrome.runtime.sendMessage({ 
-          action: 'captureScreen',
-          debug: {
-            scrollX: scrollX,
-            scrollY: scrollY,
-            viewportWidth: viewportWidth,
-            viewportHeight: viewportHeight
-          }
-        }, response => {
-          this.processScreenshotResponse(response, absoluteRect, captureMsg);
-        });
-      } else {
-        console.log("选择区域不在当前视口内，使用全页面截图方法");
-        
-        // 区域不在当前视口，使用新的全页面截图方法
-        chrome.runtime.sendMessage({
-          action: 'captureFullPage',
-          targetArea: absoluteRect,
-          debug: {
-            scrollX: scrollX,
-            scrollY: scrollY,
-            viewportWidth: viewportWidth,
-            viewportHeight: viewportHeight
-          }
-        }, response => {
-          this.processScreenshotResponse(response, absoluteRect, captureMsg, true);
-        });
-      }
+      // 添加短延迟以确保DOM更新已渲染
+      setTimeout(() => {
+        // 根据区域是否在当前视口内，选择不同的截图方法
+        if (isRectVisible) {
+          console.log("选择区域在当前视口内，使用标准截图方法");
+          
+          // 区域在视口内，使用常规方法截图
+          chrome.runtime.sendMessage({ 
+            action: 'captureScreen',
+            debug: {
+              scrollX: scrollX,
+              scrollY: scrollY,
+              viewportWidth: viewportWidth,
+              viewportHeight: viewportHeight
+            }
+          }, response => {
+            this.processScreenshotResponse(response, absoluteRect, captureMsg);
+          });
+        } else {
+          console.log("选择区域不在当前视口内，使用全页面截图方法");
+          
+          // 区域不在当前视口，使用新的全页面截图方法
+          chrome.runtime.sendMessage({
+            action: 'captureFullPage',
+            targetArea: absoluteRect,
+            debug: {
+              scrollX: scrollX,
+              scrollY: scrollY,
+              viewportWidth: viewportWidth,
+              viewportHeight: viewportHeight
+            }
+          }, response => {
+            this.processScreenshotResponse(response, absoluteRect, captureMsg, true);
+          });
+        }
+      }, 30); // 添加30毫秒延迟，足够DOM更新但不影响用户体验
     }
     
     // 处理截图响应的通用方法
@@ -2588,13 +2591,64 @@ if (window._ratioScreenshotLoaded) {
       // 隐藏所有相关UI元素
       if (this.overlay) this.overlay.style.visibility = 'hidden';
       if (this.selection) {
-        // 保存选择框的原始边框样式
-        this.originalSelectionBorder = this.selection.style.border;
-        this.originalSelectionOutline = this.selection.style.outline;
-        // 临时移除选择框的边框和轮廓
+        // 保存选择框的原始样式
+        this.originalSelectionStyles = {
+          border: this.selection.style.border,
+          outline: this.selection.style.outline,
+          boxShadow: this.selection.style.boxShadow,
+          backgroundColor: this.selection.style.backgroundColor,
+          opacity: this.selection.style.opacity,
+          pointerEvents: this.selection.style.pointerEvents
+        };
+        
+        // 确保完全移除选择框的所有边框、轮廓和阴影效果
         this.selection.style.border = 'none';
         this.selection.style.outline = 'none';
+        this.selection.style.boxShadow = 'none';
+        this.selection.style.backgroundColor = 'transparent';
+        this.selection.style.opacity = '0';
+        this.selection.style.pointerEvents = 'none';
+        
+        // 临时隐藏任何可能的伪元素样式和子元素
+        const tempStyleElement = document.createElement('style');
+        tempStyleElement.id = 'ratio-screenshot-temp-style';
+        tempStyleElement.textContent = `
+          #${this.selection.id}, 
+          #${this.selection.id}::before, 
+          #${this.selection.id}::after,
+          #${this.selection.id} * {
+            display: block !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+            pointer-events: none !important;
+          }
+          
+          .ratio-screenshot-selection-saved,
+          .ratio-screenshot-selection-saved::before,
+          .ratio-screenshot-selection-saved::after {
+            border: none !important;
+            outline: none !important;
+            box-shadow: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+          }
+          
+          .ratio-screenshot-resize-handle,
+          .ratio-screenshot-magnetic-guide,
+          .ratio-screenshot-element-highlight {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+          }
+        `;
+        document.head.appendChild(tempStyleElement);
+        this.tempStyleElement = tempStyleElement;
       }
+      
       if (this.toolbar) this.toolbar.style.visibility = 'hidden';
       
       // 隐藏所有调整手柄
@@ -2603,9 +2657,13 @@ if (window._ratioScreenshotLoaded) {
       resizeHandles.forEach(handle => {
         this.hiddenResizeHandles.push({
           element: handle,
-          originalVisibility: handle.style.visibility
+          originalVisibility: handle.style.visibility,
+          originalOpacity: handle.style.opacity,
+          originalDisplay: handle.style.display
         });
         handle.style.visibility = 'hidden';
+        handle.style.opacity = '0';
+        handle.style.display = 'none';
       });
       
       // 隐藏所有通知消息
@@ -2614,17 +2672,44 @@ if (window._ratioScreenshotLoaded) {
       notifications.forEach(notification => {
         this.hiddenNotifications.push({
           element: notification,
-          originalVisibility: notification.style.visibility
+          originalVisibility: notification.style.visibility,
+          originalOpacity: notification.style.opacity,
+          originalDisplay: notification.style.display
         });
         notification.style.visibility = 'hidden';
+        notification.style.opacity = '0';
+        notification.style.display = 'none';
       });
       
       // 隐藏所有已保存的选择预览
       this.selections.forEach(selection => {
         if (selection.element) {
-          selection.originalVisibility = selection.element.style.visibility;
+          selection.originalStyles = {
+            visibility: selection.element.style.visibility,
+            opacity: selection.element.style.opacity,
+            border: selection.element.style.border,
+            outline: selection.element.style.outline,
+            boxShadow: selection.element.style.boxShadow,
+            backgroundColor: selection.element.style.backgroundColor
+          };
           selection.element.style.visibility = 'hidden';
+          selection.element.style.opacity = '0';
+          selection.element.style.border = 'none';
+          selection.element.style.outline = 'none';
+          selection.element.style.boxShadow = 'none';
+          selection.element.style.backgroundColor = 'transparent';
         }
+      });
+      
+      // 隐藏所有磁性吸附参考线
+      this.clearMagneticGuides('all');
+      
+      // 隐藏元素高亮
+      const highlights = document.querySelectorAll('.ratio-screenshot-element-highlight');
+      highlights.forEach(highlight => {
+        highlight.style.display = 'none';
+        highlight.style.opacity = '0';
+        highlight.style.visibility = 'hidden';
       });
     }
     
@@ -2641,12 +2726,20 @@ if (window._ratioScreenshotLoaded) {
         if (this.originalSelectionVisibility !== null) {
           this.selection.style.visibility = this.originalSelectionVisibility;
         }
-        // 恢复选择框的边框和轮廓
-        if (this.originalSelectionBorder !== undefined) {
-          this.selection.style.border = this.originalSelectionBorder;
+        
+        // 恢复选择框的所有原始样式
+        if (this.originalSelectionStyles) {
+          Object.entries(this.originalSelectionStyles).forEach(([property, value]) => {
+            if (value !== undefined) {
+              this.selection.style[property] = value;
+            }
+          });
         }
-        if (this.originalSelectionOutline !== undefined) {
-          this.selection.style.outline = this.originalSelectionOutline;
+        
+        // 移除临时样式表
+        if (this.tempStyleElement) {
+          this.tempStyleElement.remove();
+          this.tempStyleElement = null;
         }
       }
       
@@ -2659,6 +2752,8 @@ if (window._ratioScreenshotLoaded) {
         this.hiddenResizeHandles.forEach(item => {
           if (item.element) {
             item.element.style.visibility = item.originalVisibility;
+            item.element.style.opacity = item.originalOpacity;
+            item.element.style.display = item.originalDisplay;
           }
         });
         this.hiddenResizeHandles = [];
@@ -2669,6 +2764,8 @@ if (window._ratioScreenshotLoaded) {
         this.hiddenNotifications.forEach(item => {
           if (item.element) {
             item.element.style.visibility = item.originalVisibility;
+            item.element.style.opacity = item.originalOpacity;
+            item.element.style.display = item.originalDisplay;
           }
         });
         this.hiddenNotifications = [];
@@ -2676,8 +2773,12 @@ if (window._ratioScreenshotLoaded) {
       
       // 恢复所有已保存的选择预览
       this.selections.forEach(selection => {
-        if (selection.element && selection.originalVisibility !== undefined) {
-          selection.element.style.visibility = selection.originalVisibility;
+        if (selection.element && selection.originalStyles) {
+          Object.entries(selection.originalStyles).forEach(([property, value]) => {
+            if (value !== undefined) {
+              selection.element.style[property] = value;
+            }
+          });
         }
       });
     }
@@ -3021,86 +3122,89 @@ if (window._ratioScreenshotLoaded) {
       // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
       this.hideUIElementsForCapture();
       
-      // 根据区域是否在当前视口内，选择不同的截图方法
-      if (isRectVisible) {
-        console.log("选择区域在当前视口内，使用标准截图方法");
-        
-        // 区域在视口内，使用常规方法截图
-        chrome.runtime.sendMessage({ 
-          action: 'captureScreen'
-        }, response => {
-          // 恢复UI元素
-          this.restoreUIElementsAfterCapture();
+      // 添加短延迟确保DOM更新已渲染
+      setTimeout(() => {
+        // 根据区域是否在当前视口内，选择不同的截图方法
+        if (isRectVisible) {
+          console.log("选择区域在当前视口内，使用标准截图方法");
           
-          if (response && response.success) {
-            // 处理截图数据
-            const image = new Image();
-            image.onload = () => {
-              // 将绝对坐标转换为图像相对坐标 (为了应对设备像素比)
-              const devicePixelRatio = window.devicePixelRatio || 1;
-              const imageRect = {
-                left: Math.round((captureRect.left - scrollX) * devicePixelRatio),
-                top: Math.round((captureRect.top - scrollY) * devicePixelRatio),
-                width: Math.round(captureRect.width * devicePixelRatio),
-                height: Math.round(captureRect.height * devicePixelRatio)
+          // 区域在视口内，使用常规方法截图
+          chrome.runtime.sendMessage({ 
+            action: 'captureScreen'
+          }, response => {
+            // 恢复UI元素
+            this.restoreUIElementsAfterCapture();
+            
+            if (response && response.success) {
+              // 处理截图数据
+              const image = new Image();
+              image.onload = () => {
+                // 将绝对坐标转换为图像相对坐标 (为了应对设备像素比)
+                const devicePixelRatio = window.devicePixelRatio || 1;
+                const imageRect = {
+                  left: Math.round((captureRect.left - scrollX) * devicePixelRatio),
+                  top: Math.round((captureRect.top - scrollY) * devicePixelRatio),
+                  width: Math.round(captureRect.width * devicePixelRatio),
+                  height: Math.round(captureRect.height * devicePixelRatio)
+                };
+                
+                // 剪切并转换为blob
+                this.processImageForClipboard(image, imageRect, copyMsg);
               };
               
-              // 剪切并转换为blob
-              this.processImageForClipboard(image, imageRect, copyMsg);
-            };
-            
-            image.onerror = () => {
-              console.error("图像加载失败");
-              copyMsg.textContent = "复制失败: 图像加载失败";
+              image.onerror = () => {
+                console.error("图像加载失败");
+                copyMsg.textContent = "复制失败: 图像加载失败";
+                setTimeout(() => copyMsg.remove(), 2000);
+              };
+              
+              // 加载图像
+              image.src = response.dataUrl;
+            } else {
+              console.error("截图失败:", response?.error || "未知错误");
+              copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
               setTimeout(() => copyMsg.remove(), 2000);
-            };
-            
-            // 加载图像
-            image.src = response.dataUrl;
-          } else {
-            console.error("截图失败:", response?.error || "未知错误");
-            copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
-            setTimeout(() => copyMsg.remove(), 2000);
-          }
-        });
-      } else {
-        console.log("选择区域不完全在当前视口内，使用滚动截图方法");
-        
-        // 区域不完全在视口内，通知后台脚本使用分块截图
-        chrome.runtime.sendMessage({
-          action: 'captureFullPage',
-          targetArea: captureRect
-        }, response => {
-          // 恢复UI元素
-          this.restoreUIElementsAfterCapture();
+            }
+          });
+        } else {
+          console.log("选择区域不完全在当前视口内，使用滚动截图方法");
           
-          if (response && response.success) {
-            // 处理截图数据
-            const image = new Image();
-            image.onload = () => {
-              this.processImageForClipboard(image, {
-                left: 0,
-                top: 0,
-                width: image.width,
-                height: image.height
-              }, copyMsg);
-            };
+          // 区域不完全在视口内，通知后台脚本使用分块截图
+          chrome.runtime.sendMessage({
+            action: 'captureFullPage',
+            targetArea: captureRect
+          }, response => {
+            // 恢复UI元素
+            this.restoreUIElementsAfterCapture();
             
-            image.onerror = () => {
-              console.error("图像加载失败");
-              copyMsg.textContent = "复制失败: 图像加载失败";
+            if (response && response.success) {
+              // 处理截图数据
+              const image = new Image();
+              image.onload = () => {
+                this.processImageForClipboard(image, {
+                  left: 0,
+                  top: 0,
+                  width: image.width,
+                  height: image.height
+                }, copyMsg);
+              };
+              
+              image.onerror = () => {
+                console.error("图像加载失败");
+                copyMsg.textContent = "复制失败: 图像加载失败";
+                setTimeout(() => copyMsg.remove(), 2000);
+              };
+              
+              // 加载图像
+              image.src = response.dataUrl;
+            } else {
+              console.error("全页面截图失败:", response?.error || "未知错误");
+              copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
               setTimeout(() => copyMsg.remove(), 2000);
-            };
-            
-            // 加载图像
-            image.src = response.dataUrl;
-          } else {
-            console.error("全页面截图失败:", response?.error || "未知错误");
-            copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
-            setTimeout(() => copyMsg.remove(), 2000);
-          }
-        });
-      }
+            }
+          });
+        }
+      }, 30); // 添加30毫秒延迟，足够DOM更新但不影响用户体验
     }
     
     // 处理图像并复制到剪贴板
