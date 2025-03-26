@@ -96,7 +96,7 @@ graph TD
 | 打开插件 | 点击工具栏图标 |
 
 ## 开源协议
-本项目采用 [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License (CC BY-NC-ND 4.0)](https://creativecommons.org/licenses/by-nc-nd/4.0/) 开源协议。
+本项目采用 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/) 开源协议。
 
 ### 协议要点
 - ✅ 必须保留原作者署名
@@ -106,3 +106,5 @@ graph TD
 
 ### 使用授权
 如需商业使用本项目，请联系作者获取授权。未经授权的任何商业使用行为都将被视为侵权。
+
+如果你喜欢我的内容，并且想要给予一些鼓励和支持，欢迎点击 [Buy Me a Coffee](https://buymeacoffee.com/zhushen) 请我喝一杯咖啡！🎉☕
