@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "精准截图 - 一键智能精准截图工具"
+  },
+  "appDescription": {
+    "message": "智能识别网页内容，一键完成预设比例截图。支持自动对齐、连续截图模式，让截图更轻松高效。适用于设计师、运营、电商等场景"
+  },
+  "openPopup": {
+    "message": "打开扩展弹出窗口"
+  },
+  "startScreenshot": {
+    "message": "开始截图"
+  },
+  "confirmScreenshot": {
+    "message": "确认截图"
+  },
+  "cancelScreenshot": {
+    "message": "取消截图"
+  }
+} 

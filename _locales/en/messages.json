@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "Precision Screenshot - Smart Screenshot Tool"
+  },
+  "appDescription": {
+    "message": "Smart webpage content recognition, one-click preset ratio screenshots. Supports auto-alignment and continuous screenshot mode for efficient capturing. Perfect for designers, operators, and e-commerce scenarios"
+  },
+  "openPopup": {
+    "message": "Open Extension Popup"
+  },
+  "startScreenshot": {
+    "message": "Start Screenshot"
+  },
+  "confirmScreenshot": {
+    "message": "Confirm Screenshot"
+  },
+  "cancelScreenshot": {
+    "message": "Cancel Screenshot"
+  }
+} 

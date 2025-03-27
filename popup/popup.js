@@ -1,5 +1,30 @@
 // 精准截图弹出窗口脚本
+import { getCurrentLanguage, getText, getRatioGroupLabel, getRatioOptionText } from '../utils/i18n.js';
+
 document.addEventListener('DOMContentLoaded', function() {
+  // 更新所有带有data-i18n属性的元素的文本
+  function updateI18nTexts() {
+    // 更新普通文本
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+      const key = element.getAttribute('data-i18n');
+      element.textContent = getText(key);
+    });
+
+    // 更新比例选择器的组标签和选项
+    const ratioSelect = document.getElementById('ratio-select');
+    if (ratioSelect) {
+      ratioSelect.querySelectorAll('optgroup').forEach(group => {
+        const groupKey = group.getAttribute('data-group');
+        group.label = getRatioGroupLabel(groupKey);
+        
+        group.querySelectorAll('option').forEach(option => {
+          const optionKey = option.getAttribute('data-option');
+          option.textContent = getRatioOptionText(groupKey, optionKey);
+        });
+      });
+    }
+  }
+
   // 获取DOM元素
   const startScreenshotBtn = document.getElementById('start-screenshot');
   const ratioSelect = document.getElementById('ratio-select');
@@ -57,14 +82,14 @@ document.addEventListener('DOMContentLoaded', function() {
   startScreenshotBtn.addEventListener('click', function() {
     // 禁用按钮防止重复点击
     startScreenshotBtn.disabled = true;
-    startScreenshotBtn.textContent = "截图中...";
+    startScreenshotBtn.textContent = getText('capturing');
     
     // 准备截图选项
     const screenshotOptions = {
       ratio: selectedRatio,
       saveFormat: saveFormatSelect.value,
       imageQuality: 1.0,
-      isInspectMode: isInspectMode // 添加模式标志
+      isInspectMode: isInspectMode
     };
     
     // 保存当前设置
@@ -121,4 +146,7 @@ document.addEventListener('DOMContentLoaded', function() {
       isInspectMode: options.isInspectMode
     });
   }
+
+  // 初始化时更新所有文本
+  updateI18nTexts();
 }); 

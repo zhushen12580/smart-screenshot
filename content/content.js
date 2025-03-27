@@ -1,4 +1,6 @@
 // 简化版内容脚本 - 保留按精准截图和连续截图功能
+'use strict';
+
 // 使用全局变量保存实例
 var ratioScreenshotInstance = window.ratioScreenshotInstance || null;
 
@@ -17,6 +19,574 @@ if (window._ratioScreenshotLoaded) {
   }
 } else {
   window._ratioScreenshotLoaded = true;
+  
+  // 创建一个i18n辅助函数，在content.js内部使用，避免导入模块
+  var I18nHelper = {
+    language: navigator.language || navigator.userLanguage,
+    
+    getCurrentLanguage: function() {
+      var lang = this.language || '';
+      if (lang.indexOf('zh') === 0) return 'zh';
+      if (lang.indexOf('es') === 0) return 'es';
+      if (lang.indexOf('ar') === 0) return 'ar';
+      if (lang.indexOf('de') === 0) return 'de';
+      if (lang.indexOf('pt') === 0) return 'pt';
+      if (lang.indexOf('ja') === 0) return 'ja';
+      if (lang.indexOf('fr') === 0) return 'fr';
+      if (lang.indexOf('ko') === 0) return 'ko';
+      return 'en';
+    },
+    
+    isZh: function() {
+      return this.getCurrentLanguage() === 'zh';
+    },
+    
+    getToolbarText: function(key) {
+      var translations = {
+        zh: {
+          saveArea: "保存此区域",
+          copyToClipboard: "复制",
+          saveAllAreas: "保存所有区域",
+          keepAndContinue: "保持此区域并继续",
+          cancel: "取消",
+          lockSize: "锁定尺寸",
+          lockSizeActive: "✓ 锁定尺寸",
+          magnetic: "磁性吸附",
+          magneticActive: "✓ 磁性吸附",
+          freeRatio: "自由比例",
+          qualityLabel: "图片质量",
+          ratioLabel: "选择比例",
+          imageQuality: {
+            original: "原图质量",
+            high: "高清",
+            standard: "标准",
+            light: "轻量"
+          },
+          fileSizeEstimate: "约 {0} {1}"
+        },
+        en: {
+          saveArea: "Save This Area",
+          copyToClipboard: "Copy",
+          saveAllAreas: "Save All Areas",
+          keepAndContinue: "Keep & Continue",
+          cancel: "Cancel",
+          lockSize: "Lock Size",
+          lockSizeActive: "✓ Lock Size",
+          magnetic: "Magnetic Snap",
+          magneticActive: "✓ Magnetic Snap",
+          freeRatio: "Free Ratio",
+          qualityLabel: "Image Quality",
+          ratioLabel: "Select Ratio",
+          imageQuality: {
+            original: "Original Quality",
+            high: "High Quality",
+            standard: "Standard",
+            light: "Light"
+          },
+          fileSizeEstimate: "About {0} {1}"
+        },
+        es: {
+          saveArea: "Guardar Esta Área",
+          copyToClipboard: "Copiar",
+          saveAllAreas: "Guardar Todas las Áreas",
+          keepAndContinue: "Mantener y Continuar",
+          cancel: "Cancelar",
+          lockSize: "Bloquear Tamaño",
+          lockSizeActive: "✓ Tamaño Bloqueado",
+          magnetic: "Ajuste Magnético",
+          magneticActive: "✓ Ajuste Magnético",
+          freeRatio: "Proporción Libre",
+          qualityLabel: "Calidad de Imagen",
+          ratioLabel: "Seleccionar Proporción",
+          imageQuality: {
+            original: "Calidad Original",
+            high: "Alta Calidad",
+            standard: "Estándar",
+            light: "Ligera"
+          },
+          fileSizeEstimate: "Aproximadamente {0} {1}"
+        },
+        ar: {
+          saveArea: "حفظ هذه المنطقة",
+          copyToClipboard: "نسخ",
+          saveAllAreas: "حفظ جميع المناطق",
+          keepAndContinue: "الاحتفاظ والمتابعة",
+          cancel: "إلغاء",
+          lockSize: "قفل الحجم",
+          lockSizeActive: "✓ الحجم مقفل",
+          magnetic: "التقاط مغناطيسي",
+          magneticActive: "✓ التقاط مغناطيسي",
+          freeRatio: "نسبة حرة",
+          qualityLabel: "جودة الصورة",
+          ratioLabel: "اختيار النسبة",
+          imageQuality: {
+            original: "الجودة الأصلية",
+            high: "جودة عالية",
+            standard: "قياسية",
+            light: "خفيفة"
+          },
+          fileSizeEstimate: "تقريبًا {0} {1}"
+        },
+        de: {
+          saveArea: "Diesen Bereich speichern",
+          copyToClipboard: "Kopieren",
+          saveAllAreas: "Alle Bereiche speichern",
+          keepAndContinue: "Beibehalten und fortfahren",
+          cancel: "Abbrechen",
+          lockSize: "Größe sperren",
+          lockSizeActive: "✓ Größe gesperrt",
+          magnetic: "Magnetisches Einrasten",
+          magneticActive: "✓ Magnetisches Einrasten",
+          freeRatio: "Freies Seitenverhältnis",
+          qualityLabel: "Bildqualität",
+          ratioLabel: "Seitenverhältnis wählen",
+          imageQuality: {
+            original: "Originalqualität",
+            high: "Hohe Qualität",
+            standard: "Standard",
+            light: "Leicht"
+          },
+          fileSizeEstimate: "Etwa {0} {1}"
+        },
+        pt: {
+          saveArea: "Salvar Esta Área",
+          copyToClipboard: "Copiar",
+          saveAllAreas: "Salvar Todas as Áreas",
+          keepAndContinue: "Manter e Continuar",
+          cancel: "Cancelar",
+          lockSize: "Bloquear Tamanho",
+          lockSizeActive: "✓ Tamanho Bloqueado",
+          magnetic: "Ajuste Magnético",
+          magneticActive: "✓ Ajuste Magnético",
+          freeRatio: "Proporção Livre",
+          qualityLabel: "Qualidade de Imagem",
+          ratioLabel: "Selecionar Proporção",
+          imageQuality: {
+            original: "Qualidade Original",
+            high: "Alta Qualidade",
+            standard: "Padrão",
+            light: "Leve"
+          },
+          fileSizeEstimate: "Aproximadamente {0} {1}"
+        },
+        ja: {
+          saveArea: "この領域を保存",
+          copyToClipboard: "コピー",
+          saveAllAreas: "すべての領域を保存",
+          keepAndContinue: "保持して続行",
+          cancel: "キャンセル",
+          lockSize: "サイズをロック",
+          lockSizeActive: "✓ サイズロック中",
+          magnetic: "マグネットスナップ",
+          magneticActive: "✓ マグネットスナップ",
+          freeRatio: "自由比率",
+          qualityLabel: "画像品質",
+          ratioLabel: "比率を選択",
+          imageQuality: {
+            original: "オリジナル品質",
+            high: "高品質",
+            standard: "標準",
+            light: "軽量"
+          },
+          fileSizeEstimate: "約 {0} {1}"
+        },
+        fr: {
+          saveArea: "Enregistrer Cette Zone",
+          copyToClipboard: "Copier",
+          saveAllAreas: "Enregistrer Toutes les Zones",
+          keepAndContinue: "Conserver et Continuer",
+          cancel: "Annuler",
+          lockSize: "Verrouiller la Taille",
+          lockSizeActive: "✓ Taille Verrouillée",
+          magnetic: "Accrochage Magnétique",
+          magneticActive: "✓ Accrochage Magnétique",
+          freeRatio: "Ratio Libre",
+          qualityLabel: "Qualité d'Image",
+          ratioLabel: "Sélectionner le Ratio",
+          imageQuality: {
+            original: "Qualité Originale",
+            high: "Haute Qualité",
+            standard: "Standard",
+            light: "Légère"
+          },
+          fileSizeEstimate: "Environ {0} {1}"
+        },
+        ko: {
+          saveArea: "이 영역 저장",
+          copyToClipboard: "복사",
+          saveAllAreas: "모든 영역 저장",
+          keepAndContinue: "유지 및 계속",
+          cancel: "취소",
+          lockSize: "크기 잠금",
+          lockSizeActive: "✓ 크기 잠금됨",
+          magnetic: "자석 스냅",
+          magneticActive: "✓ 자석 스냅",
+          freeRatio: "자유 비율",
+          qualityLabel: "이미지 품질",
+          ratioLabel: "비율 선택",
+          imageQuality: {
+            original: "원본 품질",
+            high: "고품질",
+            standard: "표준",
+            light: "가벼움"
+          },
+          fileSizeEstimate: "약 {0} {1}"
+        }
+      };
+      
+      var lang = this.getCurrentLanguage();
+      
+      // 处理嵌套的键，如 "imageQuality.original"
+      if (key.indexOf('.') > -1) {
+        var parts = key.split('.');
+        var value = translations[lang];
+        
+        for (var i = 0; i < parts.length; i++) {
+          var part = parts[i];
+          if (value && value[part] !== undefined) {
+            value = value[part];
+          } else {
+            value = null;
+            break;
+          }
+        }
+        
+        if (value) return value;
+        
+        // 回退逻辑，尝试其他语言
+        if (lang !== 'fr') {
+          value = translations['fr'];
+          for (var j = 0; j < parts.length; j++) {
+            var frPart = parts[j];
+            if (value && value[frPart] !== undefined) {
+              value = value[frPart];
+            } else {
+              value = null;
+              break;
+            }
+          }
+          if (value) return value;
+        }
+        
+        if (lang !== 'ja') {
+          value = translations['ja'];
+          for (var j = 0; j < parts.length; j++) {
+            var jaPart = parts[j];
+            if (value && value[jaPart] !== undefined) {
+              value = value[jaPart];
+            } else {
+              value = null;
+              break;
+            }
+          }
+          if (value) return value;
+        }
+        
+        if (lang !== 'de') {
+          value = translations['de'];
+          for (var j = 0; j < parts.length; j++) {
+            var dePart = parts[j];
+            if (value && value[dePart] !== undefined) {
+              value = value[dePart];
+            } else {
+              value = null;
+              break;
+            }
+          }
+          if (value) return value;
+        }
+        
+        if (lang !== 'ar') {
+          value = translations['ar'];
+          for (var j = 0; j < parts.length; j++) {
+            var arPart = parts[j];
+            if (value && value[arPart] !== undefined) {
+              value = value[arPart];
+            } else {
+              value = null;
+              break;
+            }
+          }
+          if (value) return value;
+        }
+        
+        if (lang !== 'es') {
+          value = translations['es'];
+          for (var j = 0; j < parts.length; j++) {
+            var esPart = parts[j];
+            if (value && value[esPart] !== undefined) {
+              value = value[esPart];
+            } else {
+              value = null;
+              break;
+            }
+          }
+          if (value) return value;
+        }
+        
+        // 最后尝试英文
+        value = translations['en'];
+        for (var j = 0; j < parts.length; j++) {
+          var enPart = parts[j];
+          if (value && value[enPart] !== undefined) {
+            value = value[enPart];
+          } else {
+            return key;
+          }
+        }
+        
+        return value;
+      }
+      
+      return translations[lang][key] || 
+        (lang !== 'fr' && translations['fr'][key]) ||
+        (lang !== 'ja' && translations['ja'][key]) ||
+        (lang !== 'de' && translations['de'][key]) || 
+        (lang !== 'ar' && translations['ar'][key]) || 
+        (lang !== 'es' && translations['es'][key]) || 
+        translations['en'][key] || 
+        key;
+    },
+    
+    formatFileSizeEstimate: function(size, unit) {
+      var template = this.getToolbarText('fileSizeEstimate');
+      return template.replace('{0}', size).replace('{1}', unit);
+    },
+    
+    // 获取通知信息的翻译
+    getNotificationText: function(key) {
+      var notifications = {
+        zh: {
+          processingScreenshot: "正在处理截图...",
+          screenshotSaved: "截图已保存到下载文件夹",
+          screenshotLoadFailed: "截图加载失败，请重试",
+          getScreenshotFailed: "获取屏幕截图失败，请重试",
+          processingAllAreas: "正在处理所有区域的截图...",
+          allAreasSaved: "成功保存了 {0} 个区域的截图",
+          areaNotVisible: "选定区域几乎完全在可见范围外，无法截图",
+          partiallyVisible: "部分区域超出可视范围，已截取可见部分",
+          partiallyVisibleArea: "部分选择区域超出可见范围，已截取可见部分",
+          areaOutOfView: "选定区域超出可见范围，无法截图。请滚动页面使该区域可见后再试。",
+          processingError: "截图处理时出错: {0}",
+          saveFailed: "保存截图失败: {0}",
+          smartModeEnabled: "已启用智能截图模式，点击选择要截图的元素 (Enter确认, Esc取消)",
+          processing: "正在处理复制...",
+          copyFailed: "复制失败: {0}",
+          canvasContextError: "复制失败: 无法获取Canvas上下文",
+          copied: "已复制到剪贴板",
+          clipboardAccessDenied: "复制失败: 剪贴板访问被拒绝",
+          clipboardApiNotSupported: "复制失败: 不支持剪贴板API",
+          imageDataCreateFailed: "复制失败: 无法创建图像数据",
+          copyAreaOutOfView: "复制失败: 选择区域超出可见范围",
+          imagePreviewShown: "已显示图像预览，请右键复制",
+          escape: "取消 (Esc)",
+          imageQualitySet: "图片质量已设置为: {0}"
+        },
+        en: {
+          processingScreenshot: "Processing screenshot...",
+          screenshotSaved: "Screenshot saved to downloads folder",
+          screenshotLoadFailed: "Screenshot loading failed, please try again",
+          getScreenshotFailed: "Failed to capture screenshot, please try again",
+          processingAllAreas: "Processing screenshots for all areas...",
+          allAreasSaved: "Successfully saved screenshots of {0} areas",
+          areaNotVisible: "Selected area is almost completely out of view, cannot capture",
+          partiallyVisible: "Part of the area is out of view, captured visible portion only",
+          partiallyVisibleArea: "Part of the selection is out of view, captured visible portion only",
+          areaOutOfView: "Selected area is out of view. Please scroll to make it visible and try again.",
+          processingError: "Error processing screenshot: {0}",
+          saveFailed: "Failed to save screenshot: {0}",
+          smartModeEnabled: "Smart screenshot mode enabled, click to select an element (Enter to confirm, Esc to cancel)",
+          processing: "Processing copy...",
+          copyFailed: "Copy failed: {0}",
+          canvasContextError: "Copy failed: Cannot get Canvas context",
+          copied: "Copied to clipboard",
+          clipboardAccessDenied: "Copy failed: Clipboard access denied",
+          clipboardApiNotSupported: "Copy failed: Clipboard API not supported",
+          imageDataCreateFailed: "Copy failed: Cannot create image data",
+          copyAreaOutOfView: "Copy failed: Selected area is out of view",
+          imagePreviewShown: "Image preview shown, right-click to copy",
+          escape: "Cancel (Esc)",
+          imageQualitySet: "Image quality set to: {0}"
+        },
+        es: {
+          processingScreenshot: "Procesando captura...",
+          screenshotSaved: "Captura guardada en la carpeta de descargas",
+          screenshotLoadFailed: "Error al cargar la captura, por favor intente de nuevo",
+          getScreenshotFailed: "Error al capturar la pantalla, por favor intente de nuevo",
+          processingAllAreas: "Procesando capturas para todas las áreas...",
+          allAreasSaved: "Se guardaron correctamente las capturas de {0} áreas",
+          areaNotVisible: "El área seleccionada está casi completamente fuera de vista, no se puede capturar",
+          partiallyVisible: "Parte del área está fuera de vista, se capturó solo la porción visible",
+          partiallyVisibleArea: "Parte de la selección está fuera de vista, se capturó solo la porción visible",
+          areaOutOfView: "El área seleccionada está fuera de vista. Por favor, desplácese para hacerla visible e inténtelo de nuevo.",
+          processingError: "Error al procesar la captura: {0}",
+          saveFailed: "Error al guardar la captura: {0}",
+          smartModeEnabled: "Modo de captura inteligente activado, haga clic para seleccionar un elemento (Enter para confirmar, Esc para cancelar)",
+          processing: "Procesando copia...",
+          copyFailed: "Error al copiar: {0}",
+          canvasContextError: "Error al copiar: No se puede obtener el contexto del Canvas",
+          copied: "Copiado al portapapeles",
+          clipboardAccessDenied: "Error al copiar: Acceso al portapapeles denegado",
+          clipboardApiNotSupported: "Error al copiar: API de portapapeles no compatible",
+          imageDataCreateFailed: "Error al copiar: No se pueden crear datos de imagen",
+          copyAreaOutOfView: "Error al copiar: El área seleccionada está fuera de vista",
+          imagePreviewShown: "Vista previa de imagen mostrada, haga clic derecho para copiar",
+          escape: "Cancelar (Esc)",
+          imageQualitySet: "Calidad de imagen establecida en: {0}"
+        },
+        ar: {
+          processingScreenshot: "جاري معالجة اللقطة...",
+          screenshotSaved: "تم حفظ اللقطة في مجلد التنزيلات",
+          screenshotLoadFailed: "فشل تحميل اللقطة، يرجى المحاولة مرة أخرى",
+          getScreenshotFailed: "فشل التقاط اللقطة، يرجى المحاولة مرة أخرى",
+          processingAllAreas: "جاري معالجة لقطات لجميع المناطق...",
+          allAreasSaved: "تم حفظ لقطات لـ {0} مناطق بنجاح",
+          areaNotVisible: "المنطقة المحددة خارج نطاق الرؤية تقريبًا، لا يمكن الالتقاط",
+          partiallyVisible: "جزء من المنطقة خارج نطاق الرؤية، تم التقاط الجزء المرئي فقط",
+          partiallyVisibleArea: "جزء من المنطقة المحددة خارج نطاق الرؤية، تم التقاط الجزء المرئي فقط",
+          areaOutOfView: "المنطقة المحددة خارج نطاق الرؤية. يرجى التمرير لجعلها مرئية والمحاولة مرة أخرى.",
+          processingError: "خطأ في معالجة اللقطة: {0}",
+          saveFailed: "فشل حفظ اللقطة: {0}",
+          smartModeEnabled: "تم تمكين وضع اللقطة الذكي، انقر لتحديد عنصر (Enter للتأكيد، Esc للإلغاء)",
+          processing: "جاري معالجة النسخ...",
+          copyFailed: "فشل النسخ: {0}",
+          canvasContextError: "فشل النسخ: لا يمكن الحصول على سياق الرسم",
+          copied: "تم النسخ إلى الحافظة",
+          clipboardAccessDenied: "فشل النسخ: تم رفض الوصول إلى الحافظة",
+          clipboardApiNotSupported: "فشل النسخ: واجهة برمجة الحافظة غير مدعومة",
+          imageDataCreateFailed: "فشل النسخ: لا يمكن إنشاء بيانات الصورة",
+          copyAreaOutOfView: "فشل النسخ: المنطقة المحددة خارج نطاق الرؤية",
+          imagePreviewShown: "تم عرض معاينة الصورة، انقر بزر الماوس الأيمن للنسخ",
+          escape: "إلغاء (Esc)",
+          imageQualitySet: "تم ضبط جودة الصورة على: {0}"
+        },
+        de: {
+          processingScreenshot: "Screenshot wird verarbeitet...",
+          screenshotSaved: "Screenshot im Download-Ordner gespeichert",
+          screenshotLoadFailed: "Screenshot-Laden fehlgeschlagen, bitte versuchen Sie es erneut",
+          getScreenshotFailed: "Screenshot-Aufnahme fehlgeschlagen, bitte versuchen Sie es erneut",
+          processingAllAreas: "Screenshots für alle Bereiche werden verarbeitet...",
+          allAreasSaved: "Screenshots von {0} Bereichen erfolgreich gespeichert",
+          areaNotVisible: "Ausgewählter Bereich ist fast vollständig außerhalb des sichtbaren Bereichs, kann nicht erfasst werden",
+          partiallyVisible: "Ein Teil des Bereichs ist nicht sichtbar, nur der sichtbare Teil wurde erfasst",
+          partiallyVisibleArea: "Ein Teil der Auswahl ist nicht sichtbar, nur der sichtbare Teil wurde erfasst",
+          areaOutOfView: "Ausgewählter Bereich ist nicht sichtbar. Bitte scrollen Sie, um ihn sichtbar zu machen, und versuchen Sie es erneut.",
+          processingError: "Fehler bei der Verarbeitung des Screenshots: {0}",
+          saveFailed: "Screenshot konnte nicht gespeichert werden: {0}",
+          smartModeEnabled: "Intelligenter Screenshot-Modus aktiviert, klicken Sie, um ein Element auszuwählen (Enter zum Bestätigen, Esc zum Abbrechen)",
+          processing: "Kopieren wird verarbeitet...",
+          copyFailed: "Kopieren fehlgeschlagen: {0}",
+          canvasContextError: "Kopieren fehlgeschlagen: Canvas-Kontext kann nicht abgerufen werden",
+          copied: "In die Zwischenablage kopiert",
+          clipboardAccessDenied: "Kopieren fehlgeschlagen: Zugriff auf Zwischenablage verweigert",
+          clipboardApiNotSupported: "Kopieren fehlgeschlagen: Zwischenablage-API nicht unterstützt",
+          imageDataCreateFailed: "Kopieren fehlgeschlagen: Bilddaten können nicht erstellt werden",
+          copyAreaOutOfView: "Kopieren fehlgeschlagen: Ausgewählter Bereich ist nicht sichtbar",
+          imagePreviewShown: "Bildvorschau angezeigt, Rechtsklick zum Kopieren",
+          escape: "Abbrechen (Esc)",
+          imageQualitySet: "Bildqualität eingestellt auf: {0}"
+        },
+        pt: {
+          processingScreenshot: "Processando captura...",
+          screenshotSaved: "Captura salva na pasta de downloads",
+          screenshotLoadFailed: "Falha ao carregar a captura, tente novamente",
+          getScreenshotFailed: "Falha ao capturar a tela, tente novamente",
+          processingAllAreas: "Processando capturas para todas as áreas...",
+          allAreasSaved: "Capturas de {0} áreas salvas com sucesso",
+          areaNotVisible: "Área selecionada está quase completamente fora de visão, não é possível capturar",
+          partiallyVisible: "Parte da área está fora de visão, apenas a porção visível foi capturada",
+          partiallyVisibleArea: "Parte da seleção está fora de visão, apenas a porção visível foi capturada",
+          areaOutOfView: "Área selecionada está fora de visão. Por favor, role para torná-la visível e tente novamente.",
+          processingError: "Erro ao processar a captura: {0}",
+          saveFailed: "Falha ao salvar a captura: {0}",
+          smartModeEnabled: "Modo de captura inteligente ativado, clique para selecionar um elemento (Enter para confirmar, Esc para cancelar)",
+          processing: "Processando cópia...",
+          copyFailed: "Falha ao copiar: {0}",
+          canvasContextError: "Falha ao copiar: Não foi possível obter o contexto Canvas",
+          copied: "Copiado para a área de transferência",
+          clipboardAccessDenied: "Falha ao copiar: Acesso à área de transferência negado",
+          clipboardApiNotSupported: "Falha ao copiar: API de área de transferência não suportada",
+          imageDataCreateFailed: "Falha ao copiar: Não foi possível criar dados de imagem",
+          copyAreaOutOfView: "Falha ao copiar: Área selecionada está fora de visão",
+          imagePreviewShown: "Pré-visualização de imagem exibida, clique com o botão direito para copiar",
+          escape: "Cancelar (Esc)",
+          imageQualitySet: "Qualidade de imagem definida para: {0}"
+        },
+        ja: {
+          processingScreenshot: "画像を処理中...",
+          screenshotSaved: "スクリーンショットがダウンロードフォルダに保存されました",
+          screenshotLoadFailed: "スクリーンショットの読み込みに失敗しました。再試行してください",
+          getScreenshotFailed: "スクリーンショットの取得に失敗しました。再試行してください",
+          processingAllAreas: "すべての領域のスクリーンショットを処理中...",
+          allAreasSaved: "{0} 個の領域のスクリーンショットが正常に保存されました",
+          areaNotVisible: "選択された領域はほぼ完全に画面外にあり、スクリーンショットを取得できません",
+          partiallyVisible: "領域の一部が画面外に出ていますが、表示された部分のみがキャプチャされました",
+          partiallyVisibleArea: "選択領域の一部が画面外に出ていますが、表示された部分のみがキャプチャされました",
+          areaOutOfView: "選択された領域は画面外にあります。スクロールして表示してから再試行してください。",
+          processingError: "スクリーンショットの処理中にエラーが発生しました: {0}",
+          saveFailed: "スクリーンショットの保存に失敗しました: {0}",
+          smartModeEnabled: "スマートスクリーンショットモードが有効になりました。要素をクリックして選択してください (Enterで確認、Escでキャンセル)",
+          processing: "コピー中...",
+          copyFailed: "コピーに失敗しました: {0}",
+          canvasContextError: "キャンバスコンテキストの取得に失敗しました",
+          copied: "クリップボードにコピーされました",
+          clipboardAccessDenied: "クリップボードへのアクセスが拒否されました",
+          clipboardApiNotSupported: "クリップボードAPIがサポートされていません",
+          imageDataCreateFailed: "画像データの作成に失敗しました",
+          copyAreaOutOfView: "選択領域が画面外にあります",
+          imagePreviewShown: "画像プレビューが表示されました。右クリックでコピー",
+          escape: "キャンセル (Esc)",
+          imageQualitySet: "{0} の画像品質が設定されました"
+        },
+        fr: {
+          processingScreenshot: "Traitement de la capture d'écran...",
+          screenshotSaved: "Capture d'écran enregistrée dans le dossier de téléchargement",
+          screenshotLoadFailed: "Échec du chargement de la capture d'écran, veuillez réessayer",
+          getScreenshotFailed: "Échec de la capture d'écran, veuillez réessayer",
+          processingAllAreas: "Traitement des captures d'écran pour toutes les zones...",
+          allAreasSaved: "Les captures d'écran de {0} zones ont été enregistrées avec succès",
+          areaNotVisible: "La zone sélectionnée est presque complètement hors de vue, impossible de capturer",
+          partiallyVisible: "Une partie de la zone est hors de vue, seule la partie visible a été capturée",
+          partiallyVisibleArea: "Une partie de la sélection est hors de vue, seule la partie visible a été capturée",
+          areaOutOfView: "La zone sélectionnée est hors de vue. Veuillez faire défiler pour la rendre visible et réessayer.",
+          processingError: "Erreur lors du traitement de la capture d'écran: {0}",
+          saveFailed: "Échec de l'enregistrement de la capture d'écran: {0}",
+          smartModeEnabled: "Mode de capture d'écran intelligent activé, cliquez pour sélectionner un élément (Entrée pour confirmer, Échap pour annuler)",
+          processing: "Traitement de la copie...",
+          copyFailed: "Échec de la copie: {0}",
+          canvasContextError: "Échec de la copie: Impossible d'obtenir le contexte Canvas",
+          copied: "Copié dans le presse-papiers",
+          clipboardAccessDenied: "Échec de la copie: Accès au presse-papiers refusé",
+          clipboardApiNotSupported: "Échec de la copie: API de presse-papiers non prise en charge",
+          imageDataCreateFailed: "Échec de la copie: Impossible de créer les données d'image",
+          copyAreaOutOfView: "Échec de la copie: La zone sélectionnée est hors de vue",
+          imagePreviewShown: "Aperçu de l'image affiché, clic droit pour copier",
+          escape: "Annuler (Échap)",
+          imageQualitySet: "Qualité d'image définie sur: {0}"
+        }
+      };
+      
+      var lang = this.getCurrentLanguage();
+      var text = notifications[lang][key] || 
+                (lang !== 'ko' && notifications['ko'][key]) ||
+                (lang !== 'fr' && notifications['fr'][key]) ||
+                (lang !== 'ja' && notifications['ja'][key]) ||
+                (lang !== 'pt' && notifications['pt'][key]) ||
+                (lang !== 'de' && notifications['de'][key]) ||
+                (lang !== 'ar' && notifications['ar'][key]) ||
+                (lang !== 'es' && notifications['es'][key]) ||
+                notifications['en'][key] || 
+                key;
+      
+      // 替换参数
+      var args = Array.prototype.slice.call(arguments, 1);
+      args.forEach(function(param, index) {
+        text = text.replace('{' + index + '}', param);
+      });
+      
+      return text;
+    }
+  };
   
   class RatioScreenshot {
     constructor() {
@@ -614,14 +1184,14 @@ if (window._ratioScreenshotLoaded) {
       // 保存按钮
       const saveButton = document.createElement('button');
       saveButton.className = 'ratio-screenshot-button primary';
-      saveButton.textContent = '保存此区域';
+      saveButton.textContent = I18nHelper.getToolbarText('saveArea');
       saveButton.addEventListener('click', () => this.captureAndSave());
       
       // 添加复制按钮
       const copyButton = document.createElement('button');
       copyButton.className = 'ratio-screenshot-button';
-      copyButton.textContent = '复制到剪贴板 (Ctrl+C)';
-      copyButton.title = '将截图复制到剪贴板 (快捷键: Ctrl+C)';
+      copyButton.textContent = I18nHelper.getToolbarText('copyToClipboard');
+      copyButton.title = I18nHelper.isZh() ? '复制截图到剪贴板' : 'Copy screenshot to clipboard';
       copyButton.addEventListener('click', () => this.copyToClipboard());
       
       // 添加快捷键提示
@@ -632,13 +1202,13 @@ if (window._ratioScreenshotLoaded) {
       // 保存全部按钮
       const saveAllButton = document.createElement('button');
       saveAllButton.className = 'ratio-screenshot-button primary';
-      saveAllButton.textContent = `保存所有区域 (${this.selections.length + 1})`;
+      saveAllButton.textContent = `${I18nHelper.getToolbarText('saveAllAreas')} (${this.selections.length + 1})`;
       saveAllButton.addEventListener('click', () => this.captureAndSaveAll());
       
       // 保持此区域并继续按钮
       const keepButton = document.createElement('button');
       keepButton.className = 'ratio-screenshot-button';
-      keepButton.textContent = '保持此区域并继续';
+      keepButton.textContent = I18nHelper.getToolbarText('keepAndContinue');
       keepButton.addEventListener('click', () => {
         // 记录当前是否处于智能检查模式
         console.log(`保持区域并继续，当前模式: ${this.isInspectMode ? '智能检查' : '普通'}`);
@@ -661,7 +1231,7 @@ if (window._ratioScreenshotLoaded) {
       // 取消按钮
       const cancelButton = document.createElement('button');
       cancelButton.className = 'ratio-screenshot-button';
-      cancelButton.textContent = '取消';
+      cancelButton.textContent = I18nHelper.getNotificationText('escape');
       
       // 使用箭头函数确保this绑定正确
       const boundEndFunction = () => {
@@ -689,22 +1259,114 @@ if (window._ratioScreenshotLoaded) {
       // 添加比例选择下拉菜单
       const ratioSelect = document.createElement('select');
       ratioSelect.className = 'ratio-screenshot-button';
-      ratioSelect.title = '选择截图区域的比例';
+      ratioSelect.title = I18nHelper.getToolbarText('ratioLabel');
       
       // 添加比例选项
       const ratioOptions = [
-        { value: 'free', text: '自由比例' },
-        { value: '16:9', text: '16:9 (视频/屏幕)' },
-        { value: '4:3', text: '4:3 (传统屏幕)' },
-        { value: '1:1', text: '1:1 (正方形/Instagram)' },
-        { value: '9:16', text: '9:16 (手机竖屏/故事)' },
-        { value: '3:4', text: '3:4 (小红书/iPad)' },
-        { value: '2:1', text: '2:1 (小红书/Twitter横图)' },
+        { value: 'free', text: I18nHelper.getToolbarText('freeRatio') },
+        { value: '16:9', text: '16:9 (Video/Screen)' },
+        { value: '4:3', text: '4:3 (Traditional Screen)' },
+        { value: '1:1', text: '1:1 (Square/Instagram)' },
+        { value: '9:16', text: '9:16 (Mobile Portrait/Stories)' },
+        { value: '3:4', text: '3:4 (Instagram/iPad)' },
+        { value: '2:1', text: '2:1 (Twitter Landscape)' },
         { value: '1:2', text: '1:2 (Pinterest)' },
-        { value: '4:5', text: '4:5 (Instagram竖图)' },
-        { value: '3:2', text: '3:2 (SNS封面)' },
-        { value: '21:9', text: '21:9 (超宽屏)' }
+        { value: '4:5', text: '4:5 (Instagram Portrait)' },
+        { value: '3:2', text: '3:2 (Social Cover)' },
+        { value: '21:9', text: '21:9 (Ultrawide)' }
       ];
+      
+      // 根据当前语言设置比例文本
+      const lang = I18nHelper.getCurrentLanguage();
+      if (lang === 'zh') {
+        ratioOptions[1].text = '16:9 (视频/屏幕)';
+        ratioOptions[2].text = '4:3 (传统屏幕)';
+        ratioOptions[3].text = '1:1 (正方形/Instagram)';
+        ratioOptions[4].text = '9:16 (手机竖屏/故事)';
+        ratioOptions[5].text = '3:4 (小红书/iPad)';
+        ratioOptions[6].text = '2:1 (小红书/Twitter横图)';
+        ratioOptions[7].text = '1:2 (Pinterest)';
+        ratioOptions[8].text = '4:5 (Instagram竖图)';
+        ratioOptions[9].text = '3:2 (SNS封面)';
+        ratioOptions[10].text = '21:9 (超宽屏)';
+      } else if (lang === 'es') {
+        ratioOptions[1].text = '16:9 (Video/Pantalla)';
+        ratioOptions[2].text = '4:3 (Pantalla Tradicional)';
+        ratioOptions[3].text = '1:1 (Cuadrado/Instagram)';
+        ratioOptions[4].text = '9:16 (Móvil Vertical/Historias)';
+        ratioOptions[5].text = '3:4 (Instagram/iPad)';
+        ratioOptions[6].text = '2:1 (Twitter Horizontal)';
+        ratioOptions[7].text = '1:2 (Pinterest)';
+        ratioOptions[8].text = '4:5 (Instagram Vertical)';
+        ratioOptions[9].text = '3:2 (Portada Social)';
+        ratioOptions[10].text = '21:9 (Ultraancha)';
+      } else if (lang === 'ar') {
+        ratioOptions[1].text = '16:9 (فيديو/شاشة)';
+        ratioOptions[2].text = '4:3 (شاشة تقليدية)';
+        ratioOptions[3].text = '1:1 (مربع/انستجرام)';
+        ratioOptions[4].text = '9:16 (جوال عمودي/قصص)';
+        ratioOptions[5].text = '3:4 (انستجرام/آيباد)';
+        ratioOptions[6].text = '2:1 (تويتر أفقي)';
+        ratioOptions[7].text = '1:2 (بينتريست)';
+        ratioOptions[8].text = '4:5 (انستجرام عمودي)';
+        ratioOptions[9].text = '3:2 (غلاف اجتماعي)';
+        ratioOptions[10].text = '21:9 (شاشة عريضة جدًا)';
+      } else if (lang === 'de') {
+        ratioOptions[1].text = '16:9 (Video/Bildschirm)';
+        ratioOptions[2].text = '4:3 (Traditioneller Bildschirm)';
+        ratioOptions[3].text = '1:1 (Quadrat/Instagram)';
+        ratioOptions[4].text = '9:16 (Mobil Hochformat/Stories)';
+        ratioOptions[5].text = '3:4 (Instagram/iPad)';
+        ratioOptions[6].text = '2:1 (Twitter Querformat)';
+        ratioOptions[7].text = '1:2 (Pinterest)';
+        ratioOptions[8].text = '4:5 (Instagram Hochformat)';
+        ratioOptions[9].text = '3:2 (Social Media Cover)';
+        ratioOptions[10].text = '21:9 (Ultrabreit)';
+      } else if (lang === 'pt') {
+        ratioOptions[1].text = '16:9 (Vídeo/Tela)';
+        ratioOptions[2].text = '4:3 (Tela Tradicional)';
+        ratioOptions[3].text = '1:1 (Quadrado/Instagram)';
+        ratioOptions[4].text = '9:16 (Móvel Retrato/Stories)';
+        ratioOptions[5].text = '3:4 (Instagram/iPad)';
+        ratioOptions[6].text = '2:1 (Twitter Paisagem)';
+        ratioOptions[7].text = '1:2 (Pinterest)';
+        ratioOptions[8].text = '4:5 (Instagram Retrato)';
+        ratioOptions[9].text = '3:2 (Capa Social)';
+        ratioOptions[10].text = '21:9 (Ultralargo)';
+      } else if (lang === 'ja') {
+        ratioOptions[1].text = '16:9 (ビデオ/スクリーン)';
+        ratioOptions[2].text = '4:3 (従来のスクリーン)';
+        ratioOptions[3].text = '1:1 (正方形/Instagram)';
+        ratioOptions[4].text = '9:16 (モバイル縦向き/ストーリー)';
+        ratioOptions[5].text = '3:4 (Instagram/iPad)';
+        ratioOptions[6].text = '2:1 (Twitter横向き)';
+        ratioOptions[7].text = '1:2 (Pinterest)';
+        ratioOptions[8].text = '4:5 (Instagram縦向き)';
+        ratioOptions[9].text = '3:2 (ソーシャルカバー)';
+        ratioOptions[10].text = '21:9 (ウルトラワイド)';
+      } else if (lang === 'fr') {
+        ratioOptions[1].text = '16:9 (Vidéo/Écran)';
+        ratioOptions[2].text = '4:3 (Écran Traditionnel)';
+        ratioOptions[3].text = '1:1 (Carré/Instagram)';
+        ratioOptions[4].text = '9:16 (Portrait Mobile/Histoires)';
+        ratioOptions[5].text = '3:4 (Instagram/iPad)';
+        ratioOptions[6].text = '2:1 (Landscape Twitter)';
+        ratioOptions[7].text = '1:2 (Pinterest)';
+        ratioOptions[8].text = '4:5 (Instagram Portrait)';
+        ratioOptions[9].text = '3:2 (Couverture Social)';
+        ratioOptions[10].text = '21:9 (Ultra-large)';
+      } else if (lang === 'ko') {
+        ratioOptions[1].text = '16:9 (비디오/화면)';
+        ratioOptions[2].text = '4:3 (전통적인 화면)';
+        ratioOptions[3].text = '1:1 (정사각형/인스타그램)';
+        ratioOptions[4].text = '9:16 (모바일 세로/스토리)';
+        ratioOptions[5].text = '3:4 (인스타그램/아이패드)';
+        ratioOptions[6].text = '2:1 (트위터 가로)';
+        ratioOptions[7].text = '1:2 (핀터레스트)';
+        ratioOptions[8].text = '4:5 (인스타그램 세로)';
+        ratioOptions[9].text = '3:2 (소셜 커버)';
+        ratioOptions[10].text = '21:9 (울트라와이드)';
+      }
       
       ratioOptions.forEach(option => {
         const optionElement = document.createElement('option');
@@ -730,7 +1392,7 @@ if (window._ratioScreenshotLoaded) {
             const title = this.toolbar.querySelector('h3');
             const width = Math.abs(this.endX - this.startX);
             const height = Math.abs(this.endY - this.startY);
-            title.textContent = `${Math.round(width)} × ${Math.round(height)} 像素 (${this.ratio})`;
+            title.textContent = `${Math.round(width)} × ${Math.round(height)} ${lang === 'zh' ? '像素' : lang === 'es' ? 'px' : lang === 'ar' ? 'dp' : 'px'} (${this.ratio})`;
           }
         }
       });
@@ -738,15 +1400,15 @@ if (window._ratioScreenshotLoaded) {
       // 添加图像质量选择下拉菜单
       const qualitySelect = document.createElement('select');
       qualitySelect.className = 'ratio-screenshot-button';
-      qualitySelect.title = '选择保存图片的质量';
+      qualitySelect.title = I18nHelper.getToolbarText('qualityLabel');
       qualitySelect.style.minWidth = '85px'; // 设置最小宽度，使其不过大
       
       // 添加质量选项 - 使用更简洁的文本
       const qualityOptions = [
-        { value: '1.0', text: '原图质量' },
-        { value: '0.95', text: '高清' },
-        { value: '0.85', text: '标准' },
-        { value: '0.7', text: '轻量' }
+        { value: '1.0', text: I18nHelper.getToolbarText('imageQuality.original') },
+        { value: '0.95', text: I18nHelper.getToolbarText('imageQuality.high') },
+        { value: '0.85', text: I18nHelper.getToolbarText('imageQuality.standard') },
+        { value: '0.7', text: I18nHelper.getToolbarText('imageQuality.light') }
       ];
       
       qualityOptions.forEach(option => {
@@ -784,26 +1446,36 @@ if (window._ratioScreenshotLoaded) {
           
           // 显示有意义的文件大小
           if (estimatedSizeKB > 1024) {
-            fileSize = ` (约 ${(estimatedSizeKB / 1024).toFixed(1)} MB)`;
+            fileSize = I18nHelper.formatFileSizeEstimate((estimatedSizeKB / 1024).toFixed(1), 'MB');
           } else {
-            fileSize = ` (约 ${Math.round(estimatedSizeKB)} KB)`;
+            fileSize = I18nHelper.formatFileSizeEstimate(Math.round(estimatedSizeKB), 'KB');
           }
         }
         
         // 显示质量信息和大小估计
         const qualityName = qualitySelect.options[qualitySelect.selectedIndex].textContent;
-        this.showNotification(`图片质量已设置为: ${qualityName}${fileSize}`, 2000);
+        this.showNotification(I18nHelper.getNotificationText('imageQualitySet', qualityName) + ' ' + fileSize, 2000);
       });
       
       // 锁定尺寸切换按钮
       const lockSizeButton = document.createElement('button');
       lockSizeButton.className = this.isLockSize ? 
         'ratio-screenshot-button primary' : 'ratio-screenshot-button';
-      lockSizeButton.textContent = this.isLockSize ? '✓ 锁定尺寸' : '锁定尺寸';
-      lockSizeButton.title = '锁定当前尺寸用于连续截图';
+      lockSizeButton.textContent = this.isLockSize ? 
+        I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize');
+      lockSizeButton.title = lang === 'zh' ? '锁定当前尺寸用于连续截图' : 
+                           lang === 'es' ? 'Bloquear tamaño para captura continua' : 
+                           lang === 'ar' ? 'قفل الحجم للتصوير المستمر' : 
+                           lang === 'de' ? 'Größe sperren für fortlaufende Aufnahme' : 
+                           lang === 'pt' ? 'Bloquear tamanho para captura contínua' : 
+                           lang === 'ja' ? '連続キャプチャのために現在のサイズをロック' : 
+                           lang === 'fr' ? 'Verrouiller la taille actuelle pour une capture continue' : 
+                           lang === 'ko' ? '연속 캡처를 위한 현재 크기 잠금' : 
+                           'Lock current size for continuous capture';
       lockSizeButton.addEventListener('click', () => {
         this.isLockSize = !this.isLockSize;
-        lockSizeButton.textContent = this.isLockSize ? '✓ 锁定尺寸' : '锁定尺寸';
+        lockSizeButton.textContent = this.isLockSize ? 
+          I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize');
         lockSizeButton.className = this.isLockSize ? 
           'ratio-screenshot-button primary' : 'ratio-screenshot-button';
         
@@ -824,11 +1496,21 @@ if (window._ratioScreenshotLoaded) {
       const magneticButton = document.createElement('button');
       magneticButton.className = this.isMagneticEnabled ? 
         'ratio-screenshot-button primary' : 'ratio-screenshot-button';
-      magneticButton.textContent = this.isMagneticEnabled ? '✓ 磁性吸附' : '磁性吸附';
-      magneticButton.title = '启用后会自动吸附到页面元素边缘';
+      magneticButton.textContent = this.isMagneticEnabled ? 
+        I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic');
+      magneticButton.title = lang === 'zh' ? '启用后会自动吸附到页面元素边缘' : 
+                           lang === 'es' ? 'Auto-snap para elementos de la página cuando está activado' : 
+                           lang === 'ar' ? 'تمكين التقاط التلقائي للعناصر الموجودة على الصفحة عند تمكينه' : 
+                           lang === 'de' ? 'Automatisches Einrasten an Seitenelementkanten bei Aktivierung' : 
+                           lang === 'pt' ? 'Encaixe automático nos elementos da página quando ativado' : 
+                           lang === 'ja' ? '有効にするとページ要素に自動的に吸着' : 
+                           lang === 'fr' ? 'Accrochage automatique aux éléments de la page lorsqu\'activé' : 
+                           lang === 'ko' ? '활성화시 페이지 요소에 자동으로 스냅' : 
+                           'Auto-snap to page element edges when enabled';
       magneticButton.addEventListener('click', () => {
         this.isMagneticEnabled = !this.isMagneticEnabled;
-        magneticButton.textContent = this.isMagneticEnabled ? '✓ 磁性吸附' : '磁性吸附';
+        magneticButton.textContent = this.isMagneticEnabled ? 
+          I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic');
         magneticButton.className = this.isMagneticEnabled ? 
           'ratio-screenshot-button primary' : 'ratio-screenshot-button';
         
@@ -846,23 +1528,27 @@ if (window._ratioScreenshotLoaded) {
         primaryRow.appendChild(keepButton);
       }
       
-      // 添加磁性吸附按钮到第二行
+      // 添加磁性吸附按钮
       configRow.appendChild(magneticButton);
       
       // 添加两行到工具栏
       this.toolbar.appendChild(primaryRow);
       this.toolbar.appendChild(configRow);
       
-      // 添加提示信息
+      // 添加移动提示
       const moveHint = document.createElement('div');
-      moveHint.style.cssText = `
-        color: #666;
-        font-size: 12px;
-        text-align: center;
-        width: 100%;
-        margin-top: 4px;
-      `;
-      // moveHint.textContent = '提示: 可拖动选择框调整位置';
+      moveHint.className = 'ratio-screenshot-move-hint';
+      moveHint.innerHTML = lang === 'zh' ? 
+        '提示: <strong>拖动边缘</strong>调整大小, <strong>鼠标滚轮</strong>微调位置' : 
+        lang === 'es' ? 'Tip: <strong>Arrastra los bordes</strong> para cambiar el tamaño, <strong>Rueda del mouse</strong> para ajustar la posición' : 
+        lang === 'ar' ? 'تلميح: <strong>سحب الحافة</strong> لتغيير الحجم, <strong>عجلة الماوس</strong> للضبط الدقيق' : 
+        lang === 'de' ? 'Tipp: <strong>Ränder ziehen</strong> zum Größe anpassen, <strong>Mausrad</strong> für Feineinstellung' : 
+        lang === 'pt' ? 'Dica: <strong>Arraste as bordas</strong> para redimensionar, <strong>Roda do mouse</strong> para ajuste fino' : 
+        lang === 'ja' ? 'ヒント: <strong>端をドラッグ</strong>してサイズ変更、<strong>マウスホイール</strong>で微調整' : 
+        lang === 'fr' ? 'Astuce: <strong>Faire glisser les bords</strong> pour redimensionner, <strong>Molette de la souris</strong> pour ajustement fin' : 
+        lang === 'ko' ? '팁: <strong>가장자리 드래그</strong>로 크기 조정, <strong>마우스 휠</strong>로 미세 조정' : 
+        'Tip: <strong>Drag edges</strong> to resize, <strong>Mouse wheel</strong> for fine adjustment';
+      
       this.toolbar.appendChild(moveHint);
       
       document.body.appendChild(this.toolbar);
@@ -1384,15 +2070,15 @@ if (window._ratioScreenshotLoaded) {
             const deltaY = moveEvent.clientY - startY;
             
             // 根据控制点位置调整不同的边缘
-            if (position.includes('left')) {
+            if (position.indexOf('left') > -1) {
               this.startX = initialStartX + deltaX;
-            } else if (position.includes('right')) {
+            } else if (position.indexOf('right') > -1) {
               this.endX = initialEndX + deltaX;
             }
             
-            if (position.includes('top')) {
+            if (position.indexOf('top') > -1) {
               this.startY = initialStartY + deltaY;
-            } else if (position.includes('bottom')) {
+            } else if (position.indexOf('bottom') > -1) {
               this.endY = initialEndY + deltaY;
             }
             
@@ -1403,13 +2089,13 @@ if (window._ratioScreenshotLoaded) {
                 
                 if (widthRatio > 0 && heightRatio > 0) {
                   // 确定是哪个边被拖动
-                  if (position.includes('top') || position.includes('bottom')) {
+                  if (position.indexOf('top') > -1 || position.indexOf('bottom') > -1) {
                     // 垂直边被拖动，根据高度计算宽度
                     const height = Math.abs(this.endY - this.startY);
                     const width = height * (widthRatio / heightRatio);
                     
                     // 根据拖动的边调整另一边的坐标
-                    if (position.includes('left')) {
+                    if (position.indexOf('left') > -1) {
                       this.startX = this.endX - width * Math.sign(this.endX - initialStartX);
                     } else {
                       this.endX = this.startX + width * Math.sign(initialEndX - this.startX);
@@ -1420,7 +2106,7 @@ if (window._ratioScreenshotLoaded) {
                     const height = width * (heightRatio / widthRatio);
                     
                     // 根据拖动的边调整另一边的坐标
-                    if (position.includes('top')) {
+                    if (position.indexOf('top') > -1) {
                       this.startY = this.endY - height * Math.sign(this.endY - initialStartY);
                     } else {
                       this.endY = this.startY + height * Math.sign(initialEndY - this.startY);
@@ -1651,7 +2337,7 @@ if (window._ratioScreenshotLoaded) {
     // 捕获指定区域
     captureArea(rect) {
       // 显示处理中提示
-      const captureMsg = this.showNotification("正在处理截图...");
+      const captureMsg = this.showNotification(I18nHelper.getNotificationText('processingScreenshot'));
       
       // 获取当前的滚动位置和视口尺寸
       const scrollX = window.scrollX;
@@ -1793,7 +2479,7 @@ if (window._ratioScreenshotLoaded) {
           }
           
           // 显示成功提示
-          this.showNotification("截图已保存到下载文件夹", 2000);
+          this.showNotification(I18nHelper.getNotificationText('screenshotSaved'), 2000);
           
           // 如果在连续模式下，不结束截图，而是清除当前选择框
           if (this.isContinuousMode) {
@@ -1806,7 +2492,7 @@ if (window._ratioScreenshotLoaded) {
         
         image.onerror = (error) => {
           console.error("图片加载失败:", error);
-          this.showNotification("截图加载失败，请重试", 3000);
+          this.showNotification(I18nHelper.getNotificationText('screenshotLoadFailed'), 3000);
           this.end();
         };
         
@@ -1814,7 +2500,7 @@ if (window._ratioScreenshotLoaded) {
         image.src = response.dataUrl;
       } else {
         console.error("截图失败:", response?.error || '未知错误');
-        this.showNotification("获取屏幕截图失败，请重试", 3000);
+        this.showNotification(I18nHelper.getNotificationText('screenshotLoadFailed'), 3000);
         this.end();
       }
     }
@@ -1829,7 +2515,7 @@ if (window._ratioScreenshotLoaded) {
       console.log("开始捕获所有选择区域");
       
       // 显示处理中提示
-      const captureMsg = this.showNotification("正在处理所有区域的截图...");
+      const captureMsg = this.showNotification(I18nHelper.getNotificationText('processingAllAreas'));
       
       // 获取当前选择框和所有保存的选择
       const currentSelection = {
@@ -1862,7 +2548,7 @@ if (window._ratioScreenshotLoaded) {
         captureMsg.remove();
         
         console.log("所有区域处理完成");
-        this.showNotification(`成功保存了 ${areas.length} 个区域的截图`, 3000);
+        this.showNotification(I18nHelper.getNotificationText('allAreasSaved', areas.length), 3000);
         
         // 结束截图
         this.end();
@@ -2050,7 +2736,7 @@ if (window._ratioScreenshotLoaded) {
         // 如果可见部分太小，报错提示
         if (visibleWidth < 10 || visibleHeight < 10) {
           console.error("可见部分太小，无法截图");
-          this.showNotification("选定区域几乎完全在可见范围外，无法截图", 3000);
+          this.showNotification(I18nHelper.getNotificationText('areaNotVisible'), 3000);
           return;
         }
         
@@ -2088,7 +2774,7 @@ if (window._ratioScreenshotLoaded) {
         this.saveImageToFile(dataUrl, this.saveFormat);
         
         // 显示部分可见的提示
-        this.showNotification("部分区域超出可视范围，已截取可见部分", 3000);
+        this.showNotification(I18nHelper.getNotificationText('partiallyVisible'), 3000);
         
         // 如果在连续模式下，不结束截图，而是清除当前选择框
         if (this.isContinuousMode) {
@@ -2099,7 +2785,7 @@ if (window._ratioScreenshotLoaded) {
         }
       } catch (error) {
         console.error("处理部分可见图像时出错:", error);
-        this.showNotification(`截图处理时出错: ${error.message}`, 3000);
+        this.showNotification(I18nHelper.getNotificationText('processingError', error.message), 3000);
         this.end();
       }
     }
@@ -2183,16 +2869,16 @@ if (window._ratioScreenshotLoaded) {
             
             // 仅当有效区域明显小于所选区域时提示用户
             if (validWidth < rect.width * 0.8 || validHeight < rect.height * 0.8) {
-              this.showNotification("部分选择区域超出可见范围，已截取可见部分", 3000);
+              this.showNotification(I18nHelper.getNotificationText('partiallyVisibleArea'), 3000);
             }
           } else {
             console.error("无法裁剪图像，选定区域完全在可见范围之外");
-            this.showNotification("选定区域超出可见范围，无法截图。请滚动页面使该区域可见后再试。", 3000);
+            this.showNotification(I18nHelper.getNotificationText('areaOutOfView'), 3000);
           }
         }
       } catch (error) {
         console.error("处理图像时出错:", error, error.stack);
-        this.showNotification(`截图处理时出错: ${error.message}`, 3000);
+        this.showNotification(I18nHelper.getNotificationText('processingError', error.message), 3000);
       }
     }
     
@@ -2213,7 +2899,7 @@ if (window._ratioScreenshotLoaded) {
           console.log(`区域 ${index+1} 保存成功`);
         } else {
           console.error(`区域 ${index+1} 保存失败:`, saveResponse?.error || '未知错误');
-          this.showNotification(`保存截图失败: ${saveResponse?.error || '未知错误'}`, 3000);
+          this.showNotification(I18nHelper.getNotificationText('saveFailed', saveResponse?.error || '未知错误'), 3000);
         }
       });
     }
@@ -2870,7 +3556,7 @@ if (window._ratioScreenshotLoaded) {
         user-select: none;
         transition: all 0.2s ease;
       `;
-      cancelButton.textContent = '取消 (Esc)';
+      cancelButton.textContent = I18nHelper.getNotificationText('escape');
       
       // 悬停效果
       cancelButton.addEventListener('mouseover', () => {
@@ -2906,7 +3592,7 @@ if (window._ratioScreenshotLoaded) {
       document.addEventListener('keydown', this.boundHandleKeyDown);
       
       // 显示提示
-      this.showNotification('已启用智能截图模式，点击选择要截图的元素 (Enter确认, Esc取消)', 2000);
+      this.showNotification(I18nHelper.getNotificationText('smartModeEnabled'), 2000);
     }
 
     // 处理检查模式下的鼠标移动
@@ -3093,7 +3779,7 @@ if (window._ratioScreenshotLoaded) {
       console.log("开始复制当前选择区域到剪贴板");
       
       // 显示处理中提示
-      const copyMsg = this.showNotification("正在处理复制...");
+      const copyMsg = this.showNotification(I18nHelper.getNotificationText('processing'));
       
       // 使用我们跟踪的绝对坐标进行截图
       const captureRect = {
@@ -3154,7 +3840,7 @@ if (window._ratioScreenshotLoaded) {
               
               image.onerror = () => {
                 console.error("图像加载失败");
-                copyMsg.textContent = "复制失败: 图像加载失败";
+                copyMsg.textContent = I18nHelper.getNotificationText('copyFailed');
                 setTimeout(() => copyMsg.remove(), 2000);
               };
               
@@ -3162,7 +3848,7 @@ if (window._ratioScreenshotLoaded) {
               image.src = response.dataUrl;
             } else {
               console.error("截图失败:", response?.error || "未知错误");
-              copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
+              copyMsg.textContent = I18nHelper.getNotificationText('copyFailed', response?.error || "未知错误");
               setTimeout(() => copyMsg.remove(), 2000);
             }
           });
@@ -3191,7 +3877,7 @@ if (window._ratioScreenshotLoaded) {
               
               image.onerror = () => {
                 console.error("图像加载失败");
-                copyMsg.textContent = "复制失败: 图像加载失败";
+                copyMsg.textContent = I18nHelper.getNotificationText('copyFailed');
                 setTimeout(() => copyMsg.remove(), 2000);
               };
               
@@ -3199,7 +3885,7 @@ if (window._ratioScreenshotLoaded) {
               image.src = response.dataUrl;
             } else {
               console.error("全页面截图失败:", response?.error || "未知错误");
-              copyMsg.textContent = `复制失败: ${response?.error || "未知错误"}`;
+              copyMsg.textContent = I18nHelper.getNotificationText('copyFailed', response?.error || "未知错误");
               setTimeout(() => copyMsg.remove(), 2000);
             }
           });
@@ -3218,7 +3904,7 @@ if (window._ratioScreenshotLoaded) {
         
         if (!ctx) {
           console.error("无法获取Canvas上下文");
-          notification.textContent = "复制失败: 无法获取Canvas上下文";
+          notification.textContent = I18nHelper.getNotificationText('canvasContextError');
           setTimeout(() => notification.remove(), 2000);
           return;
         }
@@ -3244,17 +3930,17 @@ if (window._ratioScreenshotLoaded) {
                 navigator.clipboard.write([clipboardItem])
                   .then(() => {
                     console.log("成功复制到剪贴板");
-                    notification.textContent = "已复制到剪贴板";
+                    notification.textContent = I18nHelper.getNotificationText('copied');
                     setTimeout(() => notification.remove(), 2000);
                   })
                   .catch(err => {
                     console.error("复制到剪贴板失败:", err);
-                    notification.textContent = `复制失败: ${err.message || "剪贴板访问被拒绝"}`;
+                    notification.textContent = I18nHelper.getNotificationText('clipboardAccessDenied', err.message || '');
                     setTimeout(() => notification.remove(), 2000);
                   });
               } catch (error) {
                 console.error("创建ClipboardItem失败:", error);
-                notification.textContent = `复制失败: ${error.message || "不支持剪贴板API"}`;
+                notification.textContent = I18nHelper.getNotificationText('copyFailed', error.message || "不支持剪贴板API");
                 setTimeout(() => notification.remove(), 2000);
                 
                 // 尝试使用旧版方法
@@ -3262,18 +3948,18 @@ if (window._ratioScreenshotLoaded) {
               }
             } else {
               console.error("无法创建Blob");
-              notification.textContent = "复制失败: 无法创建图像数据";
+              notification.textContent = I18nHelper.getNotificationText('copyFailed');
               setTimeout(() => notification.remove(), 2000);
             }
           }, 'image/png');
         } else {
           console.warn("裁剪区域超出可见范围");
-          notification.textContent = "复制失败: 选择区域超出可见范围";
+          notification.textContent = I18nHelper.getNotificationText('copyAreaOutOfView');
           setTimeout(() => notification.remove(), 2000);
         }
       } catch (error) {
         console.error("处理图像时出错:", error);
-        notification.textContent = `复制失败: ${error.message || "处理图像出错"}`;
+        notification.textContent = I18nHelper.getNotificationText('copyFailed', error.message || "处理图像出错");
         setTimeout(() => notification.remove(), 2000);
       }
     }
@@ -3328,11 +4014,11 @@ if (window._ratioScreenshotLoaded) {
         
         document.body.appendChild(imagePreview);
         
-        notification.textContent = "已显示图像预览，请右键复制";
+        notification.textContent = I18nHelper.getNotificationText('imagePreviewShown');
         setTimeout(() => notification.remove(), 2000);
       } catch (error) {
         console.error("替代复制方法失败:", error);
-        notification.textContent = `复制失败: ${error.message}`;
+        notification.textContent = I18nHelper.getNotificationText('copyFailed', error.message);
         setTimeout(() => notification.remove(), 2000);
       }
     }

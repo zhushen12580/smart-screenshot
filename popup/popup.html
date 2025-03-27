@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="__MSG_@@ui_locale__">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>精准截图</title>
+  <title data-i18n="title">精准截图</title>
   <style>
     :root {
       --primary-color: #6d28d9;
@@ -249,38 +249,38 @@
 </head>
 <body>
   <a href="https://puzzledu.com/" class="title-link" id="title-link">
-    <h1>精准截图</h1>
+    <h1 data-i18n="title">精准截图</h1>
   </a>
   
   <div class="mode-switch">
-    <button id="normal-mode" class="active">普通模式</button>
-    <button id="inspect-mode">智能模式</button>
+    <button id="normal-mode" class="active" data-i18n="normalMode">普通模式</button>
+    <button id="inspect-mode" data-i18n="inspectMode">智能模式</button>
   </div>
   
   <div class="form-row">
     <div class="form-col">
       <div class="form-group">
-        <label for="ratio-select">选择比例</label>
+        <label for="ratio-select" data-i18n="ratioLabel">选择比例</label>
         <div class="select-wrapper">
           <select id="ratio-select">
-            <optgroup label="常用比例">
-              <option value="16:9">16:9 (视频/屏幕)</option>
-              <option value="4:3">4:3 (传统屏幕)</option>
-              <option value="1:1">1:1 (正方形/Instagram)</option>
+            <optgroup data-group="common">
+              <option value="16:9" data-option="16:9">16:9 (视频/屏幕)</option>
+              <option value="4:3" data-option="4:3">4:3 (传统屏幕)</option>
+              <option value="1:1" data-option="1:1">1:1 (正方形/Instagram)</option>
             </optgroup>
-            <optgroup label="手机/竖屏">
-              <option value="9:16">9:16 (手机竖屏/故事)</option>
-              <option value="3:4">3:4 (小红书/iPad)</option>
+            <optgroup data-group="mobile">
+              <option value="9:16" data-option="9:16">9:16 (手机竖屏/故事)</option>
+              <option value="3:4" data-option="3:4">3:4 (小红书/iPad)</option>
             </optgroup>
-            <optgroup label="社交媒体">
-              <option value="2:1">2:1 (小红书/Twitter横图)</option>
-              <option value="1:2">1:2 (Pinterest)</option>
-              <option value="4:5">4:5 (Instagram竖图)</option>
-              <option value="3:2">3:2 (SNS封面)</option>
+            <optgroup data-group="social">
+              <option value="2:1" data-option="2:1">2:1 (小红书/Twitter横图)</option>
+              <option value="1:2" data-option="1:2">1:2 (Pinterest)</option>
+              <option value="4:5" data-option="4:5">4:5 (Instagram竖图)</option>
+              <option value="3:2" data-option="3:2">3:2 (SNS封面)</option>
             </optgroup>
-            <optgroup label="其他">
-              <option value="21:9">21:9 (超宽屏)</option>
-              <option value="free">自由比例</option>
+            <optgroup data-group="other">
+              <option value="21:9" data-option="21:9">21:9 (超宽屏)</option>
+              <option value="free" data-option="free">自由比例</option>
             </optgroup>
           </select>
         </div>
@@ -289,7 +289,7 @@
     
     <div class="form-col">
       <div class="form-group">
-        <label for="save-format">保存格式</label>
+        <label for="save-format" data-i18n="formatLabel">保存格式</label>
         <div class="select-wrapper">
           <select id="save-format">
             <option value="png">PNG</option>
@@ -300,36 +300,37 @@
     </div>
   </div>
   
-  <button id="start-screenshot">开始截图</button>
+  <button id="start-screenshot" data-i18n="startButton">开始截图</button>
   
-  <div class="app-footer">
+  <div class="app-footer" data-i18n="footer">
     精准截图 v1.5 - 一键智能精准截图
   </div>
   
   <div class="shortcut-info">
     <div class="shortcut-header">
-      <span>快捷键</span>
+      <span data-i18n="shortcuts">快捷键</span>
     </div>
     <div class="shortcuts-list">
       <div class="shortcut-item">
-        <span class="shortcut-name">开始截图:</span>
+        <span class="shortcut-name" data-i18n="startScreenshot">开始截图:</span>
         <span class="shortcut-key" data-command="screenshot_start">Ctrl+Shift+S</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name">确认截图:</span>
+        <span class="shortcut-name" data-i18n="confirmScreenshot">确认截图:</span>
         <span class="shortcut-key">Enter</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name">取消截图:</span>
+        <span class="shortcut-name" data-i18n="cancelScreenshot">取消截图:</span>
         <span class="shortcut-key">Esc</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name">复制到剪贴板:</span>
+        <span class="shortcut-name" data-i18n="copyToClipboard">复制:</span>
         <span class="shortcut-key">Ctrl+C</span>
       </div>
     </div>
   </div>
   
-  <script src="popup.js"></script>
+  <script type="module" src="../utils/i18n.js"></script>
+  <script type="module" src="popup.js"></script>
 </body>
 </html> 
