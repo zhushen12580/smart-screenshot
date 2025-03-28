@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "Präzisions-Screenshot - Intelligentes Screenshot-Tool"
+  },
+  "appDescription": {
+    "message": "Screenshot-Tool mit voreingestellten Seitenverhältnissen und Elementenerkennung. Ideal für Designer und Content-Ersteller."
+  },
+  "openPopup": {
+    "message": "Erweiterungsfenster öffnen"
+  },
+  "startScreenshot": {
+    "message": "Screenshot starten"
+  },
+  "confirmScreenshot": {
+    "message": "Screenshot bestätigen"
+  },
+  "cancelScreenshot": {
+    "message": "Screenshot abbrechen"
+  }
+} 

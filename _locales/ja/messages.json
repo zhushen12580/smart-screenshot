@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "精密スクリーンショット - スマートスクリーンショットツール"
+  },
+  "appDescription": {
+    "message": "設定比率のスクリーンショットと要素検出機能を備えたツール。デザイナーやコンテンツ制作者に最適。"
+  },
+  "openPopup": {
+    "message": "拡張ポップアップを開く"
+  },
+  "startScreenshot": {
+    "message": "スクリーンショット開始"
+  },
+  "confirmScreenshot": {
+    "message": "スクリーンショット確認"
+  },
+  "cancelScreenshot": {
+    "message": "スクリーンショットキャンセル"
+  }
+} 

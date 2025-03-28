@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "정밀 스크린샷 - 스마트 스크린샷 도구"
+  },
+  "appDescription": {
+    "message": "사전 설정된 비율과 요소 감지 기능이 있는 스크린샷 도구. 디자이너와 콘텐츠 제작자에게 이상적."
+  },
+  "openPopup": {
+    "message": "확장 팝업 열기"
+  },
+  "startScreenshot": {
+    "message": "스크린샷 시작"
+  },
+  "confirmScreenshot": {
+    "message": "스크린샷 확인"
+  },
+  "cancelScreenshot": {
+    "message": "스크린샷 취소"
+  }
+} 

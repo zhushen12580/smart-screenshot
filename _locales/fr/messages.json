@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "Capture d'Écran Précise - Outil de Capture Intelligent"
+  },
+  "appDescription": {
+    "message": "Outil de capture d'écran avec proportions prédéfinies et détection d'éléments. Idéal pour designers et créateurs."
+  },
+  "openPopup": {
+    "message": "Ouvrir la Fenêtre d'Extension"
+  },
+  "startScreenshot": {
+    "message": "Démarrer la Capture"
+  },
+  "confirmScreenshot": {
+    "message": "Confirmer la Capture"
+  },
+  "cancelScreenshot": {
+    "message": "Annuler la Capture"
+  }
+} 

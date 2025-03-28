@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "Captura de Pantalla Precisa - Herramienta Inteligente de Captura"
+  },
+  "appDescription": {
+    "message": "Herramienta de capturas con proporciones preestablecidas y detección de elementos. Ideal para diseñadores y creadores."
+  },
+  "openPopup": {
+    "message": "Abrir Ventana de Extensión"
+  },
+  "startScreenshot": {
+    "message": "Iniciar Captura"
+  },
+  "confirmScreenshot": {
+    "message": "Confirmar Captura"
+  },
+  "cancelScreenshot": {
+    "message": "Cancelar Captura"
+  }
+} 

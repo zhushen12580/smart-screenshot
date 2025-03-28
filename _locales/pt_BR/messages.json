@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "Captura de Tela Precisa - Ferramenta Inteligente de Captura"
+  },
+  "appDescription": {
+    "message": "Ferramenta de captura de tela com proporções predefinidas e detecção de elementos. Ideal para designers e criadores."
+  },
+  "openPopup": {
+    "message": "Abrir Janela de Extensão"
+  },
+  "startScreenshot": {
+    "message": "Iniciar Captura"
+  },
+  "confirmScreenshot": {
+    "message": "Confirmar Captura"
+  },
+  "cancelScreenshot": {
+    "message": "Cancelar Captura"
+  }
+} 

@@ -1,0 +1,20 @@
+{
+  "appName": {
+    "message": "لقطة شاشة دقيقة - أداة لقطة شاشة ذكية"
+  },
+  "appDescription": {
+    "message": "أداة لقطة شاشة بنسب محددة مسبقًا واكتشاف العناصر. مثالية للمصممين ومنشئي المحتوى."
+  },
+  "openPopup": {
+    "message": "فتح نافذة الإضافة"
+  },
+  "startScreenshot": {
+    "message": "بدء اللقطة"
+  },
+  "confirmScreenshot": {
+    "message": "تأكيد اللقطة"
+  },
+  "cancelScreenshot": {
+    "message": "إلغاء اللقطة"
+  }
+} 
