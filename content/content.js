@@ -731,6 +731,7 @@ if (window._ratioScreenshotLoaded) {
           background-color: transparent;
           z-index: 9999;
           cursor: crosshair;
+          /* pointer-events已通过JavaScript控制 */
         }
         
         #ratio-screenshot-selection {
@@ -3273,9 +3274,11 @@ if (window._ratioScreenshotLoaded) {
       this.originalOverlayVisibility = this.overlay ? this.overlay.style.visibility : null;
       this.originalSelectionVisibility = this.selection ? this.selection.style.visibility : null;
       this.originalToolbarVisibility = this.toolbar ? this.toolbar.style.visibility : null;
+      this.originalEventBlockerVisibility = this.eventBlocker ? this.eventBlocker.style.visibility : null;
       
       // 隐藏所有相关UI元素
       if (this.overlay) this.overlay.style.visibility = 'hidden';
+      if (this.eventBlocker) this.eventBlocker.style.visibility = 'hidden';
       if (this.selection) {
         // 保存选择框的原始样式
         this.originalSelectionStyles = {
@@ -3408,6 +3411,10 @@ if (window._ratioScreenshotLoaded) {
         this.overlay.style.visibility = this.originalOverlayVisibility;
       }
       
+      if (this.eventBlocker && this.originalEventBlockerVisibility !== null) {
+        this.eventBlocker.style.visibility = this.originalEventBlockerVisibility;
+      }
+      
       if (this.selection) {
         if (this.originalSelectionVisibility !== null) {
           this.selection.style.visibility = this.originalSelectionVisibility;
@@ -3501,6 +3508,22 @@ if (window._ratioScreenshotLoaded) {
       this.isInspecting = true;
       this.isActive = true; // 添加这一行，标记截图模式为激活状态
       
+      // 创建事件阻止层，用于阻止与页面元素的交互
+      this.eventBlocker = document.createElement('div');
+      this.eventBlocker.id = 'ratio-screenshot-event-blocker';
+      this.eventBlocker.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: transparent;
+        z-index: 9998;
+        cursor: crosshair;
+        pointer-events: all;
+      `;
+      document.body.appendChild(this.eventBlocker);
+      
       // 创建高亮显示的元素
       this.highlightElement = document.createElement('div');
       this.highlightElement.style.cssText = `
@@ -3581,9 +3604,16 @@ if (window._ratioScreenshotLoaded) {
       // 修改鼠标样式
       document.body.style.cursor = 'crosshair';
 
-      // 添加事件监听器
-      document.addEventListener('mousemove', this.handleInspectorMouseMove.bind(this));
-      document.addEventListener('click', this.handleInspectorClick.bind(this));
+      // 使用我们自定义的事件处理来管理交互
+      this.eventBlocker.addEventListener('mousemove', this.handleInspectorMouseMove.bind(this));
+      this.eventBlocker.addEventListener('click', this.handleInspectorClick.bind(this));
+      this.eventBlocker.addEventListener('wheel', (e) => {
+        // 允许滚动事件通过
+        // 注意：阻止冒泡但不阻止默认行为
+        e.stopPropagation();
+      }, { passive: true });
+      
+      // 滚动事件仍需全局监听
       window.addEventListener('scroll', this.handleInspectorScroll.bind(this));
       
       // 添加键盘事件监听器 - 使用bind确保this指向正确
@@ -3594,22 +3624,30 @@ if (window._ratioScreenshotLoaded) {
       // 显示提示
       this.showNotification(I18nHelper.getNotificationText('smartModeEnabled'), 2000);
     }
-
+    
     // 处理检查模式下的鼠标移动
     handleInspectorMouseMove(e) {
       if (!this.isInspecting) return;
       
-      // 阻止默认事件
-      e.preventDefault();
-      e.stopPropagation();
+      // 在获取元素前临时禁用事件阻止层的指针事件
+      if (this.eventBlocker) {
+        this.eventBlocker.style.pointerEvents = 'none';
+      }
       
+      // 检查并高亮鼠标下方的元素
       const element = document.elementFromPoint(e.clientX, e.clientY);
-      if (!element) return;
-
-      this.currentElement = element;
-      this.updateHighlight(element);
+      
+      // 立即重新启用事件阻止层的指针事件
+      if (this.eventBlocker) {
+        this.eventBlocker.style.pointerEvents = 'all';
+      }
+      
+      if (element) {
+        this.updateHighlight(element);
+        this.currentElement = element;
+      }
     }
-
+    
     // 更新高亮显示
     updateHighlight(element) {
       if (!element || !this.highlightElement) return;
@@ -3656,11 +3694,12 @@ if (window._ratioScreenshotLoaded) {
         this.updateHighlight(this.currentElement);
       }
     }
-
+    
     // 处理检查模式下的点击
     handleInspectorClick(e) {
       if (!this.isInspecting) return;
       
+      // 重要：阻止事件传递给页面元素，避免改变页面状态
       e.preventDefault();
       e.stopPropagation();
 
@@ -3738,10 +3777,13 @@ if (window._ratioScreenshotLoaded) {
       // 恢复鼠标样式
       document.body.style.cursor = '';
       
-      // 移除事件监听器 - 使用匿名函数会导致无法正确移除事件
-      // 因此我们必须使用绑定的实例方法
-      document.removeEventListener('mousemove', this.handleInspectorMouseMove.bind(this));
-      document.removeEventListener('click', this.handleInspectorClick.bind(this));
+      // 移除事件阻止层
+      if (this.eventBlocker) {
+        this.eventBlocker.remove();
+        this.eventBlocker = null;
+      }
+      
+      // 移除事件监听器
       window.removeEventListener('scroll', this.handleInspectorScroll.bind(this));
       
       // 移除键盘事件监听器 - 使用保存的绑定函数
