@@ -1,14 +1,16 @@
-# 环境变量
+# 环境变量和敏感信息
 .env
 .env.local
 .env.*.local
+config.local.js
 
-# 依赖
+# 依赖目录
 node_modules/
-
-# 构建输出
 dist/
-build/
+
+# 系统文件
+.DS_Store
+Thumbs.db
 
 # IDE和编辑器文件
 .idea/
@@ -16,6 +18,16 @@ build/
 *.swp
 *.swo
 
-# 操作系统文件
-.DS_Store
-Thumbs.db 
+# 日志文件
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 构建输出
+build/
+out/
+
+# 临时文件
+*.tmp
+*.temp 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "1.5.1",
+  "version": "1.6",
   "description": "__MSG_appDescription__",
   "default_locale": "zh_CN",
   "permissions": [
@@ -25,7 +25,8 @@
     }
   },
   "background": {
-    "service_worker": "background/background.js"
+    "service_worker": "background/background.js",
+    "type": "module"
   },
   "icons": {
     "16": "assets/icons/icon16.png",
@@ -55,7 +56,9 @@
         "ai_dialog/dialog.html",
         "ai_dialog/dialog.js",
         "ai_dialog/dialog.css",
-        "ai_dialog/lib/*"
+        "ai_dialog/lib/*",
+        "config.js",
+        "config.local.js"
       ],
       "matches": ["<all_urls>"]
     }

@@ -1,6 +1,9 @@
 // 简化版后台脚本 - 只保留核心功能
 console.log("精准截图扩展启动");
 
+// 导入配置
+import config from '../config.js';
+
 // 默认设置
 const DEFAULT_SETTINGS = {
   ratio: "16:9",
@@ -679,76 +682,72 @@ function saveScreenshot(request, sendResponse) {
 function callGLM4VFlashAPI(request, sendResponse) {
   console.log("准备调用GLM-4V-Flash API...");
   
-  // 从环境变量获取API密钥
-  const apiKey = process.env.GLM4V_API_KEY;
-  const apiEndpoint = process.env.GLM4V_API_ENDPOINT;
-  
-  if (!apiKey) {
-    console.error("未设置GLM4V_API_KEY环境变量");
-    sendResponse({
-      success: false,
-      error: "API密钥未配置，请检查环境变量设置"
-    });
-    return true;
-  }
-  
-  // 根据真实示例构建请求体
-  const requestBody = {
-    model: "glm-4v-flash",
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${request.image}`
-            }
-          },
-          {
-            type: "text",
-            text: request.message
-          }
-        ]
-      }
-    ]
-  };
-  
-  console.log("发送API请求...");
-  
-  // 通过网络请求发送
-  fetch(apiEndpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
-    },
-    body: JSON.stringify(requestBody)
-  })
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    console.log("收到API响应:", data);
+  // 从存储中获取API密钥
+  chrome.storage.sync.get(['glm4v_api_key'], (data) => {
+    // 优先使用用户设置的API密钥，如果没有则使用默认配置
+    const apiKey = data.glm4v_api_key || config.GLM4V_API_KEY;
     
-    if (data.choices && data.choices[0] && data.choices[0].message) {
-      const aiResponse = data.choices[0].message.content;
+    // 准备API请求参数
+    const apiEndpoint = config.GLM4V_API_ENDPOINT;
+    
+    // 根据真实示例构建请求体
+    const requestBody = {
+      model: "glm-4v-flash",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${request.image}`
+              }
+            },
+            {
+              type: "text",
+              text: request.message
+            }
+          ]
+        }
+      ]
+    };
+    
+    console.log("发送API请求...");
+    
+    // 通过网络请求发送
+    fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("收到API响应:", data);
+      
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        const aiResponse = data.choices[0].message.content;
+        sendResponse({
+          success: true,
+          aiResponse: aiResponse
+        });
+      } else {
+        throw new Error("API响应格式不正确");
+      }
+    })
+    .catch(error => {
+      console.error("API调用出错:", error);
       sendResponse({
-        success: true,
-        aiResponse: aiResponse
+        success: false,
+        error: error.message || "调用GLM-4V-Flash API失败"
       });
-    } else {
-      throw new Error("API响应格式不正确");
-    }
-  })
-  .catch(error => {
-    console.error("API调用出错:", error);
-    sendResponse({
-      success: false,
-      error: error.message || "调用GLM-4V-Flash API失败"
     });
   });
   
