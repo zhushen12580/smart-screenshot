@@ -1,0 +1,21 @@
+# 环境变量
+.env
+.env.local
+.env.*.local
+
+# 依赖
+node_modules/
+
+# 构建输出
+dist/
+build/
+
+# IDE和编辑器文件
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 操作系统文件
+.DS_Store
+Thumbs.db 

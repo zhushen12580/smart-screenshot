@@ -95,11 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // 保存当前设置
     saveSettings(screenshotOptions);
     
-    // 同时也保存最近使用的比例
-    if (!isInspectMode) {
-      chrome.storage.sync.set({ lastUsedRatio: selectedRatio });
-    }
-    
     // 发送消息到background启动截图流程
     chrome.runtime.sendMessage({
       action: 'startScreenshot',
@@ -114,15 +109,16 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 加载设置
   function loadSettings() {
-    chrome.storage.sync.get(['ratio', 'saveFormat', 'imageQuality', 'isInspectMode'], function(data) {
+    chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality', 'isInspectMode'], function(data) {
       // 设置模式
       if (data.isInspectMode) {
         inspectModeBtn.click();
       }
       
       // 设置比例
-      if (data.ratio && ratioSelect && !data.isInspectMode) {
-        ratioSelect.value = data.ratio;
+      if (data.lastUsedRatio && ratioSelect && !data.isInspectMode) {
+        ratioSelect.value = data.lastUsedRatio;
+        selectedRatio = data.lastUsedRatio;
       }
       
       // 设置保存格式
@@ -140,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 保存设置
   function saveSettings(options) {
     chrome.storage.sync.set({
-      ratio: options.ratio,
+      lastUsedRatio: options.ratio,
       saveFormat: options.saveFormat,
       imageQuality: options.imageQuality,
       isInspectMode: options.isInspectMode

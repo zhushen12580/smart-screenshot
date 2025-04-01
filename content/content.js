@@ -1137,8 +1137,15 @@ if (window._ratioScreenshotLoaded) {
       // 保存当前模式状态，确保连续截图保持相同模式
       const currentIsInspectMode = this.isInspectMode;
       
-      // 清理当前选区
+      // 清理当前选区和工具栏
       this.clearCurrentSelection();
+      
+      // 如果工具栏还存在，确保移除
+      if (this.toolbar) {
+        this.toolbar.remove();
+        this.toolbar = null;
+        console.log("工具栏已移除");
+      }
       
       // 如果是智能检查模式，重新启用检查
       if (currentIsInspectMode) {
@@ -1147,6 +1154,14 @@ if (window._ratioScreenshotLoaded) {
         // 重新启用检查功能
         this.enableInspection();
       }
+      
+      // 重置选区状态
+      this.startX = 0;
+      this.startY = 0;
+      this.endX = 0;
+      this.endY = 0;
+      
+      console.log("已保存当前选区为预览，准备继续截图");
     }
     
     // 清除当前选择框（不影响已保存的选择）
@@ -1161,19 +1176,23 @@ if (window._ratioScreenshotLoaded) {
       if (this.toolbar) {
         this.toolbar.remove();
         this.toolbar = null;
+        console.log("工具栏已移除");
       }
+      
+      // 移除所有调整大小的手柄
+      document.querySelectorAll('.ratio-screenshot-resize-handle').forEach(handle => {
+        handle.remove();
+      });
       
       // 重置状态
       this.isSelecting = false;
-      this.startX = 0;
-      this.startY = 0;
-      this.endX = 0;
-      this.endY = 0;
       
       // 清理磁性吸附相关状态
       this.nearestEdges = null;
       this.lastMagneticPosition = null;
       this.clearMagneticGuides();
+      
+      console.log("已清理当前选区和相关元素");
     }
     
     // 创建工具栏
@@ -1279,12 +1298,18 @@ if (window._ratioScreenshotLoaded) {
       
       // 添加按钮到第一行
       if (this.isContinuousMode && this.selections.length > 0) {
+        const saveAllButton = document.createElement('button');
+        saveAllButton.className = 'ratio-screenshot-button primary';
+        saveAllButton.textContent = I18nHelper.getToolbarText('saveAllAreas');
+        saveAllButton.addEventListener('click', () => this.captureAndSaveAll());
         primaryRow.appendChild(saveAllButton);
       }
       primaryRow.appendChild(saveButton);
       primaryRow.appendChild(copyButton); // 添加复制按钮
       primaryRow.appendChild(dialogButton); // 添加对话按钮
-      primaryRow.appendChild(keepButton);
+      if (this.isContinuousMode) {
+        primaryRow.appendChild(keepButton);
+      }
       primaryRow.appendChild(cancelButton);
       primaryRow.appendChild(shortcutInfo);
       
@@ -1990,8 +2015,12 @@ if (window._ratioScreenshotLoaded) {
       // 添加调整大小的手柄
       this.addResizeHandles();
       
-      // 创建工具栏
+      // 创建工具栏 - 确保工具栏可见
       this.createToolbar();
+      if (this.toolbar) {
+        this.toolbar.style.display = 'flex';
+        console.log("工具栏已创建并显示");
+      }
       
       // 移除鼠标移动和释放事件
       document.removeEventListener('mousemove', this.handleMouseMove);
