@@ -56,6 +56,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "自由比例",
           qualityLabel: "图片质量",
           ratioLabel: "选择比例",
+          aiDialog: "智能对话",
           imageQuality: {
             original: "原图质量",
             high: "高清",
@@ -77,6 +78,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "Free Ratio",
           qualityLabel: "Image Quality",
           ratioLabel: "Select Ratio",
+          aiDialog: "AI Chat",
           imageQuality: {
             original: "Original Quality",
             high: "High Quality",
@@ -98,6 +100,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "Proporción Libre",
           qualityLabel: "Calidad de Imagen",
           ratioLabel: "Seleccionar Proporción",
+          aiDialog: "Chat de IA",
           imageQuality: {
             original: "Calidad Original",
             high: "Alta Calidad",
@@ -119,6 +122,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "نسبة حرة",
           qualityLabel: "جودة الصورة",
           ratioLabel: "اختيار النسبة",
+          aiDialog: "محادثة الذكاء الاصطناعي",
           imageQuality: {
             original: "الجودة الأصلية",
             high: "جودة عالية",
@@ -140,6 +144,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "Freies Seitenverhältnis",
           qualityLabel: "Bildqualität",
           ratioLabel: "Seitenverhältnis wählen",
+          aiDialog: "KI Chat",
           imageQuality: {
             original: "Originalqualität",
             high: "Hohe Qualität",
@@ -161,6 +166,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "Proporção Livre",
           qualityLabel: "Qualidade de Imagem",
           ratioLabel: "Selecionar Proporção",
+          aiDialog: "Chat de IA",
           imageQuality: {
             original: "Qualidade Original",
             high: "Alta Qualidade",
@@ -182,6 +188,7 @@ if (window._ratioScreenshotLoaded) {
           freeRatio: "自由比率",
           qualityLabel: "画像品質",
           ratioLabel: "比率を選択",
+          aiDialog: "AIチャット",
           imageQuality: {
             original: "オリジナル品質",
             high: "高品質",
@@ -198,11 +205,12 @@ if (window._ratioScreenshotLoaded) {
           cancel: "Annuler",
           lockSize: "Verrouiller la Taille",
           lockSizeActive: "✓ Taille Verrouillée",
-          magnetic: "Accrochage Magnétique",
-          magneticActive: "✓ Accrochage Magnétique",
+          magnetic: "Attraction Magnétique",
+          magneticActive: "✓ Attraction Magnétique",
           freeRatio: "Ratio Libre",
           qualityLabel: "Qualité d'Image",
           ratioLabel: "Sélectionner le Ratio",
+          aiDialog: "Chat IA",
           imageQuality: {
             original: "Qualité Originale",
             high: "Haute Qualité",
@@ -218,17 +226,18 @@ if (window._ratioScreenshotLoaded) {
           keepAndContinue: "유지 및 계속",
           cancel: "취소",
           lockSize: "크기 잠금",
-          lockSizeActive: "✓ 크기 잠금됨",
+          lockSizeActive: "✓ 크기 잠금",
           magnetic: "자석 스냅",
           magneticActive: "✓ 자석 스냅",
           freeRatio: "자유 비율",
           qualityLabel: "이미지 품질",
           ratioLabel: "비율 선택",
+          aiDialog: "AI 채팅",
           imageQuality: {
             original: "원본 품질",
             high: "고품질",
             standard: "표준",
-            light: "가벼움"
+            light: "가벼운"
           },
           fileSizeEstimate: "약 {0} {1}"
         }
@@ -1195,16 +1204,41 @@ if (window._ratioScreenshotLoaded) {
       copyButton.title = I18nHelper.isZh() ? '复制截图到剪贴板' : 'Copy screenshot to clipboard';
       copyButton.addEventListener('click', () => this.copyToClipboard());
       
+      // 添加对话按钮
+      const dialogButton = document.createElement('button');
+      dialogButton.className = 'ratio-screenshot-button';
+      dialogButton.textContent = I18nHelper.getToolbarText('aiDialog');
+      
+      // 根据当前语言设置按钮提示
+      dialogButton.title = (() => {
+        const currentLang = I18nHelper.getCurrentLanguage();
+        if (currentLang === 'zh') {
+          return '使用GLM-4V-Flash进行图像对话';
+        } else if (currentLang === 'es') {
+          return 'Chatear con la imagen usando GLM-4V-Flash';
+        } else if (currentLang === 'ar') {
+          return 'دردشة مع الصورة باستخدام GLM-4V-Flash';
+        } else if (currentLang === 'de') {
+          return 'Mit dem Bild chatten mit GLM-4V-Flash';
+        } else if (currentLang === 'pt') {
+          return 'Conversar com a imagem usando GLM-4V-Flash';
+        } else if (currentLang === 'ja') {
+          return 'GLM-4V-Flashを使用して画像とチャット';
+        } else if (currentLang === 'fr') {
+          return 'Discuter avec l\'image en utilisant GLM-4V-Flash';
+        } else if (currentLang === 'ko') {
+          return 'GLM-4V-Flash를 사용하여 이미지와 채팅';
+        } else {
+          return 'Chat with image using GLM-4V-Flash';
+        }
+      })();
+      
+      dialogButton.addEventListener('click', () => this.openAIDialog());
+      
       // 添加快捷键提示
       const shortcutInfo = document.createElement('div');
       // shortcutInfo.className = 'ratio-screenshot-shortcut-info';
       // shortcutInfo.innerHTML = '快捷键: <span>Enter</span> 确认, <span>Esc</span> 取消, <span>↑↓←→</span> 移动';
-      
-      // 保存全部按钮
-      const saveAllButton = document.createElement('button');
-      saveAllButton.className = 'ratio-screenshot-button primary';
-      saveAllButton.textContent = `${I18nHelper.getToolbarText('saveAllAreas')} (${this.selections.length + 1})`;
-      saveAllButton.addEventListener('click', () => this.captureAndSaveAll());
       
       // 保持此区域并继续按钮
       const keepButton = document.createElement('button');
@@ -1249,6 +1283,7 @@ if (window._ratioScreenshotLoaded) {
       }
       primaryRow.appendChild(saveButton);
       primaryRow.appendChild(copyButton); // 添加复制按钮
+      primaryRow.appendChild(dialogButton); // 添加对话按钮
       primaryRow.appendChild(keepButton);
       primaryRow.appendChild(cancelButton);
       primaryRow.appendChild(shortcutInfo);
@@ -1278,95 +1313,107 @@ if (window._ratioScreenshotLoaded) {
       ];
       
       // 根据当前语言设置比例文本
-      const lang = I18nHelper.getCurrentLanguage();
-      if (lang === 'zh') {
-        ratioOptions[1].text = '16:9 (视频/屏幕)';
-        ratioOptions[2].text = '4:3 (传统屏幕)';
-        ratioOptions[3].text = '1:1 (正方形/Instagram)';
-        ratioOptions[4].text = '9:16 (手机竖屏/故事)';
-        ratioOptions[5].text = '3:4 (小红书/iPad)';
-        ratioOptions[6].text = '2:1 (小红书/Twitter横图)';
-        ratioOptions[7].text = '1:2 (Pinterest)';
-        ratioOptions[8].text = '4:5 (Instagram竖图)';
-        ratioOptions[9].text = '3:2 (SNS封面)';
-        ratioOptions[10].text = '21:9 (超宽屏)';
-      } else if (lang === 'es') {
-        ratioOptions[1].text = '16:9 (Video/Pantalla)';
-        ratioOptions[2].text = '4:3 (Pantalla Tradicional)';
-        ratioOptions[3].text = '1:1 (Cuadrado/Instagram)';
-        ratioOptions[4].text = '9:16 (Móvil Vertical/Historias)';
-        ratioOptions[5].text = '3:4 (Instagram/iPad)';
-        ratioOptions[6].text = '2:1 (Twitter Horizontal)';
-        ratioOptions[7].text = '1:2 (Pinterest)';
-        ratioOptions[8].text = '4:5 (Instagram Vertical)';
-        ratioOptions[9].text = '3:2 (Portada Social)';
-        ratioOptions[10].text = '21:9 (Ultraancha)';
-      } else if (lang === 'ar') {
-        ratioOptions[1].text = '16:9 (فيديو/شاشة)';
-        ratioOptions[2].text = '4:3 (شاشة تقليدية)';
-        ratioOptions[3].text = '1:1 (مربع/انستجرام)';
-        ratioOptions[4].text = '9:16 (جوال عمودي/قصص)';
-        ratioOptions[5].text = '3:4 (انستجرام/آيباد)';
-        ratioOptions[6].text = '2:1 (تويتر أفقي)';
-        ratioOptions[7].text = '1:2 (بينتريست)';
-        ratioOptions[8].text = '4:5 (انستجرام عمودي)';
-        ratioOptions[9].text = '3:2 (غلاف اجتماعي)';
-        ratioOptions[10].text = '21:9 (شاشة عريضة جدًا)';
-      } else if (lang === 'de') {
-        ratioOptions[1].text = '16:9 (Video/Bildschirm)';
-        ratioOptions[2].text = '4:3 (Traditioneller Bildschirm)';
-        ratioOptions[3].text = '1:1 (Quadrat/Instagram)';
-        ratioOptions[4].text = '9:16 (Mobil Hochformat/Stories)';
-        ratioOptions[5].text = '3:4 (Instagram/iPad)';
-        ratioOptions[6].text = '2:1 (Twitter Querformat)';
-        ratioOptions[7].text = '1:2 (Pinterest)';
-        ratioOptions[8].text = '4:5 (Instagram Hochformat)';
-        ratioOptions[9].text = '3:2 (Social Media Cover)';
-        ratioOptions[10].text = '21:9 (Ultrabreit)';
-      } else if (lang === 'pt') {
-        ratioOptions[1].text = '16:9 (Vídeo/Tela)';
-        ratioOptions[2].text = '4:3 (Tela Tradicional)';
-        ratioOptions[3].text = '1:1 (Quadrado/Instagram)';
-        ratioOptions[4].text = '9:16 (Móvel Retrato/Stories)';
-        ratioOptions[5].text = '3:4 (Instagram/iPad)';
-        ratioOptions[6].text = '2:1 (Twitter Paisagem)';
-        ratioOptions[7].text = '1:2 (Pinterest)';
-        ratioOptions[8].text = '4:5 (Instagram Retrato)';
-        ratioOptions[9].text = '3:2 (Capa Social)';
-        ratioOptions[10].text = '21:9 (Ultralargo)';
-      } else if (lang === 'ja') {
-        ratioOptions[1].text = '16:9 (ビデオ/スクリーン)';
-        ratioOptions[2].text = '4:3 (従来のスクリーン)';
-        ratioOptions[3].text = '1:1 (正方形/Instagram)';
-        ratioOptions[4].text = '9:16 (モバイル縦向き/ストーリー)';
-        ratioOptions[5].text = '3:4 (Instagram/iPad)';
-        ratioOptions[6].text = '2:1 (Twitter横向き)';
-        ratioOptions[7].text = '1:2 (Pinterest)';
-        ratioOptions[8].text = '4:5 (Instagram縦向き)';
-        ratioOptions[9].text = '3:2 (ソーシャルカバー)';
-        ratioOptions[10].text = '21:9 (ウルトラワイド)';
-      } else if (lang === 'fr') {
-        ratioOptions[1].text = '16:9 (Vidéo/Écran)';
-        ratioOptions[2].text = '4:3 (Écran Traditionnel)';
-        ratioOptions[3].text = '1:1 (Carré/Instagram)';
-        ratioOptions[4].text = '9:16 (Portrait Mobile/Histoires)';
-        ratioOptions[5].text = '3:4 (Instagram/iPad)';
-        ratioOptions[6].text = '2:1 (Landscape Twitter)';
-        ratioOptions[7].text = '1:2 (Pinterest)';
-        ratioOptions[8].text = '4:5 (Instagram Portrait)';
-        ratioOptions[9].text = '3:2 (Couverture Social)';
-        ratioOptions[10].text = '21:9 (Ultra-large)';
-      } else if (lang === 'ko') {
-        ratioOptions[1].text = '16:9 (비디오/화면)';
-        ratioOptions[2].text = '4:3 (전통적인 화면)';
-        ratioOptions[3].text = '1:1 (정사각형/인스타그램)';
-        ratioOptions[4].text = '9:16 (모바일 세로/스토리)';
-        ratioOptions[5].text = '3:4 (인스타그램/아이패드)';
-        ratioOptions[6].text = '2:1 (트위터 가로)';
-        ratioOptions[7].text = '1:2 (핀터레스트)';
-        ratioOptions[8].text = '4:5 (인스타그램 세로)';
-        ratioOptions[9].text = '3:2 (소셜 커버)';
-        ratioOptions[10].text = '21:9 (울트라와이드)';
+      const getCurrentLanguageTexts = () => {
+        const currentLang = I18nHelper.getCurrentLanguage();
+        const updatedOptions = [...ratioOptions];
+        
+        if (currentLang === 'zh') {
+          updatedOptions[1].text = '16:9 (视频/屏幕)';
+          updatedOptions[2].text = '4:3 (传统屏幕)';
+          updatedOptions[3].text = '1:1 (正方形/Instagram)';
+          updatedOptions[4].text = '9:16 (手机竖屏/故事)';
+          updatedOptions[5].text = '3:4 (小红书/iPad)';
+          updatedOptions[6].text = '2:1 (小红书/Twitter横图)';
+          updatedOptions[7].text = '1:2 (Pinterest)';
+          updatedOptions[8].text = '4:5 (Instagram竖图)';
+          updatedOptions[9].text = '3:2 (SNS封面)';
+          updatedOptions[10].text = '21:9 (超宽屏)';
+        } else if (currentLang === 'es') {
+          updatedOptions[1].text = '16:9 (Video/Pantalla)';
+          updatedOptions[2].text = '4:3 (Pantalla Tradicional)';
+          updatedOptions[3].text = '1:1 (Cuadrado/Instagram)';
+          updatedOptions[4].text = '9:16 (Móvil Vertical/Historias)';
+          updatedOptions[5].text = '3:4 (Instagram/iPad)';
+          updatedOptions[6].text = '2:1 (Twitter Horizontal)';
+          updatedOptions[7].text = '1:2 (Pinterest)';
+          updatedOptions[8].text = '4:5 (Instagram Vertical)';
+          updatedOptions[9].text = '3:2 (Portada Social)';
+          updatedOptions[10].text = '21:9 (Ultraancha)';
+        } else if (currentLang === 'ar') {
+          updatedOptions[1].text = '16:9 (فيديو/شاشة)';
+          updatedOptions[2].text = '4:3 (شاشة تقليدية)';
+          updatedOptions[3].text = '1:1 (مربع/انستجرام)';
+          updatedOptions[4].text = '9:16 (جوال عمودي/قصص)';
+          updatedOptions[5].text = '3:4 (انستجرام/آيباد)';
+          updatedOptions[6].text = '2:1 (تويتر أفقي)';
+          updatedOptions[7].text = '1:2 (بينتريست)';
+          updatedOptions[8].text = '4:5 (انستجرام عمودي)';
+          updatedOptions[9].text = '3:2 (غلاف اجتماعي)';
+          updatedOptions[10].text = '21:9 (شاشة عريضة جدًا)';
+        } else if (currentLang === 'de') {
+          updatedOptions[1].text = '16:9 (Video/Bildschirm)';
+          updatedOptions[2].text = '4:3 (Traditioneller Bildschirm)';
+          updatedOptions[3].text = '1:1 (Quadrat/Instagram)';
+          updatedOptions[4].text = '9:16 (Mobil Hochformat/Stories)';
+          updatedOptions[5].text = '3:4 (Instagram/iPad)';
+          updatedOptions[6].text = '2:1 (Twitter Querformat)';
+          updatedOptions[7].text = '1:2 (Pinterest)';
+          updatedOptions[8].text = '4:5 (Instagram Hochformat)';
+          updatedOptions[9].text = '3:2 (Social Media Cover)';
+          updatedOptions[10].text = '21:9 (Ultrabreit)';
+        } else if (currentLang === 'pt') {
+          updatedOptions[1].text = '16:9 (Vídeo/Tela)';
+          updatedOptions[2].text = '4:3 (Tela Tradicional)';
+          updatedOptions[3].text = '1:1 (Quadrado/Instagram)';
+          updatedOptions[4].text = '9:16 (Móvel Retrato/Stories)';
+          updatedOptions[5].text = '3:4 (Instagram/iPad)';
+          updatedOptions[6].text = '2:1 (Twitter Paisagem)';
+          updatedOptions[7].text = '1:2 (Pinterest)';
+          updatedOptions[8].text = '4:5 (Instagram Retrato)';
+          updatedOptions[9].text = '3:2 (Capa Social)';
+          updatedOptions[10].text = '21:9 (Ultralargo)';
+        } else if (currentLang === 'ja') {
+          updatedOptions[1].text = '16:9 (ビデオ/スクリーン)';
+          updatedOptions[2].text = '4:3 (従来のスクリーン)';
+          updatedOptions[3].text = '1:1 (正方形/Instagram)';
+          updatedOptions[4].text = '9:16 (モバイル縦向き/ストーリー)';
+          updatedOptions[5].text = '3:4 (Instagram/iPad)';
+          updatedOptions[6].text = '2:1 (Twitter横向き)';
+          updatedOptions[7].text = '1:2 (Pinterest)';
+          updatedOptions[8].text = '4:5 (Instagram縦向き)';
+          updatedOptions[9].text = '3:2 (ソーシャルカバー)';
+          updatedOptions[10].text = '21:9 (ウルトラワイド)';
+        } else if (currentLang === 'fr') {
+          updatedOptions[1].text = '16:9 (Vidéo/Écran)';
+          updatedOptions[2].text = '4:3 (Écran Traditionnel)';
+          updatedOptions[3].text = '1:1 (Carré/Instagram)';
+          updatedOptions[4].text = '9:16 (Portrait Mobile/Histoires)';
+          updatedOptions[5].text = '3:4 (Instagram/iPad)';
+          updatedOptions[6].text = '2:1 (Landscape Twitter)';
+          updatedOptions[7].text = '1:2 (Pinterest)';
+          updatedOptions[8].text = '4:5 (Instagram Portrait)';
+          updatedOptions[9].text = '3:2 (Couverture Social)';
+          updatedOptions[10].text = '21:9 (Ultra-large)';
+        } else if (currentLang === 'ko') {
+          updatedOptions[1].text = '16:9 (비디오/화면)';
+          updatedOptions[2].text = '4:3 (전통적인 화면)';
+          updatedOptions[3].text = '1:1 (정사각형/인스타그램)';
+          updatedOptions[4].text = '9:16 (모바일 세로/스토리)';
+          updatedOptions[5].text = '3:4 (인스타그램/아이패드)';
+          updatedOptions[6].text = '2:1 (트위터 가로)';
+          updatedOptions[7].text = '1:2 (핀터레스트)';
+          updatedOptions[8].text = '4:5 (인스타그램 세로)';
+          updatedOptions[9].text = '3:2 (소셜 커버)';
+          updatedOptions[10].text = '21:9 (울트라와이드)';
+        }
+        
+        return { options: updatedOptions, lang: currentLang };
+      };
+      
+      // 更新比例文本
+      const { options, lang } = getCurrentLanguageTexts();
+      for (let i = 0; i < options.length; i++) {
+        ratioOptions[i].text = options[i].text;
       }
       
       ratioOptions.forEach(option => {
@@ -1393,7 +1440,8 @@ if (window._ratioScreenshotLoaded) {
             const title = this.toolbar.querySelector('h3');
             const width = Math.abs(this.endX - this.startX);
             const height = Math.abs(this.endY - this.startY);
-            title.textContent = `${Math.round(width)} × ${Math.round(height)} ${lang === 'zh' ? '像素' : lang === 'es' ? 'px' : lang === 'ar' ? 'dp' : 'px'} (${this.ratio})`;
+            const currentLang = I18nHelper.getCurrentLanguage();
+            title.textContent = `${Math.round(width)} × ${Math.round(height)} ${currentLang === 'zh' ? '像素' : currentLang === 'es' ? 'px' : currentLang === 'ar' ? 'dp' : 'px'} (${this.ratio})`;
           }
         }
       });
@@ -1464,15 +1512,21 @@ if (window._ratioScreenshotLoaded) {
         'ratio-screenshot-button primary' : 'ratio-screenshot-button';
       lockSizeButton.textContent = this.isLockSize ? 
         I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize');
-      lockSizeButton.title = lang === 'zh' ? '锁定当前尺寸用于连续截图' : 
-                           lang === 'es' ? 'Bloquear tamaño para captura continua' : 
-                           lang === 'ar' ? 'قفل الحجم للتصوير المستمر' : 
-                           lang === 'de' ? 'Größe sperren für fortlaufende Aufnahme' : 
-                           lang === 'pt' ? 'Bloquear tamanho para captura contínua' : 
-                           lang === 'ja' ? '連続キャプチャのために現在のサイズをロック' : 
-                           lang === 'fr' ? 'Verrouiller la taille actuelle pour une capture continue' : 
-                           lang === 'ko' ? '연속 캡처를 위한 현재 크기 잠금' : 
-                           'Lock current size for continuous capture';
+      
+      // 使用IIFE获取当前语言并设置按钮标题
+      lockSizeButton.title = (() => {
+        const currentLang = I18nHelper.getCurrentLanguage();
+        if (currentLang === 'zh') return '锁定当前尺寸用于连续截图';
+        if (currentLang === 'es') return 'Bloquear tamaño para captura continua';
+        if (currentLang === 'ar') return 'قفل الحجم للتصوير المستمر';
+        if (currentLang === 'de') return 'Größe sperren für fortlaufende Aufnahme';
+        if (currentLang === 'pt') return 'Bloquear tamanho para captura contínua';
+        if (currentLang === 'ja') return '連続キャプチャのために現在のサイズをロック';
+        if (currentLang === 'fr') return 'Verrouiller la taille actuelle pour une capture continue';
+        if (currentLang === 'ko') return '연속 캡처를 위한 현재 크기 잠금';
+        return 'Lock current size for continuous capture';
+      })();
+      
       lockSizeButton.addEventListener('click', () => {
         this.isLockSize = !this.isLockSize;
         lockSizeButton.textContent = this.isLockSize ? 
@@ -1499,15 +1553,21 @@ if (window._ratioScreenshotLoaded) {
         'ratio-screenshot-button primary' : 'ratio-screenshot-button';
       magneticButton.textContent = this.isMagneticEnabled ? 
         I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic');
-      magneticButton.title = lang === 'zh' ? '启用后会自动吸附到页面元素边缘' : 
-                           lang === 'es' ? 'Auto-snap para elementos de la página cuando está activado' : 
-                           lang === 'ar' ? 'تمكين التقاط التلقائي للعناصر الموجودة على الصفحة عند تمكينه' : 
-                           lang === 'de' ? 'Automatisches Einrasten an Seitenelementkanten bei Aktivierung' : 
-                           lang === 'pt' ? 'Encaixe automático nos elementos da página quando ativado' : 
-                           lang === 'ja' ? '有効にするとページ要素に自動的に吸着' : 
-                           lang === 'fr' ? 'Accrochage automatique aux éléments de la page lorsqu\'activé' : 
-                           lang === 'ko' ? '활성화시 페이지 요소에 자동으로 스냅' : 
-                           'Auto-snap to page element edges when enabled';
+      
+      // 使用IIFE获取当前语言并设置按钮标题
+      magneticButton.title = (() => {
+        const currentLang = I18nHelper.getCurrentLanguage();
+        if (currentLang === 'zh') return '启用后会自动吸附到页面元素边缘';
+        if (currentLang === 'es') return 'Auto-snap para elementos de la página cuando está activado';
+        if (currentLang === 'ar') return 'تمكين التقاط التلقائي للعناصر الموجودة على الصفحة عند تمكينه';
+        if (currentLang === 'de') return 'Automatisches Einrasten an Seitenelementkanten bei Aktivierung';
+        if (currentLang === 'pt') return 'Encaixe automático nos elementos da página quando ativado';
+        if (currentLang === 'ja') return '有効にするとページ要素に自動的に吸着';
+        if (currentLang === 'fr') return 'Accrochage automatique aux éléments de la page lorsqu\'activé';
+        if (currentLang === 'ko') return '활성화시 페이지 요소에 자동으로 스냅';
+        return 'Auto-snap to page element edges when enabled';
+      })();
+      
       magneticButton.addEventListener('click', () => {
         this.isMagneticEnabled = !this.isMagneticEnabled;
         magneticButton.textContent = this.isMagneticEnabled ? 
@@ -1539,16 +1599,28 @@ if (window._ratioScreenshotLoaded) {
       // 添加移动提示
       const moveHint = document.createElement('div');
       moveHint.className = 'ratio-screenshot-move-hint';
-      moveHint.innerHTML = lang === 'zh' ? 
-        '提示: <strong>拖动边缘</strong>调整大小, <strong>鼠标滚轮</strong>微调位置' : 
-        lang === 'es' ? 'Tip: <strong>Arrastra los bordes</strong> para cambiar el tamaño, <strong>Rueda del mouse</strong> para ajustar la posición' : 
-        lang === 'ar' ? 'تلميح: <strong>سحب الحافة</strong> لتغيير الحجم, <strong>عجلة الماوس</strong> للضبط الدقيق' : 
-        lang === 'de' ? 'Tipp: <strong>Ränder ziehen</strong> zum Größe anpassen, <strong>Mausrad</strong> für Feineinstellung' : 
-        lang === 'pt' ? 'Dica: <strong>Arraste as bordas</strong> para redimensionar, <strong>Roda do mouse</strong> para ajuste fino' : 
-        lang === 'ja' ? 'ヒント: <strong>端をドラッグ</strong>してサイズ変更、<strong>マウスホイール</strong>で微調整' : 
-        lang === 'fr' ? 'Astuce: <strong>Faire glisser les bords</strong> pour redimensionner, <strong>Molette de la souris</strong> pour ajustement fin' : 
-        lang === 'ko' ? '팁: <strong>가장자리 드래그</strong>로 크기 조정, <strong>마우스 휠</strong>로 미세 조정' : 
-        'Tip: <strong>Drag edges</strong> to resize, <strong>Mouse wheel</strong> for fine adjustment';
+      
+      // 使用IIFE获取当前语言并设置提示文本
+      moveHint.innerHTML = (() => {
+        const currentLang = I18nHelper.getCurrentLanguage();
+        if (currentLang === 'zh') 
+          return '提示: <strong>拖动边缘</strong>调整大小, <strong>鼠标滚轮</strong>微调位置';
+        if (currentLang === 'es') 
+          return 'Tip: <strong>Arrastra los bordes</strong> para cambiar el tamaño, <strong>Rueda del mouse</strong> para ajustar la posición';
+        if (currentLang === 'ar') 
+          return 'تلميح: <strong>سحب الحافة</strong> لتغيير الحجم, <strong>عجلة الماوس</strong> للضبط الدقيق';
+        if (currentLang === 'de') 
+          return 'Tipp: <strong>Ränder ziehen</strong> zum Größe anpassen, <strong>Mausrad</strong> für Feineinstellung';
+        if (currentLang === 'pt') 
+          return 'Dica: <strong>Arraste as bordas</strong> para redimensionar, <strong>Roda do mouse</strong> para ajuste fino';
+        if (currentLang === 'ja') 
+          return 'ヒント: <strong>端をドラッグ</strong>してサイズ変更、<strong>マウスホイール</strong>で微調整';
+        if (currentLang === 'fr') 
+          return 'Astuce: <strong>Faire glisser les bords</strong> pour redimensionner, <strong>Molette de la souris</strong> pour ajustement fin';
+        if (currentLang === 'ko') 
+          return '팁: <strong>가장자리 드래그</strong>로 크기 조정, <strong>마우스 휠</strong>로 미세 조정';
+        return 'Tip: <strong>Drag edges</strong> to resize, <strong>Mouse wheel</strong> for fine adjustment';
+      })();
       
       this.toolbar.appendChild(moveHint);
       
@@ -4063,6 +4135,277 @@ if (window._ratioScreenshotLoaded) {
         notification.textContent = I18nHelper.getNotificationText('copyFailed', error.message);
         setTimeout(() => notification.remove(), 2000);
       }
+    }
+
+    // 打开AI对话界面
+    openAIDialog() {
+      if (!this.selection) {
+        console.error("未找到选择框，无法启动对话");
+        return;
+      }
+      
+      console.log("开始准备用于AI对话的截图");
+      
+      // 显示处理中提示
+      const dialogMsg = this.showNotification(I18nHelper.getNotificationText('processing'));
+      
+      // 使用我们跟踪的绝对坐标进行截图
+      const captureRect = {
+        left: Math.min(this.startX, this.endX),
+        top: Math.min(this.startY, this.endY),
+        width: Math.abs(this.endX - this.startX),
+        height: Math.abs(this.endY - this.startY)
+      };
+      
+      console.log("对话区域坐标(绝对):", captureRect);
+      
+      // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
+      this.hideUIElementsForCapture();
+      
+      // 添加短延迟确保DOM更新已渲染
+      setTimeout(() => {
+        // 获取当前的滚动位置和视口尺寸
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        
+        // 检查选择区域是否在视口范围内
+        const isRectVisible = (
+          captureRect.left >= scrollX && 
+          captureRect.top >= scrollY && 
+          captureRect.left + captureRect.width <= scrollX + viewportWidth &&
+          captureRect.top + captureRect.height <= scrollY + viewportHeight
+        );
+        
+        // 根据区域是否在当前视口内，选择不同的截图方法
+        if (isRectVisible) {
+          console.log("选择区域在当前视口内，使用标准截图方法");
+          
+          // 区域在视口内，使用常规方法截图
+          chrome.runtime.sendMessage({ 
+            action: 'captureScreen'
+          }, response => {
+            // 恢复UI元素
+            this.restoreUIElementsAfterCapture();
+            
+            if (response && response.success) {
+              // 处理截图数据
+              const image = new Image();
+              image.onload = () => {
+                // 将绝对坐标转换为图像相对坐标 (为了应对设备像素比)
+                const devicePixelRatio = window.devicePixelRatio || 1;
+                const imageRect = {
+                  left: Math.round((captureRect.left - scrollX) * devicePixelRatio),
+                  top: Math.round((captureRect.top - scrollY) * devicePixelRatio),
+                  width: Math.round(captureRect.width * devicePixelRatio),
+                  height: Math.round(captureRect.height * devicePixelRatio)
+                };
+                
+                // 剪切并用于对话
+                this.processImageForDialog(image, imageRect, dialogMsg);
+              };
+              
+              image.onerror = () => {
+                console.error("图像加载失败");
+                dialogMsg.textContent = I18nHelper.isZh() ? 
+                  "图像处理失败，请重试" : "Image processing failed, please try again";
+                setTimeout(() => dialogMsg.remove(), 2000);
+              };
+              
+              // 加载图像
+              image.src = response.dataUrl;
+            } else {
+              console.error("截图失败:", response?.error || "未知错误");
+              dialogMsg.textContent = I18nHelper.isZh() ? 
+                `截图失败: ${response?.error || "未知错误"}` : 
+                `Screenshot failed: ${response?.error || "Unknown error"}`;
+              setTimeout(() => dialogMsg.remove(), 2000);
+            }
+          });
+        } else {
+          console.log("选择区域不完全在当前视口内，使用滚动截图方法");
+          
+          // 区域不完全在视口内，通知后台脚本使用分块截图
+          chrome.runtime.sendMessage({
+            action: 'captureFullPage',
+            targetArea: captureRect
+          }, response => {
+            // 恢复UI元素
+            this.restoreUIElementsAfterCapture();
+            
+            if (response && response.success) {
+              // 处理截图数据
+              const image = new Image();
+              image.onload = () => {
+                this.processImageForDialog(image, {
+                  left: 0,
+                  top: 0,
+                  width: image.width,
+                  height: image.height
+                }, dialogMsg);
+              };
+              
+              image.onerror = () => {
+                console.error("图像加载失败");
+                dialogMsg.textContent = I18nHelper.isZh() ? 
+                  "图像处理失败，请重试" : "Image processing failed, please try again";
+                setTimeout(() => dialogMsg.remove(), 2000);
+              };
+              
+              // 加载图像
+              image.src = response.dataUrl;
+            } else {
+              console.error("全页面截图失败:", response?.error || "未知错误");
+              dialogMsg.textContent = I18nHelper.isZh() ? 
+                `截图失败: ${response?.error || "未知错误"}` : 
+                `Screenshot failed: ${response?.error || "Unknown error"}`;
+              setTimeout(() => dialogMsg.remove(), 2000);
+            }
+          });
+        }
+      }, 30); // 添加30毫秒延迟，足够DOM更新但不影响用户体验
+    }
+    
+    // 处理图像并用于对话
+    processImageForDialog(image, rect, notification) {
+      try {
+        // 创建Canvas并裁剪图像
+        const canvas = document.createElement('canvas');
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext('2d');
+        
+        if (!ctx) {
+          console.error("无法获取Canvas上下文");
+          notification.textContent = I18nHelper.isZh() ? 
+            "Canvas上下文错误" : "Canvas context error";
+          setTimeout(() => notification.remove(), 2000);
+          return;
+        }
+        
+        // 确保裁剪区域在图像范围内
+        if (rect.left >= 0 && rect.top >= 0 && 
+            rect.left + rect.width <= image.width && 
+            rect.top + rect.height <= image.height) {
+            
+          // 绘制裁剪区域
+          ctx.drawImage(
+            image,
+            rect.left, rect.top, rect.width, rect.height,
+            0, 0, rect.width, rect.height
+          );
+          
+          // 将Canvas转换为base64
+          let imageBase64 = canvas.toDataURL('image/jpeg', 0.85).split(',')[1]; // 使用较高质量的JPEG格式
+          
+          // 计算base64图像大小（字节）
+          const imageSize = Math.floor(imageBase64.length * 0.75);
+          console.log(`图像大小: ${(imageSize / 1024 / 1024).toFixed(2)} MB`);
+          
+          // 检查图像大小是否超过5MB
+          if (imageSize > 5 * 1024 * 1024) {
+            console.log("图像大小超过5MB，进行压缩");
+            
+            // 使用减少质量和尺寸的方法压缩图像
+            this.resizeImageForDialog(canvas, (resizedBase64) => {
+              // 移除data:image/jpeg;base64,前缀
+              const finalBase64 = resizedBase64.split(',')[1];
+              this.launchDialogWithImage(finalBase64, notification);
+            });
+          } else {
+            // 直接使用当前base64
+            this.launchDialogWithImage(imageBase64, notification);
+          }
+        } else {
+          console.warn("裁剪区域超出可见范围");
+          notification.textContent = I18nHelper.isZh() ? 
+            "截图区域超出可见范围" : "Screenshot area out of visible range";
+          setTimeout(() => notification.remove(), 2000);
+        }
+      } catch (error) {
+        console.error("处理图像时出错:", error);
+        notification.textContent = I18nHelper.isZh() ? 
+          `处理图像出错: ${error.message || ""}` : 
+          `Error processing image: ${error.message || ""}`;
+        setTimeout(() => notification.remove(), 2000);
+      }
+    }
+    
+    // 压缩图像以便于对话
+    resizeImageForDialog(canvas, callback) {
+      try {
+        // 创建一个新的、尺寸更小的Canvas
+        const maxDimension = 1600; // 最大尺寸限制
+        let width = canvas.width;
+        let height = canvas.height;
+        
+        // 如果任一维度超过最大限制，按比例缩小
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.floor(height * (maxDimension / width));
+            width = maxDimension;
+          } else {
+            width = Math.floor(width * (maxDimension / height));
+            height = maxDimension;
+          }
+        }
+        
+        // 创建新的Canvas并绘制缩小的图像
+        const resizedCanvas = document.createElement('canvas');
+        resizedCanvas.width = width;
+        resizedCanvas.height = height;
+        
+        const ctx = resizedCanvas.getContext('2d');
+        ctx.drawImage(canvas, 0, 0, width, height);
+        
+        // 以较低质量导出为JPEG
+        const resizedBase64 = resizedCanvas.toDataURL('image/jpeg', 0.7);
+        
+        // 计算新的大小
+        const newSize = Math.floor((resizedBase64.split(',')[1].length) * 0.75);
+        console.log(`压缩后图像大小: ${(newSize / 1024 / 1024).toFixed(2)} MB`);
+        
+        callback(resizedBase64);
+      } catch (error) {
+        console.error("压缩图像出错:", error);
+        callback(canvas.toDataURL('image/jpeg', 0.5)); // 发生错误时尝试更低质量
+      }
+    }
+    
+    // 启动对话界面
+    launchDialogWithImage(base64Image, notification) {
+      // 隐藏通知
+      if (notification) {
+        notification.remove();
+      }
+      
+      // 结束截图模式
+      this.end();
+      
+      // 创建对话窗口URL
+      const dialogUrl = chrome.runtime.getURL('ai_dialog/dialog.html') + 
+                        `?image=${encodeURIComponent(base64Image)}`;
+      
+      // 打开对话窗口
+      const dialogWindowWidth = 900;
+      const dialogWindowHeight = 700;
+      
+      // 计算窗口位置，使其居中
+      const left = Math.max(0, (window.screen.width - dialogWindowWidth) / 2);
+      const top = Math.max(0, (window.screen.height - dialogWindowHeight) / 2);
+      
+      chrome.runtime.sendMessage({
+        action: 'openAIDialog',
+        url: dialogUrl,
+        options: {
+          width: dialogWindowWidth,
+          height: dialogWindowHeight,
+          left: left,
+          top: top,
+          type: 'popup'
+        }
+      });
     }
   }
 

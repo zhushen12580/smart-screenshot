@@ -107,6 +107,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     saveScreenshot(message, sendResponse);
   }
   
+  // 处理GLM-4V-Flash API调用请求
+  else if (message.action === 'callGLM4VFlashAPI') {
+    callGLM4VFlashAPI(message, sendResponse);
+  }
+  
+  // 处理打开AI对话窗口请求
+  else if (message.action === 'openAIDialog') {
+    openAIDialog(message.url, message.options);
+    sendResponse({ success: true });
+  }
+  
   return true;
 });
 
@@ -662,4 +673,115 @@ function saveScreenshot(request, sendResponse) {
   
   // 必须返回true以保持sendResponse有效
   return true;
+}
+
+// 调用GLM-4V-Flash API
+function callGLM4VFlashAPI(request, sendResponse) {
+  console.log("准备调用GLM-4V-Flash API...");
+  
+  // 从存储中获取API密钥，如果未设置则使用试用密钥
+  chrome.storage.sync.get(['glm4v_api_key'], (data) => {
+    const apiKey = data.glm4v_api_key || '1e19f71b9fcc4335be589e950d019309.41pFMpCqsJlAOvVy';
+    
+    // 准备API请求参数
+    const apiEndpoint = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+    
+    // 根据真实示例构建请求体
+    const requestBody = {
+      model: "glm-4v-flash",
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:image/jpeg;base64,${request.image}`
+              }
+            },
+            {
+              type: "text",
+              text: request.message
+            }
+          ]
+        }
+      ]
+    };
+    
+    console.log("发送API请求...");
+    
+    // 通过网络请求发送
+    fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log("收到API响应:", data);
+      
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        const aiResponse = data.choices[0].message.content;
+        sendResponse({
+          success: true,
+          aiResponse: aiResponse
+        });
+      } else {
+        throw new Error("API响应格式不正确");
+      }
+    })
+    .catch(error => {
+      console.error("API调用出错:", error);
+      sendResponse({
+        success: false,
+        error: error.message || "调用GLM-4V-Flash API失败"
+      });
+    });
+  });
+  
+  // 必须返回true以保持sendResponse有效
+  return true;
+}
+
+// 打开AI对话窗口
+function openAIDialog(url, options = {}) {
+  console.log("打开AI对话窗口:", url);
+  
+  // 默认窗口选项
+  const defaultOptions = {
+    width: 900,
+    height: 700,
+    left: 0,
+    top: 0,
+    type: 'popup',
+    focused: true
+  };
+  
+  // 合并选项
+  const windowOptions = { ...defaultOptions, ...options };
+  
+  // 创建新窗口
+  chrome.windows.create({
+    url: url,
+    type: windowOptions.type,
+    width: windowOptions.width,
+    height: windowOptions.height,
+    left: windowOptions.left,
+    top: windowOptions.top,
+    focused: windowOptions.focused
+  }, (window) => {
+    if (chrome.runtime.lastError) {
+      console.error("创建对话窗口失败:", chrome.runtime.lastError);
+    } else {
+      console.log("成功创建对话窗口, ID:", window.id);
+    }
+  });
 } 

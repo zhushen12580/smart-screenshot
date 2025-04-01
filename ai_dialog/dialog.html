@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图像对话</title>
+    <link rel="stylesheet" href="dialog.css">
+    <!-- 添加代码高亮样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
+    <!-- 添加Markdown样式 -->
+    <style>
+        /* Markdown样式覆盖 */
+        .markdown-content {
+            line-height: 1.5;
+            overflow-wrap: break-word;
+        }
+        .markdown-content p {
+            margin: 0.5em 0;
+        }
+        .markdown-content h1, .markdown-content h2, .markdown-content h3, 
+        .markdown-content h4, .markdown-content h5, .markdown-content h6 {
+            margin: 0.8em 0 0.4em;
+            font-weight: 600;
+        }
+        .markdown-content code {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+        .markdown-content pre {
+            background-color: rgba(0, 0, 0, 0.05);
+            padding: 0.5em;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 0.5em 0;
+        }
+        .markdown-content pre code {
+            background-color: transparent;
+            padding: 0;
+            border-radius: 0;
+            font-size: 0.9em;
+        }
+        .markdown-content blockquote {
+            border-left: 4px solid #dddddd;
+            margin: 0.5em 0;
+            padding: 0 1em;
+            color: #666666;
+        }
+        .markdown-content ul, .markdown-content ol {
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }
+        .markdown-content table {
+            border-collapse: collapse;
+            margin: 0.5em 0;
+            width: 100%;
+        }
+        .markdown-content table th, .markdown-content table td {
+            border: 1px solid #dddddd;
+            padding: 0.4em 0.6em;
+        }
+        .markdown-content table th {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .markdown-content a {
+            color: #1a73e8;
+            text-decoration: none;
+        }
+        .markdown-content a:hover {
+            text-decoration: underline;
+        }
+        .markdown-content img {
+            max-width: 100%;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="ai-dialog-container">
+        <div class="ai-dialog-header">
+            <h3>图像对话</h3>
+            <button id="close-dialog" class="close-button">&times;</button>
+        </div>
+        <div class="ai-dialog-content">
+            <div class="image-container">
+                <img id="dialog-image" src="" alt="截图图像">
+                <div class="image-info">图像大小: <span id="image-size">0 KB</span></div>
+            </div>
+            <div class="chat-container">
+                <div id="chat-messages" class="chat-messages"></div>
+                <div class="input-area">
+                    <textarea id="user-input" placeholder="输入你的问题..."></textarea>
+                    <button id="send-button">发送</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 添加Markdown解析库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.3.0/marked.min.js"></script>
+    <!-- 添加代码高亮库 -->
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/bash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/json.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/html.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/lib/languages/css.min.js"></script>
+    <script src="dialog.js"></script>
+</body>
+</html> 
