@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/d4c89b42-fa87-459d-b2fe-2dd1c2092688)
+![20250401-164112](https://github.com/user-attachments/assets/3819794d-35c7-4303-bc47-4e0d821c5bb4)![image](https://github.com/user-attachments/assets/d4c89b42-fa87-459d-b2fe-2dd1c2092688)
 
 
 # 精准截图 - 一款更懂内容创作者的一键智能精准截图工具
@@ -7,6 +7,8 @@
 ## 项目概述
 "精准截图"是一款Chrome浏览器插件，旨在解决用户在网页截图时需要频繁调整截图区域比例的问题。该插件允许用户预先设定截图比例，然后进行连续截图操作，每次截图都会自动保持所选比例，大大提高截图效率。
 ![智能截图功能演示 (1)](https://github.com/user-attachments/assets/2086e6e7-674d-4efd-9cd9-1d4dbcce39f2)
+![智能截图功能演示 (2)](https://github.com/user-attachments/assets/5b89ade7-fe85-443f-9d62-470a0c7c0e96)
+
 ## 目标用户
 - 设计师：需要获取特定比例的素材
 - 内容创作者：需要为不同平台准备固定比例的图片
