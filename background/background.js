@@ -2,7 +2,7 @@
 console.log("精准截图扩展启动");
 
 // 导入配置
-import config from '../config.js';
+import config from '../config.local.js';
 
 // 默认设置
 const DEFAULT_SETTINGS = {
