@@ -3,6 +3,7 @@
 .env.local
 .env.*.local
 config.local.js
+config.js
 
 # 依赖目录
 node_modules/

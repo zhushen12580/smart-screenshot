@@ -1,8 +1,8 @@
 // AI对话界面处理逻辑
 (function() {
-    // GLM-4V API配置 - 实际使用时应替换为真实的API密钥和请求参数
+    // GLM-4V API配置
     const API_ENDPOINT = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-    const API_KEY = ''; // 实际使用时需要填入正确的API密钥
+    const API_KEY = '4874bbba77e241b09519b2054b93c497.lC99I4wmPzm9yxxT'; // 使用config.local.js中的默认值
     
     // 页面元素
     const dialogImage = document.getElementById('dialog-image');
