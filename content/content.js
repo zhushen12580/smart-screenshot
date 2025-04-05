@@ -63,7 +63,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "标准",
             light: "轻量"
           },
-          fileSizeEstimate: "约 {0} {1}"
+          fileSizeEstimate: "约 {0} {1}",
+          qrDecode: "解析二维码",
+          qrDecoding: "正在解析二维码...",
+          qrSuccess: "二维码解析成功，已复制到剪贴板",
+          qrNoQRFound: "未检测到有效的二维码",
+          qrError: "二维码解析失败: {0}"
         },
         en: {
           saveArea: "Save This Area",
@@ -85,7 +90,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "Standard",
             light: "Light"
           },
-          fileSizeEstimate: "About {0} {1}"
+          fileSizeEstimate: "About {0} {1}",
+          qrDecode: "Decode QR",
+          qrDecoding: "Decoding QR code...",
+          qrSuccess: "QR code decoded successfully, copied to clipboard",
+          qrNoQRFound: "No valid QR code detected",
+          qrError: "QR code decoding failed: {0}"
         },
         es: {
           saveArea: "Guardar Esta Área",
@@ -107,7 +117,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "Estándar",
             light: "Ligera"
           },
-          fileSizeEstimate: "Aproximadamente {0} {1}"
+          fileSizeEstimate: "Aproximadamente {0} {1}",
+          qrDecode: "Decodificar código QR",
+          qrDecoding: "Decodificando código QR...",
+          qrSuccess: "Código QR decodificado correctamente, copiado al portapapeles",
+          qrNoQRFound: "No se detectó un código QR válido",
+          qrError: "Error al decodificar código QR: {0}"
         },
         ar: {
           saveArea: "حفظ هذه المنطقة",
@@ -129,7 +144,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "قياسية",
             light: "خفيفة"
           },
-          fileSizeEstimate: "تقريبًا {0} {1}"
+          fileSizeEstimate: "تقريبًا {0} {1}",
+          qrDecode: "فك رمز QR",
+          qrDecoding: "فك رمز QR...",
+          qrSuccess: "تم فك رمز QR بنجاح، تم نسخه إلى الملصق",
+          qrNoQRFound: "لم يتم الكشف عن رمز QR صالح",
+          qrError: "فشل فك رمز QR: {0}"
         },
         de: {
           saveArea: "Diesen Bereich speichern",
@@ -151,7 +171,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "Standard",
             light: "Leicht"
           },
-          fileSizeEstimate: "Etwa {0} {1}"
+          fileSizeEstimate: "Etwa {0} {1}",
+          qrDecode: "QR-Code dekodieren",
+          qrDecoding: "QR-Code wird decodiert...",
+          qrSuccess: "QR-Code erfolgreich dekodiert, in die Zwischenablage kopiert",
+          qrNoQRFound: "Kein gültiges QR-Code erkannt",
+          qrError: "QR-Code-Dekodierung fehlgeschlagen: {0}"
         },
         pt: {
           saveArea: "Salvar Esta Área",
@@ -173,7 +198,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "Padrão",
             light: "Leve"
           },
-          fileSizeEstimate: "Aproximadamente {0} {1}"
+          fileSizeEstimate: "Aproximadamente {0} {1}",
+          qrDecode: "Decodificar QR Code",
+          qrDecoding: "Decodificando QR Code...",
+          qrSuccess: "QR Code decodificado com sucesso, copiado para a área de transferência",
+          qrNoQRFound: "Nenhum QR Code válido detectado",
+          qrError: "Falha ao decodificar QR Code: {0}"
         },
         ja: {
           saveArea: "この領域を保存",
@@ -195,7 +225,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "標準",
             light: "軽量"
           },
-          fileSizeEstimate: "約 {0} {1}"
+          fileSizeEstimate: "約 {0} {1}",
+          qrDecode: "QRコードを解析",
+          qrDecoding: "QRコードを解析中...",
+          qrSuccess: "QRコードが正常に解析されました、クリップボードにコピーされました",
+          qrNoQRFound: "有効なQRコードが検出されませんでした",
+          qrError: "QRコードの解析に失敗しました: {0}"
         },
         fr: {
           saveArea: "Enregistrer Cette Zone",
@@ -217,7 +252,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "Standard",
             light: "Légère"
           },
-          fileSizeEstimate: "Environ {0} {1}"
+          fileSizeEstimate: "Environ {0} {1}",
+          qrDecode: "Décoder le QR Code",
+          qrDecoding: "Décodage du QR Code...",
+          qrSuccess: "QR Code décodé avec succès, copié dans le presse-papiers",
+          qrNoQRFound: "Aucun QR Code valide détecté",
+          qrError: "Échec du décodage du QR Code: {0}"
         },
         ko: {
           saveArea: "이 영역 저장",
@@ -239,7 +279,12 @@ if (window._ratioScreenshotLoaded) {
             standard: "표준",
             light: "가벼운"
           },
-          fileSizeEstimate: "약 {0} {1}"
+          fileSizeEstimate: "약 {0} {1}",
+          qrDecode: "QR 코드 해독",
+          qrDecoding: "QR 코드 해독중...",
+          qrSuccess: "QR 코드가 성공적으로 해독되었습니다, 클립보드에 복사되었습니다",
+          qrNoQRFound: "유효한 QR 코드를 감지하지 못했습니다",
+          qrError: "QR 코드 해독에 실패했습니다: {0}"
         }
       };
       
@@ -373,7 +418,7 @@ if (window._ratioScreenshotLoaded) {
           processingAllAreas: "正在处理所有区域的截图...",
           allAreasSaved: "成功保存了 {0} 个区域的截图",
           areaNotVisible: "选定区域几乎完全在可见范围外，无法截图",
-          partiallyVisible: "部分区域超出可视范围，已截取可见部分",
+          partiallyVisible: "部分区域超出可见范围，已截取可见部分",
           partiallyVisibleArea: "部分选择区域超出可见范围，已截取可见部分",
           areaOutOfView: "选定区域超出可见范围，无法截图。请滚动页面使该区域可见后再试。",
           processingError: "截图处理时出错: {0}",
@@ -389,7 +434,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "复制失败: 选择区域超出可见范围",
           imagePreviewShown: "已显示图像预览，请右键复制",
           escape: "取消 (Esc)",
-          imageQualitySet: "图片质量已设置为: {0}"
+          imageQualitySet: "图片质量已设置为: {0}",
+          qrDecoding: "正在解析二维码...",
+          qrSuccess: "二维码解析成功，已复制到剪贴板",
+          qrNoQRFound: "未检测到有效的二维码",
+          qrError: "二维码解析失败: {0}"
         },
         en: {
           processingScreenshot: "Processing screenshot...",
@@ -415,7 +464,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "Copy failed: Selected area is out of view",
           imagePreviewShown: "Image preview shown, right-click to copy",
           escape: "Cancel (Esc)",
-          imageQualitySet: "Image quality set to: {0}"
+          imageQualitySet: "Image quality set to: {0}",
+          qrDecoding: "Decoding QR code...",
+          qrSuccess: "QR code decoded successfully, copied to clipboard",
+          qrNoQRFound: "No valid QR code detected",
+          qrError: "QR code decoding failed: {0}"
         },
         es: {
           processingScreenshot: "Procesando captura...",
@@ -441,7 +494,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "Error al copiar: El área seleccionada está fuera de vista",
           imagePreviewShown: "Vista previa de imagen mostrada, haga clic derecho para copiar",
           escape: "Cancelar (Esc)",
-          imageQualitySet: "Calidad de imagen establecida en: {0}"
+          imageQualitySet: "Calidad de imagen establecida en: {0}",
+          qrDecoding: "Decodificando código QR...",
+          qrSuccess: "Código QR decodificado correctamente, copiado al portapapeles",
+          qrNoQRFound: "No se detectó un código QR válido",
+          qrError: "Error al decodificar código QR: {0}"
         },
         ar: {
           processingScreenshot: "جاري معالجة اللقطة...",
@@ -467,7 +524,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "فشل النسخ: المنطقة المحددة خارج نطاق الرؤية",
           imagePreviewShown: "تم عرض معاينة الصورة، انقر بزر الماوس الأيمن للنسخ",
           escape: "إلغاء (Esc)",
-          imageQualitySet: "تم ضبط جودة الصورة على: {0}"
+          imageQualitySet: "تم ضبط جودة الصورة على: {0}",
+          qrDecoding: "فك رمز QR...",
+          qrSuccess: "تم فك رمز QR بنجاح، تم نسخه إلى الملصق",
+          qrNoQRFound: "لم يتم الكشف عن رمز QR صالح",
+          qrError: "فشل فك رمز QR: {0}"
         },
         de: {
           processingScreenshot: "Screenshot wird verarbeitet...",
@@ -493,7 +554,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "Kopieren fehlgeschlagen: Ausgewählter Bereich ist nicht sichtbar",
           imagePreviewShown: "Bildvorschau angezeigt, Rechtsklick zum Kopieren",
           escape: "Abbrechen (Esc)",
-          imageQualitySet: "Bildqualität eingestellt auf: {0}"
+          imageQualitySet: "Bildqualität eingestellt auf: {0}",
+          qrDecoding: "QR-Code wird decodiert...",
+          qrSuccess: "QR-Code erfolgreich dekodiert, in die Zwischenablage kopiert",
+          qrNoQRFound: "Kein gültiges QR-Code erkannt",
+          qrError: "QR-Code-Dekodierung fehlgeschlagen: {0}"
         },
         pt: {
           processingScreenshot: "Processando captura...",
@@ -519,7 +584,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "Falha ao copiar: Área selecionada está fora de visão",
           imagePreviewShown: "Pré-visualização de imagem exibida, clique com o botão direito para copiar",
           escape: "Cancelar (Esc)",
-          imageQualitySet: "Qualidade de imagem definida para: {0}"
+          imageQualitySet: "Qualidade de imagem definida para: {0}",
+          qrDecoding: "Decodificando QR Code...",
+          qrSuccess: "QR Code decodificado com sucesso, copiado para a área de transferência",
+          qrNoQRFound: "Nenhum QR Code válido detectado",
+          qrError: "Falha ao decodificar QR Code: {0}"
         },
         ja: {
           processingScreenshot: "画像を処理中...",
@@ -545,7 +614,11 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "選択領域が画面外にあります",
           imagePreviewShown: "画像プレビューが表示されました。右クリックでコピー",
           escape: "キャンセル (Esc)",
-          imageQualitySet: "{0} の画像品質が設定されました"
+          imageQualitySet: "{0} の画像品質が設定されました",
+          qrDecoding: "QRコードを解析中...",
+          qrSuccess: "QRコードが正常に解析されました、クリップボードにコピーされました",
+          qrNoQRFound: "有効なQRコードが検出されませんでした",
+          qrError: "QRコードの解析に失敗しました: {0}"
         },
         fr: {
           processingScreenshot: "Traitement de la capture d'écran...",
@@ -571,21 +644,18 @@ if (window._ratioScreenshotLoaded) {
           copyAreaOutOfView: "Échec de la copie: La zone sélectionnée est hors de vue",
           imagePreviewShown: "Aperçu de l'image affiché, clic droit pour copier",
           escape: "Annuler (Échap)",
-          imageQualitySet: "Qualité d'image définie sur: {0}"
+          imageQualitySet: "Qualité d'image définie sur: {0}",
+          qrDecoding: "Décodage du QR Code...",
+          qrSuccess: "QR Code décodé avec succès, copié dans le presse-papiers",
+          qrNoQRFound: "Aucun QR Code valide détecté",
+          qrError: "Échec du décodage du QR Code: {0}"
         }
       };
       
       var lang = this.getCurrentLanguage();
-      var text = notifications[lang][key] || 
-                (lang !== 'ko' && notifications['ko'][key]) ||
-                (lang !== 'fr' && notifications['fr'][key]) ||
-                (lang !== 'ja' && notifications['ja'][key]) ||
-                (lang !== 'pt' && notifications['pt'][key]) ||
-                (lang !== 'de' && notifications['de'][key]) ||
-                (lang !== 'ar' && notifications['ar'][key]) ||
-                (lang !== 'es' && notifications['es'][key]) ||
-                notifications['en'][key] || 
-                key;
+      var text = notifications[lang] && notifications[lang][key] ? 
+                 notifications[lang][key] : 
+                 notifications['en'][key] || key;
       
       // 替换参数
       var args = Array.prototype.slice.call(arguments, 1);
@@ -1253,6 +1323,26 @@ if (window._ratioScreenshotLoaded) {
       })();
       
       dialogButton.addEventListener('click', () => this.openAIDialog());
+      
+      // 添加二维码解析按钮
+      const qrButton = document.createElement('button');
+      qrButton.className = 'ratio-screenshot-button';
+      qrButton.textContent = I18nHelper.getToolbarText('qrDecode');
+      qrButton.title = (() => {
+        const currentLang = I18nHelper.getCurrentLanguage();
+        if (currentLang === 'zh') return '解析截图中的二维码';
+        if (currentLang === 'es') return 'Decodificar código QR';
+        if (currentLang === 'ar') return 'فك رمز QR';
+        if (currentLang === 'de') return 'QR-Code dekodieren';
+        if (currentLang === 'pt') return 'Decodificar QR Code';
+        if (currentLang === 'ja') return 'QRコードを解析';
+        if (currentLang === 'fr') return 'Décoder le QR Code';
+        if (currentLang === 'ko') return 'QR 코드 해독';
+        return 'Decode QR Code';
+      })();
+      qrButton.addEventListener('click', () => this.decodeQRCode());
+      
+      primaryRow.appendChild(qrButton);
       
       // 添加快捷键提示
       const shortcutInfo = document.createElement('div');
@@ -4435,6 +4525,200 @@ if (window._ratioScreenshotLoaded) {
           type: 'popup'
         }
       });
+    }
+
+    // 解析二维码
+    decodeQRCode() {
+      if (!this.selection) {
+        console.error("未找到选择框，无法解析二维码");
+        return;
+      }
+
+      console.log("开始解析二维码");
+
+      // 显示处理中提示
+      const decodeMsg = this.showNotification(I18nHelper.getNotificationText('qrDecoding'));
+
+      // 使用我们跟踪的绝对坐标进行截图
+      const captureRect = {
+        left: Math.min(this.startX, this.endX),
+        top: Math.min(this.startY, this.endY),
+        width: Math.abs(this.endX - this.startX),
+        height: Math.abs(this.endY - this.startY)
+      };
+
+      // 临时隐藏UI元素
+      this.hideUIElementsForCapture();
+
+      // 添加短延迟确保DOM更新已渲染
+      setTimeout(() => {
+        // 获取当前的滚动位置和视口尺寸
+        const scrollX = window.scrollX;
+        const scrollY = window.scrollY;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // 检查选择区域是否在视口范围内
+        const isRectVisible = (
+          captureRect.left >= scrollX && 
+          captureRect.top >= scrollY && 
+          captureRect.left + captureRect.width <= scrollX + viewportWidth &&
+          captureRect.top + captureRect.height <= scrollY + viewportHeight
+        );
+
+        // 根据区域是否在当前视口内，选择不同的截图方法
+        if (isRectVisible) {
+          chrome.runtime.sendMessage({ 
+            action: 'captureScreen'
+          }, response => {
+            this.restoreUIElementsAfterCapture();
+            if (response && response.success) {
+              this.processQRCodeImage(response.dataUrl, captureRect, scrollX, scrollY, decodeMsg);
+            } else {
+              console.error("截图失败:", response?.error || "未知错误");
+              decodeMsg.textContent = I18nHelper.getNotificationText('qrError', response?.error || "未知错误");
+              setTimeout(() => decodeMsg.remove(), 3000);
+            }
+          });
+        } else {
+          chrome.runtime.sendMessage({
+            action: 'captureFullPage',
+            targetArea: captureRect
+          }, response => {
+            this.restoreUIElementsAfterCapture();
+            if (response && response.success) {
+              this.processQRCodeImage(response.dataUrl, captureRect, 0, 0, decodeMsg);
+            } else {
+              console.error("全页面截图失败:", response?.error || "未知错误");
+              decodeMsg.textContent = I18nHelper.getNotificationText('qrError', response?.error || "未知错误");
+              setTimeout(() => decodeMsg.remove(), 3000);
+            }
+          });
+        }
+      }, 30);
+    }
+
+    // 处理二维码图像
+    processQRCodeImage(dataUrl, rect, scrollX, scrollY, notification) {
+      // 首先检查 jsQR 是否可用
+      if (typeof jsQR !== 'function') {
+        console.error("jsQR 库未加载");
+        notification.textContent = I18nHelper.getToolbarText('qrError', "二维码解析库未加载");
+        setTimeout(() => notification.remove(), 3000);
+        return;
+      }
+
+      const image = new Image();
+      
+      image.onload = () => {
+        try {
+          // 创建Canvas并裁剪图像
+          const canvas = document.createElement('canvas');
+          const devicePixelRatio = window.devicePixelRatio || 1;
+          
+          // 计算实际的裁剪区域（考虑设备像素比）
+          const scaledRect = {
+            left: Math.round((rect.left - scrollX) * devicePixelRatio),
+            top: Math.round((rect.top - scrollY) * devicePixelRatio),
+            width: Math.round(rect.width * devicePixelRatio),
+            height: Math.round(rect.height * devicePixelRatio)
+          };
+
+          canvas.width = scaledRect.width;
+          canvas.height = scaledRect.height;
+          
+          const ctx = canvas.getContext('2d', { willReadFrequently: true });
+          if (!ctx) {
+            throw new Error("无法获取Canvas上下文");
+          }
+
+          // 绘制裁剪区域
+          ctx.drawImage(
+            image,
+            scaledRect.left, scaledRect.top, 
+            scaledRect.width, scaledRect.height,
+            0, 0, scaledRect.width, scaledRect.height
+          );
+
+          // 获取图像数据
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+
+          // 使用jsQR库解析二维码
+          try {
+            const code = jsQR(
+              imageData.data,
+              imageData.width,
+              imageData.height,
+              {
+                inversionAttempts: "dontInvert"
+              }
+            );
+
+            if (code && code.data) {
+              console.log("二维码解析成功:", code.data);
+              
+              // 复制到剪贴板
+              navigator.clipboard.writeText(code.data)
+                .then(() => {
+                  notification.textContent = I18nHelper.getToolbarText('qrSuccess');
+                  setTimeout(() => notification.remove(), 3000);
+                })
+                .catch(error => {
+                  console.error("复制到剪贴板失败:", error);
+                  // 如果复制失败，尝试使用备用方法
+                  this.copyQRCodeFallback(code.data, notification);
+                });
+            } else {
+              console.log("未检测到二维码");
+              notification.textContent = I18nHelper.getToolbarText('qrNoQRFound');
+              setTimeout(() => notification.remove(), 3000);
+            }
+          } catch (qrError) {
+            console.error("二维码解析出错:", qrError);
+            notification.textContent = I18nHelper.getToolbarText('qrError', "二维码解析失败");
+            setTimeout(() => notification.remove(), 3000);
+          }
+        } catch (error) {
+          console.error("处理二维码图像时出错:", error);
+          notification.textContent = I18nHelper.getToolbarText('qrError', error.message);
+          setTimeout(() => notification.remove(), 3000);
+        }
+      };
+
+      image.onerror = () => {
+        console.error("图像加载失败");
+        notification.textContent = I18nHelper.getToolbarText('qrError', "图像加载失败");
+        setTimeout(() => notification.remove(), 3000);
+      };
+
+      image.src = dataUrl;
+    }
+
+    // 添加备用复制方法
+    copyQRCodeFallback(text, notification) {
+      try {
+        // 创建临时文本区域
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        
+        // 选择并复制文本
+        textarea.select();
+        document.execCommand('copy');
+        
+        // 移除临时元素
+        document.body.removeChild(textarea);
+        
+        // 显示成功消息
+        notification.textContent = I18nHelper.getToolbarText('qrSuccess');
+        setTimeout(() => notification.remove(), 3000);
+      } catch (error) {
+        console.error("备用复制方法失败:", error);
+        notification.textContent = I18nHelper.getToolbarText('qrError', "复制失败");
+        setTimeout(() => notification.remove(), 3000);
+      }
     }
   }
 

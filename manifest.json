@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "1.6",
+  "version": "1.6.1",
   "description": "__MSG_appDescription__",
   "default_locale": "zh_CN",
   "permissions": [
@@ -62,5 +62,13 @@
       ],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": [
+      "lib/jsQR.js",
+      "content/content.js"
+    ],
+    "css": []
+  }]
 } 
