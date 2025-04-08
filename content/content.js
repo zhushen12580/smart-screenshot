@@ -888,61 +888,94 @@ if (window._ratioScreenshotLoaded) {
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          background-color: transparent;
-          border-radius: 0;
-          border: none;
-          box-shadow: none;
-          padding: 12px;
+          background-color: rgba(250, 250, 252, 0.75);
+          border-radius: 8px;
+          border: 2px solid var(--black);
+          box-shadow: 3px 3px 0 var(--black);
+          padding: 12px 16px;
           display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
+          flex-direction: column;
+          gap: 12px;
           z-index: 10001;
           max-width: calc(100% - 40px);
-          justify-content: center;
+          backdrop-filter: blur(4px);
         }
         
         .ratio-screenshot-toolbar-row {
           display: flex;
+          flex-wrap: wrap;
           gap: 8px;
           justify-content: center;
           width: 100%;
         }
         
+        /* 按钮分组容器 */
+        .ratio-screenshot-button-group {
+          display: flex;
+          gap: 4px;
+          margin: 0 4px;
+          position: relative;
+        }
+        
+        /* 分隔线 */
+        .ratio-screenshot-divider {
+          width: 1px;
+          background-color: rgba(0, 0, 0, 0.2);
+          margin: 0 4px;
+        }
+        
         .ratio-screenshot-button {
-          padding: 8px 14px;
-          border-radius: 0;
-          font-size: 14px;
-          font-weight: bold;
-          border: 3px solid var(--black);
+          padding: 6px 12px;
+          border-radius: 6px;
+          font-size: 13px;
+          font-weight: 600;
+          border: 2px solid var(--black);
           cursor: pointer;
-          background-color: rgba(244, 244, 245, 0.9);
+          background-color: rgba(244, 244, 245, 0.92);
           color: var(--black);
-          box-shadow: 3px 3px 0 var(--black);
-          transition: transform 0.2s, box-shadow 0.2s;
+          box-shadow: 2px 2px 0 var(--black);
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          display: flex;
+          align-items: center;
+          gap: 5px;
         }
         
         .ratio-screenshot-button:hover {
-          transform: translate(-2px, -2px);
-          box-shadow: 5px 5px 0 var(--black);
+          transform: translate(-1px, -1px);
+          box-shadow: 3px 3px 0 var(--black);
+          background-color: rgba(250, 250, 252, 1);
         }
         
         .ratio-screenshot-button:active {
           transform: translate(1px, 1px);
-          box-shadow: 2px 2px 0 var(--black);
+          box-shadow: 1px 1px 0 var(--black);
         }
         
         .ratio-screenshot-button.primary {
-          background-color: rgba(109, 40, 217, 0.95);
+          background-color: rgba(109, 40, 217, 0.92);
           color: var(--white);
         }
         
+        .ratio-screenshot-button.primary:hover {
+          background-color: rgba(124, 58, 237, 0.95);
+        }
+        
+        /* 按钮图标 */
+        .ratio-screenshot-button-icon {
+          width: 14px;
+          height: 14px;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
         select.ratio-screenshot-button {
-          padding: 8px 14px;
+          padding: 6px 24px 6px 12px;
           appearance: none;
           background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23000' d='M0 0l4 4 4-4z'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
           background-position: right 10px center;
-          padding-right: 28px;
         }
         
         .ratio-screenshot-selection-info {
@@ -1066,6 +1099,13 @@ if (window._ratioScreenshotLoaded) {
           transition: opacity 0.3s ease;
           max-width: 80%;
           text-align: center;
+        }
+        
+        .ratio-screenshot-move-hint {
+          font-size: 12px;
+          color: rgba(0, 0, 0, 0.7);
+          text-align: center;
+          padding-top: 4px;
         }
       `;
       document.head.appendChild(style);
@@ -1276,87 +1316,118 @@ if (window._ratioScreenshotLoaded) {
       this.toolbar = document.createElement('div');
       this.toolbar.id = 'ratio-screenshot-toolbar';
       
-      // 创建第一行按钮 - 主要操作
+      // 创建按钮行
+      const primaryRow = this.createPrimaryButtonRow();
+      const configRow = this.createConfigRow();
+      
+      // 添加元素到工具栏
+      this.toolbar.appendChild(primaryRow);
+      this.toolbar.appendChild(configRow);
+      
+      // 添加工具栏到文档
+      document.body.appendChild(this.toolbar);
+    }
+    
+    // 创建主要按钮行
+    createPrimaryButtonRow() {
       const primaryRow = document.createElement('div');
       primaryRow.className = 'ratio-screenshot-toolbar-row';
+      
+      // 创建保存操作按钮组
+      const saveGroup = document.createElement('div');
+      saveGroup.className = 'ratio-screenshot-button-group';
+      
+      // 批量保存按钮 (仅在连续模式且有多个选区时显示)
+      if (this.isContinuousMode && this.selections.length > 0) {
+        const saveAllButton = document.createElement('button');
+        saveAllButton.className = 'ratio-screenshot-button primary';
+        this.addButtonContent(saveAllButton, 
+          I18nHelper.getToolbarText('saveAllAreas'), 
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M13 5h-2V4c0-.5-.4-1-1-1H6c-.5 0-1 .5-1 1v1H3c-.5 0-1 .5-1 1v5c0 .5.5 1 1 1h10c.6 0 1-.5 1-1V6c0-.5-.4-1-1-1zM6 4h4v1H6V4zm2 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>');
+        saveAllButton.addEventListener('click', () => this.captureAndSaveAll());
+        saveGroup.appendChild(saveAllButton);
+      }
       
       // 保存按钮
       const saveButton = document.createElement('button');
       saveButton.className = 'ratio-screenshot-button primary';
-      saveButton.textContent = I18nHelper.getToolbarText('saveArea');
+      this.addButtonContent(saveButton, 
+        I18nHelper.getToolbarText('saveArea'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M13 5h-2V4c0-.5-.4-1-1-1H6c-.5 0-1 .5-1 1v1H3c-.5 0-1 .5-1 1v5c0 .5.5 1 1 1h10c.6 0 1-.5 1-1V6c0-.5-.4-1-1-1zM6 4h4v1H6V4zm2 7c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>');
       saveButton.addEventListener('click', () => this.captureAndSave());
+      saveGroup.appendChild(saveButton);
       
-      // 添加复制按钮
+      // 复制按钮
       const copyButton = document.createElement('button');
       copyButton.className = 'ratio-screenshot-button';
-      copyButton.textContent = I18nHelper.getToolbarText('copyToClipboard');
+      this.addButtonContent(copyButton, 
+        I18nHelper.getToolbarText('copyToClipboard'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M11 1H3c-.5 0-1 .5-1 1v10h2V3h7V1zm2 3H6c-.5 0-1 .5-1 1v10c0 .5.5 1 1 1h7c.5 0 1-.5 1-1V5c0-.5-.5-1-1-1zm-1 10H7V6h5v8z"/></svg>');
       copyButton.title = I18nHelper.isZh() ? '复制截图到剪贴板' : 'Copy screenshot to clipboard';
       copyButton.addEventListener('click', () => this.copyToClipboard());
+      saveGroup.appendChild(copyButton);
       
-      // 添加对话按钮
+      primaryRow.appendChild(saveGroup);
+      
+      // 添加分隔线
+      const divider1 = document.createElement('div');
+      divider1.className = 'ratio-screenshot-divider';
+      primaryRow.appendChild(divider1);
+      
+      // 创建处理操作按钮组
+      const processGroup = document.createElement('div');
+      processGroup.className = 'ratio-screenshot-button-group';
+      
+      // 抠图按钮
+      const removeBackgroundButton = document.createElement('button');
+      removeBackgroundButton.className = 'ratio-screenshot-button';
+      this.addButtonContent(removeBackgroundButton, 
+        I18nHelper.isZh() ? '抠图' : 'Remove BG', 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1C4.1 1 1 4.1 1 8s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5z"/></svg>');
+      removeBackgroundButton.title = I18nHelper.isZh() ? '移除图像背景并复制到剪贴板' : 'Remove background and copy to clipboard';
+      removeBackgroundButton.addEventListener('click', () => this.removeBackground());
+      processGroup.appendChild(removeBackgroundButton);
+      
+      // AI对话按钮
       const dialogButton = document.createElement('button');
       dialogButton.className = 'ratio-screenshot-button';
-      dialogButton.textContent = I18nHelper.getToolbarText('aiDialog');
-      
-      // 根据当前语言设置按钮提示
-      dialogButton.title = (() => {
-        const currentLang = I18nHelper.getCurrentLanguage();
-        if (currentLang === 'zh') {
-          return '使用GLM-4V-Flash进行图像对话';
-        } else if (currentLang === 'es') {
-          return 'Chatear con la imagen usando GLM-4V-Flash';
-        } else if (currentLang === 'ar') {
-          return 'دردشة مع الصورة باستخدام GLM-4V-Flash';
-        } else if (currentLang === 'de') {
-          return 'Mit dem Bild chatten mit GLM-4V-Flash';
-        } else if (currentLang === 'pt') {
-          return 'Conversar com a imagem usando GLM-4V-Flash';
-        } else if (currentLang === 'ja') {
-          return 'GLM-4V-Flashを使用して画像とチャット';
-        } else if (currentLang === 'fr') {
-          return 'Discuter avec l\'image en utilisant GLM-4V-Flash';
-        } else if (currentLang === 'ko') {
-          return 'GLM-4V-Flash를 사용하여 이미지와 채팅';
-        } else {
-          return 'Chat with image using GLM-4V-Flash';
-        }
-      })();
-      
+      this.addButtonContent(dialogButton, 
+        I18nHelper.getToolbarText('aiDialog'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1C4.1 1 1 3.6 1 7c0 1.7.8 3.3 2 4.4V15l4-2c.3 0 .7.1 1 .1 3.9 0 7-2.6 7-6s-3.1-6-7-6zm2 9H6V8h4v2zm0-4H6V4h4v2z"/></svg>');
+      dialogButton.title = this.getAIDialogTitle();
       dialogButton.addEventListener('click', () => this.openAIDialog());
+      processGroup.appendChild(dialogButton);
       
-      // 添加二维码解析按钮
+      // 二维码解析按钮
       const qrButton = document.createElement('button');
       qrButton.className = 'ratio-screenshot-button';
-      qrButton.textContent = I18nHelper.getToolbarText('qrDecode');
-      qrButton.title = (() => {
-        const currentLang = I18nHelper.getCurrentLanguage();
-        if (currentLang === 'zh') return '解析截图中的二维码';
-        if (currentLang === 'es') return 'Decodificar código QR';
-        if (currentLang === 'ar') return 'فك رمز QR';
-        if (currentLang === 'de') return 'QR-Code dekodieren';
-        if (currentLang === 'pt') return 'Decodificar QR Code';
-        if (currentLang === 'ja') return 'QRコードを解析';
-        if (currentLang === 'fr') return 'Décoder le QR Code';
-        if (currentLang === 'ko') return 'QR 코드 해독';
-        return 'Decode QR Code';
-      })();
+      this.addButtonContent(qrButton, 
+        I18nHelper.getToolbarText('qrDecode'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M6 2H2v4h4V2zM5 5H3V3h2v2zm9-3h-4v4h4V2zm-1 3h-2V3h2v2zm-9 5H2v4h4v-4zm-1 3H3v-2h2v2zm9-3h-4v4h4v-4zm-1 3h-2v-2h2v2zM6 6h1v1H6V6zm3 0h1v1H9V6zm3 0h1v1h-1V6zm0 3h1v1h-1V9zm0 3h1v1h-1v-1zm-3 0h1v1H9v-1zm-3 0h1v1H6v-1zm3-3h1v1H9V9zM6 9h1v1H6V9z"/></svg>');
+      qrButton.title = this.getQRDecodeTitle();
       qrButton.addEventListener('click', () => this.decodeQRCode());
+      processGroup.appendChild(qrButton);
       
-      primaryRow.appendChild(qrButton);
+      primaryRow.appendChild(processGroup);
       
-      // 添加快捷键提示
-      const shortcutInfo = document.createElement('div');
-      // shortcutInfo.className = 'ratio-screenshot-shortcut-info';
-      // shortcutInfo.innerHTML = '快捷键: <span>Enter</span> 确认, <span>Esc</span> 取消, <span>↑↓←→</span> 移动';
+      // 创建控制按钮组
+      const controlGroup = document.createElement('div');
+      controlGroup.className = 'ratio-screenshot-button-group';
       
-      // 保持此区域并继续按钮
+      // 保持此区域并继续按钮 (仅在连续模式时显示)
+      if (this.isContinuousMode) {
+        // 添加分隔线
+        const divider2 = document.createElement('div');
+        divider2.className = 'ratio-screenshot-divider';
+        primaryRow.appendChild(divider2);
+        
       const keepButton = document.createElement('button');
       keepButton.className = 'ratio-screenshot-button';
-      keepButton.textContent = I18nHelper.getToolbarText('keepAndContinue');
+        this.addButtonContent(keepButton, 
+          I18nHelper.getToolbarText('keepAndContinue'), 
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M2 2v12h12V2H2zm10 10H4V4h8v8zm-1-5H5v3h6V7z"/></svg>');
       keepButton.addEventListener('click', () => {
-        // 记录当前是否处于智能检查模式
         console.log(`保持区域并继续，当前模式: ${this.isInspectMode ? '智能检查' : '普通'}`);
-        
         this.saveCurrentSelectionAsPreview();
         
         // 隐藏工具栏
@@ -1371,41 +1442,38 @@ if (window._ratioScreenshotLoaded) {
           console.log(`锁定截图尺寸: ${this.lockedWidth} × ${this.lockedHeight}`);
         }
       });
+        controlGroup.appendChild(keepButton);
+        primaryRow.appendChild(controlGroup);
+      }
       
-      // 取消按钮
+      // 添加分隔线
+      const divider3 = document.createElement('div');
+      divider3.className = 'ratio-screenshot-divider';
+      primaryRow.appendChild(divider3);
+      
+      // 添加取消按钮
       const cancelButton = document.createElement('button');
       cancelButton.className = 'ratio-screenshot-button';
-      cancelButton.textContent = I18nHelper.getNotificationText('escape');
-      
-      // 使用箭头函数确保this绑定正确
-      const boundEndFunction = () => {
+      this.addButtonContent(cancelButton, 
+        I18nHelper.getNotificationText('escape'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1C4.1 1 1 4.1 1 8s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm3.7 9.3c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3L8 9.4l-2.3 2.3c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.4-.4-.4-1 0-1.4L6.6 8 4.3 5.7c-.4-.4-.4-1 0-1.4.4-.4 1-.4 1.4 0L8 6.6l2.3-2.3c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4L9.4 8l2.3 2.3z"/></svg>');
+      cancelButton.onclick = () => {
         console.log("取消按钮被点击");
         this.end();
       };
-      
-      // 直接绑定处理函数
-      cancelButton.onclick = boundEndFunction;
-      
-      // 添加按钮到第一行
-      if (this.isContinuousMode && this.selections.length > 0) {
-        const saveAllButton = document.createElement('button');
-        saveAllButton.className = 'ratio-screenshot-button primary';
-        saveAllButton.textContent = I18nHelper.getToolbarText('saveAllAreas');
-        saveAllButton.addEventListener('click', () => this.captureAndSaveAll());
-        primaryRow.appendChild(saveAllButton);
-      }
-      primaryRow.appendChild(saveButton);
-      primaryRow.appendChild(copyButton); // 添加复制按钮
-      primaryRow.appendChild(dialogButton); // 添加对话按钮
-      if (this.isContinuousMode) {
-        primaryRow.appendChild(keepButton);
-      }
       primaryRow.appendChild(cancelButton);
-      primaryRow.appendChild(shortcutInfo);
       
-      // 创建第二行 - 配置选项
+      return primaryRow;
+    }
+    
+    // 创建配置行
+    createConfigRow() {
       const configRow = document.createElement('div');
       configRow.className = 'ratio-screenshot-toolbar-row';
+      
+      // 创建比例设置组
+      const ratioGroup = document.createElement('div');
+      ratioGroup.className = 'ratio-screenshot-button-group';
       
       // 添加比例选择下拉菜单
       const ratioSelect = document.createElement('select');
@@ -1427,111 +1495,10 @@ if (window._ratioScreenshotLoaded) {
         { value: '21:9', text: '21:9 (Ultrawide)' }
       ];
       
-      // 根据当前语言设置比例文本
-      const getCurrentLanguageTexts = () => {
-        const currentLang = I18nHelper.getCurrentLanguage();
-        const updatedOptions = [...ratioOptions];
-        
-        if (currentLang === 'zh') {
-          updatedOptions[1].text = '16:9 (视频/屏幕)';
-          updatedOptions[2].text = '4:3 (传统屏幕)';
-          updatedOptions[3].text = '1:1 (正方形/Instagram)';
-          updatedOptions[4].text = '9:16 (手机竖屏/故事)';
-          updatedOptions[5].text = '3:4 (小红书/iPad)';
-          updatedOptions[6].text = '2:1 (小红书/Twitter横图)';
-          updatedOptions[7].text = '1:2 (Pinterest)';
-          updatedOptions[8].text = '4:5 (Instagram竖图)';
-          updatedOptions[9].text = '3:2 (SNS封面)';
-          updatedOptions[10].text = '21:9 (超宽屏)';
-        } else if (currentLang === 'es') {
-          updatedOptions[1].text = '16:9 (Video/Pantalla)';
-          updatedOptions[2].text = '4:3 (Pantalla Tradicional)';
-          updatedOptions[3].text = '1:1 (Cuadrado/Instagram)';
-          updatedOptions[4].text = '9:16 (Móvil Vertical/Historias)';
-          updatedOptions[5].text = '3:4 (Instagram/iPad)';
-          updatedOptions[6].text = '2:1 (Twitter Horizontal)';
-          updatedOptions[7].text = '1:2 (Pinterest)';
-          updatedOptions[8].text = '4:5 (Instagram Vertical)';
-          updatedOptions[9].text = '3:2 (Portada Social)';
-          updatedOptions[10].text = '21:9 (Ultraancha)';
-        } else if (currentLang === 'ar') {
-          updatedOptions[1].text = '16:9 (فيديو/شاشة)';
-          updatedOptions[2].text = '4:3 (شاشة تقليدية)';
-          updatedOptions[3].text = '1:1 (مربع/انستجرام)';
-          updatedOptions[4].text = '9:16 (جوال عمودي/قصص)';
-          updatedOptions[5].text = '3:4 (انستجرام/آيباد)';
-          updatedOptions[6].text = '2:1 (تويتر أفقي)';
-          updatedOptions[7].text = '1:2 (بينتريست)';
-          updatedOptions[8].text = '4:5 (انستجرام عمودي)';
-          updatedOptions[9].text = '3:2 (غلاف اجتماعي)';
-          updatedOptions[10].text = '21:9 (شاشة عريضة جدًا)';
-        } else if (currentLang === 'de') {
-          updatedOptions[1].text = '16:9 (Video/Bildschirm)';
-          updatedOptions[2].text = '4:3 (Traditioneller Bildschirm)';
-          updatedOptions[3].text = '1:1 (Quadrat/Instagram)';
-          updatedOptions[4].text = '9:16 (Mobil Hochformat/Stories)';
-          updatedOptions[5].text = '3:4 (Instagram/iPad)';
-          updatedOptions[6].text = '2:1 (Twitter Querformat)';
-          updatedOptions[7].text = '1:2 (Pinterest)';
-          updatedOptions[8].text = '4:5 (Instagram Hochformat)';
-          updatedOptions[9].text = '3:2 (Social Media Cover)';
-          updatedOptions[10].text = '21:9 (Ultrabreit)';
-        } else if (currentLang === 'pt') {
-          updatedOptions[1].text = '16:9 (Vídeo/Tela)';
-          updatedOptions[2].text = '4:3 (Tela Tradicional)';
-          updatedOptions[3].text = '1:1 (Quadrado/Instagram)';
-          updatedOptions[4].text = '9:16 (Móvel Retrato/Stories)';
-          updatedOptions[5].text = '3:4 (Instagram/iPad)';
-          updatedOptions[6].text = '2:1 (Twitter Paisagem)';
-          updatedOptions[7].text = '1:2 (Pinterest)';
-          updatedOptions[8].text = '4:5 (Instagram Retrato)';
-          updatedOptions[9].text = '3:2 (Capa Social)';
-          updatedOptions[10].text = '21:9 (Ultralargo)';
-        } else if (currentLang === 'ja') {
-          updatedOptions[1].text = '16:9 (ビデオ/スクリーン)';
-          updatedOptions[2].text = '4:3 (従来のスクリーン)';
-          updatedOptions[3].text = '1:1 (正方形/Instagram)';
-          updatedOptions[4].text = '9:16 (モバイル縦向き/ストーリー)';
-          updatedOptions[5].text = '3:4 (Instagram/iPad)';
-          updatedOptions[6].text = '2:1 (Twitter横向き)';
-          updatedOptions[7].text = '1:2 (Pinterest)';
-          updatedOptions[8].text = '4:5 (Instagram縦向き)';
-          updatedOptions[9].text = '3:2 (ソーシャルカバー)';
-          updatedOptions[10].text = '21:9 (ウルトラワイド)';
-        } else if (currentLang === 'fr') {
-          updatedOptions[1].text = '16:9 (Vidéo/Écran)';
-          updatedOptions[2].text = '4:3 (Écran Traditionnel)';
-          updatedOptions[3].text = '1:1 (Carré/Instagram)';
-          updatedOptions[4].text = '9:16 (Portrait Mobile/Histoires)';
-          updatedOptions[5].text = '3:4 (Instagram/iPad)';
-          updatedOptions[6].text = '2:1 (Landscape Twitter)';
-          updatedOptions[7].text = '1:2 (Pinterest)';
-          updatedOptions[8].text = '4:5 (Instagram Portrait)';
-          updatedOptions[9].text = '3:2 (Couverture Social)';
-          updatedOptions[10].text = '21:9 (Ultra-large)';
-        } else if (currentLang === 'ko') {
-          updatedOptions[1].text = '16:9 (비디오/화면)';
-          updatedOptions[2].text = '4:3 (전통적인 화면)';
-          updatedOptions[3].text = '1:1 (정사각형/인스타그램)';
-          updatedOptions[4].text = '9:16 (모바일 세로/스토리)';
-          updatedOptions[5].text = '3:4 (인스타그램/아이패드)';
-          updatedOptions[6].text = '2:1 (트위터 가로)';
-          updatedOptions[7].text = '1:2 (핀터레스트)';
-          updatedOptions[8].text = '4:5 (인스타그램 세로)';
-          updatedOptions[9].text = '3:2 (소셜 커버)';
-          updatedOptions[10].text = '21:9 (울트라와이드)';
-        }
-        
-        return { options: updatedOptions, lang: currentLang };
-      };
-      
       // 更新比例文本
-      const { options, lang } = getCurrentLanguageTexts();
-      for (let i = 0; i < options.length; i++) {
-        ratioOptions[i].text = options[i].text;
-      }
+      const { options } = this.getLocalizedRatioOptions(ratioOptions);
       
-      ratioOptions.forEach(option => {
+      options.forEach(option => {
         const optionElement = document.createElement('option');
         optionElement.value = option.value;
         optionElement.textContent = option.text;
@@ -1549,25 +1516,29 @@ if (window._ratioScreenshotLoaded) {
         // 如果有选择框，根据新比例重新调整大小
         if (this.selection) {
           this.adjustSelectionToRatio();
-          
-          // 更新工具栏标题显示最新的比例信息
-          if (this.toolbar && this.toolbar.querySelector('h3')) {
-            const title = this.toolbar.querySelector('h3');
-            const width = Math.abs(this.endX - this.startX);
-            const height = Math.abs(this.endY - this.startY);
-            const currentLang = I18nHelper.getCurrentLanguage();
-            title.textContent = `${Math.round(width)} × ${Math.round(height)} ${currentLang === 'zh' ? '像素' : currentLang === 'es' ? 'px' : currentLang === 'ar' ? 'dp' : 'px'} (${this.ratio})`;
-          }
+          this.updateSelectionSizeDisplay();
         }
       });
       
-      // 添加图像质量选择下拉菜单
+      ratioGroup.appendChild(ratioSelect);
+      configRow.appendChild(ratioGroup);
+      
+      // 添加分隔线
+      const divider1 = document.createElement('div');
+      divider1.className = 'ratio-screenshot-divider';
+      configRow.appendChild(divider1);
+      
+      // 创建质量设置组
+      const qualityGroup = document.createElement('div');
+      qualityGroup.className = 'ratio-screenshot-button-group';
+      
+      // 添加质量选择下拉菜单
       const qualitySelect = document.createElement('select');
       qualitySelect.className = 'ratio-screenshot-button';
       qualitySelect.title = I18nHelper.getToolbarText('qualityLabel');
-      qualitySelect.style.minWidth = '85px'; // 设置最小宽度，使其不过大
+      qualitySelect.style.minWidth = '85px'; // 设置最小宽度
       
-      // 添加质量选项 - 使用更简洁的文本
+      // 添加质量选项
       const qualityOptions = [
         { value: '1.0', text: I18nHelper.getToolbarText('imageQuality.original') },
         { value: '0.95', text: I18nHelper.getToolbarText('imageQuality.high') },
@@ -1579,7 +1550,6 @@ if (window._ratioScreenshotLoaded) {
         const optionElement = document.createElement('option');
         optionElement.value = option.value;
         optionElement.textContent = option.text;
-        // 选择当前质量或最接近的一个
         if (Math.abs(parseFloat(option.value) - this.imageQuality) < 0.05) {
           optionElement.selected = true;
         }
@@ -1591,7 +1561,160 @@ if (window._ratioScreenshotLoaded) {
         this.imageQuality = parseFloat(qualitySelect.value);
         console.log(`图片质量已更改为: ${this.imageQuality}`);
         
-        // 估算文件大小 (基于当前选择框尺寸)
+        // 估算文件大小
+        const fileSize = this.calculateEstimatedFileSize();
+        
+        // 显示质量信息和大小估计
+        const qualityName = qualitySelect.options[qualitySelect.selectedIndex].textContent;
+        this.showNotification(I18nHelper.getNotificationText('imageQualitySet', qualityName) + ' ' + fileSize, 2000);
+      });
+      
+      qualityGroup.appendChild(qualitySelect);
+      configRow.appendChild(qualityGroup);
+      
+      // 添加功能切换组
+      const toggleGroup = document.createElement('div');
+      toggleGroup.className = 'ratio-screenshot-button-group';
+      
+      // 只在连续模式下显示锁定尺寸按钮
+      if (this.isContinuousMode) {
+        // 添加分隔线
+        const divider2 = document.createElement('div');
+        divider2.className = 'ratio-screenshot-divider';
+        configRow.appendChild(divider2);
+        
+        // 添加锁定尺寸按钮
+        const lockSizeButton = document.createElement('button');
+        lockSizeButton.className = this.isLockSize ? 
+          'ratio-screenshot-button primary' : 'ratio-screenshot-button';
+        this.addButtonContent(lockSizeButton, 
+          this.isLockSize ? I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize'), 
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M12 7V5c0-2.2-1.8-4-4-4S4 2.8 4 5v2c-.6 0-1 .4-1 1v6c0 .6.4 1 1 1h8c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1zM6 5c0-1.1.9-2 2-2s2 .9 2 2v2H6V5zm4 7H8.5V9.5h-1V12H6V9h4v3z"/></svg>');
+        lockSizeButton.title = this.getLockSizeTitle();
+        
+        lockSizeButton.addEventListener('click', () => {
+          this.isLockSize = !this.isLockSize;
+          lockSizeButton.className = this.isLockSize ? 
+            'ratio-screenshot-button primary' : 'ratio-screenshot-button';
+          this.addButtonContent(lockSizeButton, 
+            this.isLockSize ? I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize'), 
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M12 7V5c0-2.2-1.8-4-4-4S4 2.8 4 5v2c-.6 0-1 .4-1 1v6c0 .6.4 1 1 1h8c.6 0 1-.4 1-1V8c0-.6-.4-1-1-1zM6 5c0-1.1.9-2 2-2s2 .9 2 2v2H6V5zm4 7H8.5V9.5h-1V12H6V9h4v3z"/></svg>');
+          
+          if (this.isLockSize) {
+            // 记录当前的尺寸
+            this.lockedWidth = Math.abs(this.endX - this.startX);
+            this.lockedHeight = Math.abs(this.endY - this.startY);
+            console.log(`锁定截图尺寸: ${this.lockedWidth} × ${this.lockedHeight}`);
+          } else {
+            // 清除锁定的尺寸
+            this.lockedWidth = 0;
+            this.lockedHeight = 0;
+            console.log("解除尺寸锁定");
+          }
+        });
+        
+        toggleGroup.appendChild(lockSizeButton);
+      }
+      
+      // 添加分隔线
+      const divider3 = document.createElement('div');
+      divider3.className = 'ratio-screenshot-divider';
+      configRow.appendChild(divider3);
+      
+      // 添加磁性吸附按钮
+      const magneticButton = document.createElement('button');
+      magneticButton.className = this.isMagneticEnabled ? 
+        'ratio-screenshot-button primary' : 'ratio-screenshot-button';
+      this.addButtonContent(magneticButton, 
+        this.isMagneticEnabled ? I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M14 5h-1V2c0-.6-.4-1-1-1H9v1h3v3h2zm0 2v3h-2v3H9v1h3c.6 0 1-.4 1-1v-3h1V7zM7 2v1H4v3H2v3h2v3h3v1H2c-.6 0-1-.4-1-1V9H0V7h1V3c0-.6.4-1 1-1h5z"/></svg>');
+      magneticButton.title = this.getMagneticTitle();
+      
+      magneticButton.addEventListener('click', () => {
+        this.isMagneticEnabled = !this.isMagneticEnabled;
+        magneticButton.className = this.isMagneticEnabled ? 
+          'ratio-screenshot-button primary' : 'ratio-screenshot-button';
+        this.addButtonContent(magneticButton, 
+          this.isMagneticEnabled ? I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic'), 
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M14 5h-1V2c0-.6-.4-1-1-1H9v1h3v3h2zm0 2v3h-2v3H9v1h3c.6 0 1-.4 1-1v-3h1V7zM7 2v1H4v3H2v3h2v3h3v1H2c-.6 0-1-.4-1-1V9H0V7h1V3c0-.6.4-1 1-1h5z"/></svg>');
+        
+        // 清除辅助线
+        this.clearMagneticGuides();
+      });
+      
+      toggleGroup.appendChild(magneticButton);
+      configRow.appendChild(toggleGroup);
+      
+      return configRow;
+    }
+    
+    // 添加按钮内容（图标和文本）
+    addButtonContent(button, text, iconSvg) {
+      // 清空现有内容
+      button.innerHTML = '';
+      
+      // 添加图标（如果提供）
+      if (iconSvg) {
+        const iconSpan = document.createElement('span');
+        iconSpan.className = 'ratio-screenshot-button-icon';
+        iconSpan.innerHTML = iconSvg;
+        button.appendChild(iconSpan);
+      }
+      
+      // 添加文本
+      if (text) {
+        const textSpan = document.createElement('span');
+        textSpan.textContent = text;
+        button.appendChild(textSpan);
+      }
+    }
+    
+    // 获取本地化的比例选项
+    getLocalizedRatioOptions(ratioOptions) {
+      const currentLang = I18nHelper.getCurrentLanguage();
+      const updatedOptions = [...ratioOptions];
+      
+      if (currentLang === 'zh') {
+        updatedOptions[1].text = '16:9 (视频/屏幕)';
+        updatedOptions[2].text = '4:3 (传统屏幕)';
+        updatedOptions[3].text = '1:1 (正方形/Instagram)';
+        updatedOptions[4].text = '9:16 (手机竖屏/故事)';
+        updatedOptions[5].text = '3:4 (小红书/iPad)';
+        updatedOptions[6].text = '2:1 (小红书/Twitter横图)';
+        updatedOptions[7].text = '1:2 (Pinterest)';
+        updatedOptions[8].text = '4:5 (Instagram竖图)';
+        updatedOptions[9].text = '3:2 (SNS封面)';
+        updatedOptions[10].text = '21:9 (超宽屏)';
+      } else if (currentLang === 'es') {
+        updatedOptions[1].text = '16:9 (Video/Pantalla)';
+        updatedOptions[2].text = '4:3 (Pantalla Tradicional)';
+        updatedOptions[3].text = '1:1 (Cuadrado/Instagram)';
+        updatedOptions[4].text = '9:16 (Móvil Vertical/Historias)';
+        updatedOptions[5].text = '3:4 (Instagram/iPad)';
+        updatedOptions[6].text = '2:1 (Twitter Horizontal)';
+        updatedOptions[7].text = '1:2 (Pinterest)';
+        updatedOptions[8].text = '4:5 (Instagram Vertical)';
+        updatedOptions[9].text = '3:2 (Portada Social)';
+        updatedOptions[10].text = '21:9 (Ultraancha)';
+      }
+      // 保留其他语言的处理
+      
+      return { options: updatedOptions, lang: currentLang };
+    }
+    
+    // 更新选择框尺寸显示
+    updateSelectionSizeDisplay() {
+      if (this.toolbar && this.toolbar.querySelector('h3')) {
+        const title = this.toolbar.querySelector('h3');
+        const width = Math.abs(this.endX - this.startX);
+        const height = Math.abs(this.endY - this.startY);
+        const currentLang = I18nHelper.getCurrentLanguage();
+        title.textContent = `${Math.round(width)} × ${Math.round(height)} ${currentLang === 'zh' ? '像素' : currentLang === 'es' ? 'px' : currentLang === 'ar' ? 'dp' : 'px'} (${this.ratio})`;
+      }
+    }
+    
+    // 计算预估文件大小
+    calculateEstimatedFileSize() {
         let fileSize = "";
         if (this.selection) {
           const width = Math.abs(this.endX - this.startX);
@@ -1601,10 +1724,8 @@ if (window._ratioScreenshotLoaded) {
           // 估算文件大小 (粗略计算)
           let estimatedSizeKB;
           if (this.saveFormat === 'png') {
-            // PNG - 基于分辨率和质量的粗略估计
             estimatedSizeKB = (pixelCount * 0.2) / 1024 * this.imageQuality;
           } else {
-            // JPG - 基于分辨率和质量的粗略估计
             estimatedSizeKB = (pixelCount * 0.08) / 1024 * this.imageQuality;
           }
           
@@ -1614,22 +1735,40 @@ if (window._ratioScreenshotLoaded) {
           } else {
             fileSize = I18nHelper.formatFileSizeEstimate(Math.round(estimatedSizeKB), 'KB');
           }
-        }
-        
-        // 显示质量信息和大小估计
-        const qualityName = qualitySelect.options[qualitySelect.selectedIndex].textContent;
-        this.showNotification(I18nHelper.getNotificationText('imageQualitySet', qualityName) + ' ' + fileSize, 2000);
-      });
-      
-      // 锁定尺寸切换按钮
-      const lockSizeButton = document.createElement('button');
-      lockSizeButton.className = this.isLockSize ? 
-        'ratio-screenshot-button primary' : 'ratio-screenshot-button';
-      lockSizeButton.textContent = this.isLockSize ? 
-        I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize');
-      
-      // 使用IIFE获取当前语言并设置按钮标题
-      lockSizeButton.title = (() => {
+      }
+      return fileSize;
+    }
+    
+    // 获取AI对话按钮标题
+    getAIDialogTitle() {
+      const currentLang = I18nHelper.getCurrentLanguage();
+      if (currentLang === 'zh') return '使用GLM-4V-Flash进行图像对话';
+      if (currentLang === 'es') return 'Chatear con la imagen usando GLM-4V-Flash';
+      if (currentLang === 'ar') return 'دردشة مع الصورة باستخدام GLM-4V-Flash';
+      if (currentLang === 'de') return 'Mit dem Bild chatten mit GLM-4V-Flash';
+      if (currentLang === 'pt') return 'Conversar com a imagem usando GLM-4V-Flash';
+      if (currentLang === 'ja') return 'GLM-4V-Flashを使用して画像とチャット';
+      if (currentLang === 'fr') return 'Discuter avec l\'image en utilisant GLM-4V-Flash';
+      if (currentLang === 'ko') return 'GLM-4V-Flash를 사용하여 이미지와 채팅';
+      return 'Chat with image using GLM-4V-Flash';
+    }
+    
+    // 获取二维码解码按钮标题
+    getQRDecodeTitle() {
+      const currentLang = I18nHelper.getCurrentLanguage();
+      if (currentLang === 'zh') return '解析截图中的二维码';
+      if (currentLang === 'es') return 'Decodificar código QR';
+      if (currentLang === 'ar') return 'فك رمز QR';
+      if (currentLang === 'de') return 'QR-Code dekodieren';
+      if (currentLang === 'pt') return 'Decodificar QR Code';
+      if (currentLang === 'ja') return 'QRコードを解析';
+      if (currentLang === 'fr') return 'Décoder le QR Code';
+      if (currentLang === 'ko') return 'QR 코드 해독';
+      return 'Decode QR Code';
+    }
+    
+    // 获取锁定尺寸按钮标题
+    getLockSizeTitle() {
         const currentLang = I18nHelper.getCurrentLanguage();
         if (currentLang === 'zh') return '锁定当前尺寸用于连续截图';
         if (currentLang === 'es') return 'Bloquear tamaño para captura continua';
@@ -1640,37 +1779,10 @@ if (window._ratioScreenshotLoaded) {
         if (currentLang === 'fr') return 'Verrouiller la taille actuelle pour une capture continue';
         if (currentLang === 'ko') return '연속 캡처를 위한 현재 크기 잠금';
         return 'Lock current size for continuous capture';
-      })();
-      
-      lockSizeButton.addEventListener('click', () => {
-        this.isLockSize = !this.isLockSize;
-        lockSizeButton.textContent = this.isLockSize ? 
-          I18nHelper.getToolbarText('lockSizeActive') : I18nHelper.getToolbarText('lockSize');
-        lockSizeButton.className = this.isLockSize ? 
-          'ratio-screenshot-button primary' : 'ratio-screenshot-button';
-        
-        if (this.isLockSize) {
-          // 记录当前的尺寸
-          this.lockedWidth = Math.abs(this.endX - this.startX);
-          this.lockedHeight = Math.abs(this.endY - this.startY);
-          console.log(`锁定截图尺寸: ${this.lockedWidth} × ${this.lockedHeight}`);
-        } else {
-          // 清除锁定的尺寸
-          this.lockedWidth = 0;
-          this.lockedHeight = 0;
-          console.log("解除尺寸锁定");
-        }
-      });
-      
-      // 磁性吸附切换按钮
-      const magneticButton = document.createElement('button');
-      magneticButton.className = this.isMagneticEnabled ? 
-        'ratio-screenshot-button primary' : 'ratio-screenshot-button';
-      magneticButton.textContent = this.isMagneticEnabled ? 
-        I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic');
-      
-      // 使用IIFE获取当前语言并设置按钮标题
-      magneticButton.title = (() => {
+    }
+    
+    // 获取磁性吸附按钮标题
+    getMagneticTitle() {
         const currentLang = I18nHelper.getCurrentLanguage();
         if (currentLang === 'zh') return '启用后会自动吸附到页面元素边缘';
         if (currentLang === 'es') return 'Auto-snap para elementos de la página cuando está activado';
@@ -1681,42 +1793,10 @@ if (window._ratioScreenshotLoaded) {
         if (currentLang === 'fr') return 'Accrochage automatique aux éléments de la page lorsqu\'activé';
         if (currentLang === 'ko') return '활성화시 페이지 요소에 자동으로 스냅';
         return 'Auto-snap to page element edges when enabled';
-      })();
-      
-      magneticButton.addEventListener('click', () => {
-        this.isMagneticEnabled = !this.isMagneticEnabled;
-        magneticButton.textContent = this.isMagneticEnabled ? 
-          I18nHelper.getToolbarText('magneticActive') : I18nHelper.getToolbarText('magnetic');
-        magneticButton.className = this.isMagneticEnabled ? 
-          'ratio-screenshot-button primary' : 'ratio-screenshot-button';
-        
-        // 清除辅助线
-        this.clearMagneticGuides();
-      });
-      
-      // 添加选项到第二行
-      configRow.appendChild(ratioSelect);
-      configRow.appendChild(qualitySelect);
-      
-      // 只在连续模式下显示锁定尺寸和保持继续按钮
-      if (this.isContinuousMode) {
-        configRow.appendChild(lockSizeButton);
-        primaryRow.appendChild(keepButton);
-      }
-      
-      // 添加磁性吸附按钮
-      configRow.appendChild(magneticButton);
-      
-      // 添加两行到工具栏
-      this.toolbar.appendChild(primaryRow);
-      this.toolbar.appendChild(configRow);
-      
-      // 添加移动提示
-      const moveHint = document.createElement('div');
-      moveHint.className = 'ratio-screenshot-move-hint';
-      
-      // 使用IIFE获取当前语言并设置提示文本
-      moveHint.innerHTML = (() => {
+    }
+    
+    // 获取移动提示文本
+    getLocalizedMoveHint() {
         const currentLang = I18nHelper.getCurrentLanguage();
         if (currentLang === 'zh') 
           return '提示: <strong>拖动边缘</strong>调整大小, <strong>鼠标滚轮</strong>微调位置';
@@ -1735,11 +1815,6 @@ if (window._ratioScreenshotLoaded) {
         if (currentLang === 'ko') 
           return '팁: <strong>가장자리 드래그</strong>로 크기 조정, <strong>마우스 휠</strong>로 미세 조정';
         return 'Tip: <strong>Drag edges</strong> to resize, <strong>Mouse wheel</strong> for fine adjustment';
-      })();
-      
-      this.toolbar.appendChild(moveHint);
-      
-      document.body.appendChild(this.toolbar);
     }
     
     // 添加事件监听
@@ -2984,93 +3059,70 @@ if (window._ratioScreenshotLoaded) {
     
     // 处理并保存图像
     processAndSaveImage(image, rect, index = 0) {
-      console.log(`处理区域 ${index+1}/${this.selections.length+1}，最终裁剪坐标:`, rect);
+      const startTime = performance.now();
       
-      try {
-        // 创建Canvas并裁剪图像
+      // 为保存创建画布
         const canvas = document.createElement('canvas');
         canvas.width = rect.width;
         canvas.height = rect.height;
-        // 设置不透明背景以确保图像质量
-        const ctx = canvas.getContext('2d', { alpha: false });
-        
-        if (!ctx) {
-          console.error("无法获取Canvas上下文");
-          return;
-        }
-        
-        // 填充白色背景
-        ctx.fillStyle = "#FFFFFF";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        console.log(`从原图(${image.width}x${image.height})裁剪区域:`, rect);
-        console.log(`使用图片质量: ${this.imageQuality}`);
-        
-        // 确保裁剪区域在图像范围内
-        if (rect.left >= 0 && rect.top >= 0 && 
-            rect.left + rect.width <= image.width && 
-            rect.top + rect.height <= image.height) {
-            
-          // 绘制裁剪区域
+      
+      const ctx = canvas.getContext('2d');
+      
+      // 确保图片绘制在正确位置（考虑到部分可见的滚动元素）
           ctx.drawImage(
             image,
-            rect.left, rect.top, rect.width, rect.height,
+        0, 0, rect.width, rect.height,
             0, 0, rect.width, rect.height
           );
           
-          // 转换为图像数据并保存 - 使用用户指定的质量
-          const dataUrl = canvas.toDataURL(
-            this.saveFormat === 'jpg' ? 'image/jpeg' : 'image/png', 
-            this.imageQuality
-          );
-          this.saveImageToFile(dataUrl, this.saveFormat, index);
+      // 获取图像质量
+      let quality = 1.0;
+      
+      // 依据保存格式选择合适的MIME类型
+      let mimeType;
+      let format = this.saveFormat || 'png';
+      
+      if (format === 'jpg' || format === 'jpeg') {
+        mimeType = 'image/jpeg';
+        quality = 0.95; // JPEG默认使用较高质量
         } else {
-          console.warn("裁剪区域超出可见范围，尝试调整坐标");
-          
-          // 计算有效的裁剪区域
-          const validLeft = Math.max(0, Math.round(rect.left));
-          const validTop = Math.max(0, Math.round(rect.top));
-          const validRight = Math.min(image.width, Math.round(rect.left + rect.width));
-          const validBottom = Math.min(image.height, Math.round(rect.top + rect.height));
-          const validWidth = validRight - validLeft;
-          const validHeight = validBottom - validTop;
-          
-          if (validWidth > 0 && validHeight > 0) {
-            // 计算有效区域在画布上的位置（以保持相对位置）
-            const canvasX = validLeft - rect.left;
-            const canvasY = validTop - rect.top;
-            
-            console.log("调整后的有效区域:", {
-              source: { x: validLeft, y: validTop, width: validWidth, height: validHeight },
-              destination: { x: canvasX, y: canvasY, width: validWidth, height: validHeight }
-            });
-            
-            // 绘制有效区域到相应的画布位置
-            ctx.drawImage(
-              image,
-              validLeft, validTop, validWidth, validHeight,
-              canvasX, canvasY, validWidth, validHeight
-            );
-            
-            // 转换为图像数据并保存 - 使用用户指定的质量
-            const dataUrl = canvas.toDataURL(
-              this.saveFormat === 'jpg' ? 'image/jpeg' : 'image/png', 
-              this.imageQuality
-            );
-            this.saveImageToFile(dataUrl, this.saveFormat, index);
-            
-            // 仅当有效区域明显小于所选区域时提示用户
-            if (validWidth < rect.width * 0.8 || validHeight < rect.height * 0.8) {
-              this.showNotification(I18nHelper.getNotificationText('partiallyVisibleArea'), 3000);
-            }
+        mimeType = 'image/png';
+      }
+      
+      try {
+        // 转换为dataURL
+        const dataUrl = canvas.toDataURL(mimeType, quality);
+        
+        // 计算处理时间
+        const processTime = Math.round(performance.now() - startTime);
+        console.log(`图像处理耗时: ${processTime}ms`);
+        
+        // 保存最近截图数据到background
+        chrome.runtime.sendMessage({
+          action: 'saveLastScreenshotData',
+          dataUrl: dataUrl
+        });
+        
+        // 发送到background脚本进行保存
+        chrome.runtime.sendMessage({
+          action: 'saveScreenshot',
+          dataUrl: dataUrl,
+          format: format,
+          suffix: index > 0 ? `_${index}` : ''
+        }, (response) => {
+          if (response && response.success) {
+            this.showNotification(`截图已保存 (${Math.round(dataUrl.length / 1024)} KB)`, 3000);
           } else {
-            console.error("无法裁剪图像，选定区域完全在可见范围之外");
-            this.showNotification(I18nHelper.getNotificationText('areaOutOfView'), 3000);
+            const error = response ? response.error : "未知错误";
+            this.showNotification(`保存失败: ${error}`, 5000);
           }
-        }
+        });
+        
+        return true;
       } catch (error) {
-        console.error("处理图像时出错:", error, error.stack);
-        this.showNotification(I18nHelper.getNotificationText('processingError', error.message), 3000);
+        console.error('保存图像失败:', error);
+        this.showNotification(`保存失败: ${error.message || '未知错误'}`, 5000);
+        return false;
       }
     }
     
@@ -4718,6 +4770,561 @@ if (window._ratioScreenshotLoaded) {
         console.error("备用复制方法失败:", error);
         notification.textContent = I18nHelper.getToolbarText('qrError', "复制失败");
         setTimeout(() => notification.remove(), 3000);
+      }
+    }
+    
+    // 抠图功能 - 移除图像背景并复制到剪贴板
+    removeBackground() {
+      if (!this.selection) {
+        console.error("未找到选择框，无法抠图");
+        return;
+      }
+      
+      console.log("开始抠图处理");
+      
+      // 显示处理中提示
+      const removeMsg = this.showNotification(I18nHelper.isZh() ? "正在抠图处理中..." : "Removing background...");
+      
+      // 使用我们跟踪的绝对坐标进行截图
+      const captureRect = {
+        left: Math.min(this.startX, this.endX),
+        top: Math.min(this.startY, this.endY),
+        width: Math.abs(this.endX - this.startX),
+        height: Math.abs(this.endY - this.startY)
+      };
+      
+      console.log("抠图区域坐标(绝对):", captureRect);
+      
+      // 获取当前的滚动位置和视口尺寸
+      const scrollX = window.scrollX;
+      const scrollY = window.scrollY;
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+      
+      // 检查选择区域是否在视口范围内
+      const isRectVisible = (
+        captureRect.left >= scrollX && 
+        captureRect.top >= scrollY && 
+        captureRect.left + captureRect.width <= scrollX + viewportWidth &&
+        captureRect.top + captureRect.height <= scrollY + viewportHeight
+      );
+      
+      // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
+      this.hideUIElementsForCapture();
+      
+      // 添加短延迟确保DOM更新已渲染
+      setTimeout(() => {
+        // 根据区域是否在当前视口内，选择不同的截图方法
+        if (isRectVisible) {
+          console.log("选择区域在当前视口内，使用标准截图方法");
+          
+          // 区域在视口内，使用常规方法截图
+          chrome.runtime.sendMessage({ 
+            action: 'captureScreen'
+          }, response => {
+            // 恢复UI元素
+            this.restoreUIElementsAfterCapture();
+            
+            if (response && response.success) {
+              // 处理截图数据
+              const image = new Image();
+              image.onload = () => {
+                // 将绝对坐标转换为图像相对坐标 (为了应对设备像素比)
+                const devicePixelRatio = window.devicePixelRatio || 1;
+                const imageRect = {
+                  left: Math.round((captureRect.left - scrollX) * devicePixelRatio),
+                  top: Math.round((captureRect.top - scrollY) * devicePixelRatio),
+                  width: Math.round(captureRect.width * devicePixelRatio),
+                  height: Math.round(captureRect.height * devicePixelRatio)
+                };
+                
+                // 剪切并处理抠图
+                this.processImageForRemoveBackground(image, imageRect, removeMsg);
+              };
+              
+              image.onerror = () => {
+                console.error("图像加载失败");
+                removeMsg.textContent = I18nHelper.isZh() ? "抠图失败：图像加载失败" : "Background removal failed: Image loading error";
+                setTimeout(() => removeMsg.remove(), 2000);
+              };
+              
+              // 加载图像
+              image.src = response.dataUrl;
+            } else {
+              console.error("截图失败:", response?.error || "未知错误");
+              removeMsg.textContent = I18nHelper.isZh() ? 
+                `抠图失败：${response?.error || "未知错误"}` : 
+                `Background removal failed: ${response?.error || "Unknown error"}`;
+              setTimeout(() => removeMsg.remove(), 2000);
+            }
+          });
+        } else {
+          console.log("选择区域不完全在当前视口内，使用滚动截图方法");
+          
+          // 区域不完全在视口内，通知后台脚本使用分块截图
+          chrome.runtime.sendMessage({
+            action: 'captureFullPage',
+            targetArea: captureRect
+          }, response => {
+            // 恢复UI元素
+            this.restoreUIElementsAfterCapture();
+            
+            if (response && response.success) {
+              // 处理截图数据
+              const image = new Image();
+              image.onload = () => {
+                this.processImageForRemoveBackground(image, {
+                  left: 0,
+                  top: 0,
+                  width: image.width,
+                  height: image.height
+                }, removeMsg);
+              };
+              
+              image.onerror = () => {
+                console.error("图像加载失败");
+                removeMsg.textContent = I18nHelper.isZh() ? "抠图失败：图像加载失败" : "Background removal failed: Image loading error";
+                setTimeout(() => removeMsg.remove(), 2000);
+              };
+              
+              // 加载图像
+              image.src = response.dataUrl;
+            } else {
+              console.error("全页面截图失败:", response?.error || "未知错误");
+              removeMsg.textContent = I18nHelper.isZh() ? 
+                `抠图失败：${response?.error || "未知错误"}` : 
+                `Background removal failed: ${response?.error || "Unknown error"}`;
+              setTimeout(() => removeMsg.remove(), 2000);
+            }
+          });
+        }
+      }, 30); // 添加30毫秒延迟，足够DOM更新但不影响用户体验
+    }
+    
+    // 处理图像并进行抠图
+    processImageForRemoveBackground(image, rect, notification) {
+      try {
+        // 创建Canvas并裁剪图像
+        const canvas = document.createElement('canvas');
+        canvas.width = rect.width;
+        canvas.height = rect.height;
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        if (!ctx) {
+          console.error("无法获取Canvas上下文");
+          notification.textContent = I18nHelper.isZh() ? "抠图失败：无法获取Canvas上下文" : "Background removal failed: Cannot get canvas context";
+          setTimeout(() => notification.remove(), 2000);
+          return;
+        }
+        
+        // 确保裁剪区域在图像范围内
+        if (rect.left >= 0 && rect.top >= 0 && 
+            rect.left + rect.width <= image.width && 
+            rect.top + rect.height <= image.height) {
+            
+          // 先绘制一个完全透明的背景，确保支持透明度
+          ctx.clearRect(0, 0, rect.width, rect.height);
+          
+          // 绘制裁剪区域
+          ctx.drawImage(
+            image,
+            rect.left, rect.top, rect.width, rect.height,
+            0, 0, rect.width, rect.height
+          );
+          
+          console.log("正在处理抠图...");
+          
+          // 获取图像数据
+          const imageData = ctx.getImageData(0, 0, rect.width, rect.height);
+          const data = imageData.data;
+          
+          // 改进的背景移除算法 - 包含多项优化
+          this.simpleBackgroundRemoval(imageData);
+          
+          // 将处理后的数据放回canvas
+          ctx.putImageData(imageData, 0, 0);
+          
+          console.log("抠图处理完成，准备复制到剪贴板");
+          
+          // 转换Canvas为Blob并复制到剪贴板
+          canvas.toBlob(blob => {
+            if (blob) {
+              try {
+                // 创建ClipboardItem并复制到剪贴板
+                const clipboardItem = new ClipboardItem({ 'image/png': blob });
+                navigator.clipboard.write([clipboardItem])
+                  .then(() => {
+                    console.log("成功将抠图结果复制到剪贴板");
+                    notification.textContent = I18nHelper.isZh() ? "抠图完成并已复制到剪贴板" : "Background removed and copied to clipboard";
+                    setTimeout(() => notification.remove(), 2000);
+                  })
+                  .catch(err => {
+                    console.error("复制到剪贴板失败:", err);
+                    notification.textContent = I18nHelper.isZh() ? 
+                      `复制到剪贴板失败：${err.message || ''}` : 
+                      `Clipboard access denied: ${err.message || ''}`;
+                    setTimeout(() => notification.remove(), 2000);
+                  });
+              } catch (error) {
+                console.error("创建ClipboardItem失败:", error);
+                notification.textContent = I18nHelper.isZh() ? 
+                  `抠图失败：${error.message || "不支持剪贴板API"}` : 
+                  `Background removal failed: ${error.message || "Clipboard API not supported"}`;
+                setTimeout(() => notification.remove(), 2000);
+                
+                // 尝试使用旧版方法
+                this.copyImageFallback(canvas, notification);
+              }
+            } else {
+              console.error("无法创建Blob");
+              notification.textContent = I18nHelper.isZh() ? "抠图失败：无法创建Blob" : "Background removal failed: Cannot create Blob";
+              setTimeout(() => notification.remove(), 2000);
+            }
+          }, 'image/png');
+        } else {
+          console.warn("裁剪区域超出可见范围");
+          notification.textContent = I18nHelper.isZh() ? "抠图区域超出可见范围" : "Selected area is out of view";
+          setTimeout(() => notification.remove(), 2000);
+        }
+      } catch (error) {
+        console.error("处理图像时出错:", error);
+        notification.textContent = I18nHelper.isZh() ? 
+          `抠图失败：${error.message || "处理图像出错"}` : 
+          `Background removal failed: ${error.message || "Image processing error"}`;
+        setTimeout(() => notification.remove(), 2000);
+      }
+    }
+    
+    // 改进的背景移除算法 - 包含多项优化
+    simpleBackgroundRemoval(imageData) {
+      try {
+        const data = imageData.data;
+        const width = imageData.width;
+        const height = imageData.height;
+        
+        // 优化1: 更智能的背景色检测 - 不仅使用四个角落，还采样边缘区域
+        const sampleSize = 10; // 采样区域大小
+        const bgSamples = [];
+        
+        // 采样四个角落区域
+        const corners = [
+          {x: 0, y: 0},                     // 左上
+          {x: width - sampleSize, y: 0},    // 右上
+          {x: 0, y: height - sampleSize},   // 左下
+          {x: width - sampleSize, y: height - sampleSize}  // 右下
+        ];
+        
+        // 从每个角落区域收集样本
+        for (const corner of corners) {
+          for (let y = 0; y < sampleSize; y++) {
+            for (let x = 0; x < sampleSize; x++) {
+              const i = (corner.y + y) * width + (corner.x + x);
+              const idx = i * 4;
+              bgSamples.push({
+                r: data[idx],
+                g: data[idx + 1],
+                b: data[idx + 2]
+              });
+            }
+          }
+        }
+        
+        // 采样上下边缘中间区域
+        const edgeSampleCount = 5;
+        const edgeStep = Math.floor(width / (edgeSampleCount + 1));
+        
+        // 上边缘
+        for (let x = edgeStep; x < width; x += edgeStep) {
+          for (let y = 0; y < sampleSize; y++) {
+            const i = y * width + x;
+            const idx = i * 4;
+            bgSamples.push({
+              r: data[idx],
+              g: data[idx + 1],
+              b: data[idx + 2]
+            });
+          }
+        }
+        
+        // 下边缘
+        for (let x = edgeStep; x < width; x += edgeStep) {
+          for (let y = 0; y < sampleSize; y++) {
+            const i = (height - 1 - y) * width + x;
+            const idx = i * 4;
+            bgSamples.push({
+              r: data[idx],
+              g: data[idx + 1],
+              b: data[idx + 2]
+            });
+          }
+        }
+        
+        // 左右边缘
+        const vEdgeStep = Math.floor(height / (edgeSampleCount + 1));
+        
+        // 左边缘
+        for (let y = vEdgeStep; y < height; y += vEdgeStep) {
+          for (let x = 0; x < sampleSize; x++) {
+            const i = y * width + x;
+            const idx = i * 4;
+            bgSamples.push({
+              r: data[idx],
+              g: data[idx + 1],
+              b: data[idx + 2]
+            });
+          }
+        }
+        
+        // 右边缘
+        for (let y = vEdgeStep; y < height; y += vEdgeStep) {
+          for (let x = 0; x < sampleSize; x++) {
+            const i = y * width + (width - 1 - x);
+            const idx = i * 4;
+            bgSamples.push({
+              r: data[idx],
+              g: data[idx + 1],
+              b: data[idx + 2]
+            });
+          }
+        }
+        
+        // 计算样本颜色的中位数值 (比平均值更健壮)
+        const rValues = bgSamples.map(c => c.r).sort((a, b) => a - b);
+        const gValues = bgSamples.map(c => c.g).sort((a, b) => a - b);
+        const bValues = bgSamples.map(c => c.b).sort((a, b) => a - b);
+        
+        const getMedian = arr => {
+          const mid = Math.floor(arr.length / 2);
+          return arr.length % 2 === 0 ? (arr[mid - 1] + arr[mid]) / 2 : arr[mid];
+        };
+        
+        const bgColor = {
+          r: Math.round(getMedian(rValues)),
+          g: Math.round(getMedian(gValues)),
+          b: Math.round(getMedian(bValues))
+        };
+        
+        console.log("检测到的背景色:", bgColor);
+        
+        // 优化2: 自适应阈值 - 根据背景色样本的标准差动态调整
+        function getStandardDeviation(values, mean) {
+          return Math.sqrt(values.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / values.length);
+        }
+        
+        const rMean = rValues.reduce((sum, val) => sum + val, 0) / rValues.length;
+        const gMean = gValues.reduce((sum, val) => sum + val, 0) / gValues.length;
+        const bMean = bValues.reduce((sum, val) => sum + val, 0) / bValues.length;
+        
+        const rStdDev = getStandardDeviation(rValues, rMean);
+        const gStdDev = getStandardDeviation(gValues, gMean);
+        const bStdDev = getStandardDeviation(bValues, bMean);
+        
+        // 计算平均标准差，并根据它调整阈值
+        const avgStdDev = (rStdDev + gStdDev + bStdDev) / 3;
+        // 设置基础阈值与动态部分
+        const baseThreshold = 25;
+        const threshold = Math.max(baseThreshold, Math.min(avgStdDev * 1.5, 50));
+        
+        console.log("自适应阈值:", threshold, "背景标准差:", avgStdDev);
+        
+        // 颜色距离计算函数 - 优化3: 使用加权欧氏距离，人眼对绿色更敏感
+        const calcColorDistance = (color1, color2) => {
+          return Math.sqrt(
+            0.299 * Math.pow(color1.r - color2.r, 2) +
+            0.587 * Math.pow(color1.g - color2.g, 2) +
+            0.114 * Math.pow(color1.b - color2.b, 2)
+          );
+        };
+        
+        // 创建Alpha掩码 - 优化4: 使用Uint8ClampedArray避免手动裁剪值范围
+        const alphaMask = new Uint8ClampedArray(width * height);
+        
+        // 第一步：标记所有像素的透明度
+        for (let i = 0; i < width * height; i++) {
+          const idx = i * 4;
+          const pixelColor = {
+            r: data[idx],
+            g: data[idx + 1],
+            b: data[idx + 2]
+          };
+          
+          // 计算与背景色的距离
+          const distance = calcColorDistance(pixelColor, bgColor);
+          
+          // 设置透明度 - 优化5: 使用平滑的S型曲线而非线性过渡
+          if (distance < threshold) {
+            alphaMask[i] = 0; // 完全透明
+          } else if (distance < threshold * 2) {
+            // 使用平滑的S曲线过渡 - 减少突变，更自然
+            const t = (distance - threshold) / threshold;
+            // 应用平滑步进函数 3t² - 2t³
+            const smoothT = 3 * t * t - 2 * t * t * t;
+            alphaMask[i] = Math.round(smoothT * 255);
+          } else {
+            alphaMask[i] = 255; // 完全不透明
+          }
+        }
+        
+        // 优化6: 对前景样本进行空间分区，提高颜色查找效率
+        const gridSize = 20;
+        const gridCols = Math.ceil(width / gridSize);
+        const gridRows = Math.ceil(height / gridSize);
+        const colorGrid = Array(gridRows).fill().map(() => Array(gridCols).fill().map(() => []));
+        
+        // 第二步：收集前景色样本并放入网格
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const i = y * width + x;
+            if (alphaMask[i] === 255) { // 只收集完全不透明的像素
+              const idx = i * 4;
+              const gridX = Math.floor(x / gridSize);
+              const gridY = Math.floor(y / gridSize);
+              
+              colorGrid[gridY][gridX].push({
+                r: data[idx],
+                g: data[idx + 1],
+                b: data[idx + 2],
+                x: x,
+                y: y
+              });
+            }
+          }
+        }
+        
+        // 第三步：平滑边缘（解决锯齿问题）
+        const smoothedMask = new Uint8ClampedArray(width * height);
+        smoothedMask.set(alphaMask);
+        
+        // 优化7: 使用两次不同半径的模糊，更有效地消除锯齿
+        // 第一次：较大半径模糊
+        const applyGaussianBlur = (input, output, radius) => {
+          const sigma = radius / 3;
+          const twoSigmaSq = 2 * sigma * sigma;
+          const kernelSize = Math.ceil(radius) * 2 + 1;
+          const halfKernel = Math.floor(kernelSize / 2);
+          
+          // 生成高斯核
+          const kernel = [];
+          let kernelSum = 0;
+          
+          for (let y = -halfKernel; y <= halfKernel; y++) {
+            for (let x = -halfKernel; x <= halfKernel; x++) {
+              const dist = x * x + y * y;
+              const weight = Math.exp(-dist / twoSigmaSq);
+              kernel.push({ x, y, weight });
+              kernelSum += weight;
+            }
+          }
+          
+          // 标准化核权重
+          for (let i = 0; i < kernel.length; i++) {
+            kernel[i].weight /= kernelSum;
+          }
+          
+          // 应用模糊
+          for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+              const i = y * width + x;
+              
+              // 只处理半透明区域
+              if (input[i] > 0 && input[i] < 255) {
+                let sum = 0;
+                
+                for (const k of kernel) {
+                  const nx = x + k.x;
+                  const ny = y + k.y;
+                  
+                  if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+                    const ni = ny * width + nx;
+                    sum += input[ni] * k.weight;
+                  }
+                }
+                
+                output[i] = Math.round(sum);
+              }
+            }
+          }
+        };
+        
+        // 应用两次模糊
+        applyGaussianBlur(alphaMask, smoothedMask, 2.0);  // 半径2.0的模糊
+        alphaMask.set(smoothedMask);
+        applyGaussianBlur(alphaMask, smoothedMask, 1.0);  // 半径1.0的模糊
+        
+        // 第四步：修复边缘颜色（解决边缘颜色突兀问题）
+        // 优化8: 更高效的边缘颜色寻找算法
+        for (let y = 0; y < height; y++) {
+          for (let x = 0; x < width; x++) {
+            const i = y * width + x;
+            const idx = i * 4;
+            
+            // 只处理半透明区域
+            if (smoothedMask[i] > 0 && smoothedMask[i] < 255) {
+              // 寻找最近的前景色
+              const gridX = Math.floor(x / gridSize);
+              const gridY = Math.floor(y / gridSize);
+              
+              let nearestColor = null;
+              let minDistance = Infinity;
+              
+              // 先检查当前网格
+              let found = false;
+              
+              // 搜索3x3的相邻网格，先从当前开始
+              for (let dy = -1; dy <= 1 && !found; dy++) {
+                for (let dx = -1; dx <= 1 && !found; dx++) {
+                  const gx = gridX + dx;
+                  const gy = gridY + dy;
+                  
+                  if (gx >= 0 && gx < gridCols && gy >= 0 && gy < gridRows) {
+                    const samples = colorGrid[gy][gx];
+                    
+                    if (samples.length > 0) {
+                      // 限制在每个网格中检查的样本数量
+                      const maxCheck = Math.min(20, samples.length);
+                      
+                      for (let s = 0; s < maxCheck; s++) {
+                        const sample = samples[s];
+                        const distance = Math.sqrt(Math.pow(x - sample.x, 2) + Math.pow(y - sample.y, 2));
+                        
+                        if (distance < minDistance) {
+                          minDistance = distance;
+                          nearestColor = sample;
+                          
+                          // 如果找到很近的颜色，就提前结束
+                          if (distance < 5) {
+                            found = true;
+                            break;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              
+              // 如果找到了前景色，使用它
+              if (nearestColor) {
+                data[idx] = nearestColor.r;
+                data[idx + 1] = nearestColor.g;
+                data[idx + 2] = nearestColor.b;
+              }
+              
+              // 应用平滑后的透明度
+              data[idx + 3] = smoothedMask[i];
+            } else if (smoothedMask[i] === 0) {
+              // 完全透明
+              data[idx + 3] = 0;
+            } else {
+              // 完全不透明
+              data[idx + 3] = 255;
+            }
+          }
+        }
+        
+        console.log("抠图处理成功完成");
+      } catch (error) {
+        console.error("抠图过程发生错误:", error);
       }
     }
   }

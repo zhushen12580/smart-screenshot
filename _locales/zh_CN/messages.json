@@ -16,5 +16,44 @@
   },
   "cancelScreenshot": {
     "message": "取消截图"
+  },
+  "copyToClipboard": {
+    "message": "复制"
+  },
+  "title": {
+    "message": "精准截图"
+  },
+  "normalMode": {
+    "message": "普通模式"
+  },
+  "inspectMode": {
+    "message": "智能模式"
+  },
+  "ratioLabel": {
+    "message": "选择比例"
+  },
+  "formatLabel": {
+    "message": "保存格式"
+  },
+  "startButton": {
+    "message": "开始截图"
+  },
+  "capturing": {
+    "message": "截图中..."
+  },
+  "shortcuts": {
+    "message": "快捷键"
+  },
+  "quickActions_share": {
+    "message": "分享美好"
+  },
+  "quickActions_feedback": {
+    "message": "创造美好"
+  },
+  "quickActions_shareSuccess": {
+    "message": "分享文本已复制到剪贴板！"
+  },
+  "quickActions_shareFailed": {
+    "message": "复制失败，请重试"
   }
 } 

@@ -4,52 +4,222 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="title">精准截图</title>
+  <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
   <style>
     :root {
-      --primary-color: #6d28d9;
-      --primary-dark: #5b21b6;
+      --primary-color: #7c3aed;
+      --primary-dark: #6d28d9;
       --primary-light: #8b5cf6;
       --black: #18181b;
       --white: #ffffff;
       --gray-100: #f4f4f5;
       --gray-200: #e4e4e7;
       --gray-300: #d4d4d8;
-      --shadow-offset: 4px;
+      --shadow-offset: 3px;
     }
     
     body {
-      width: 300px;
+      width: 320px;
       padding: 16px;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-      background-color: rgba(245, 243, 255, 0.9);
+      background-color: rgba(250, 250, 252, 0.95);
       color: var(--black);
-      border: 3px solid var(--black);
+      border: 2px solid var(--black);
       box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
       margin: 0;
       overflow: hidden;
     }
     
+    .title-container {
+      position: relative;
+      padding: 20px 15px 25px;
+      margin: -16px -16px 20px;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+      overflow: hidden;
+      border-bottom: 2px solid var(--black);
+    }
+    
+    .title-container::before {
+      content: '';
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%);
+      top: -75px;
+      right: -50px;
+      border-radius: 50%;
+      animation: pulse 8s infinite ease-in-out;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.1); }
+    }
+    
+    .title-container::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: repeating-linear-gradient(
+        to right,
+        var(--black) 0,
+        var(--black) 8px,
+        transparent 8px,
+        transparent 16px
+      );
+    }
+    
+    .title-decoration {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .title-decoration span {
+      position: absolute;
+      display: block;
+      width: 3px;
+      height: 3px;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+    }
+    
+    .title-decoration span:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      animation: float 6s infinite ease-in-out;
+    }
+    
+    .title-decoration span:nth-child(2) {
+      top: 30%;
+      left: 65%;
+      width: 4px;
+      height: 4px;
+      animation: float 7s infinite ease-in-out;
+    }
+    
+    .title-decoration span:nth-child(3) {
+      top: 70%;
+      left: 40%;
+      animation: float 5s infinite ease-in-out;
+    }
+    
+    .title-decoration span:nth-child(4) {
+      top: 15%;
+      left: 85%;
+      width: 2px;
+      height: 2px;
+      animation: float 8s infinite ease-in-out;
+    }
+    
+    .title-decoration span:nth-child(5) {
+      top: 60%;
+      left: 75%;
+      animation: float 9s infinite ease-in-out;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); }
+      25% { transform: translateY(-5px) translateX(3px); }
+      50% { transform: translateY(3px) translateX(-3px); }
+      75% { transform: translateY(-3px) translateX(-2px); }
+    }
+    
+    .logo-icon {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background-color: var(--white);
+      border: 2px solid var(--black);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 3px 3px 0 var(--black);
+      transform: rotate(7deg);
+      transition: all 0.3s ease;
+    }
+    
+    .title-link:hover .logo-icon {
+      transform: rotate(0deg) scale(1.05);
+      box-shadow: 4px 4px 0 var(--black);
+    }
+    
+    .logo-icon img {
+      width: 24px;
+      height: 24px;
+    }
+    
     h1 {
-      text-align: center;
-      margin-top: 0;
-      margin-bottom: 14px;
-      font-size: 22px;
+      text-align: left;
+      margin: 0;
+      font-size: 28px;
       font-weight: 800;
-      background-color: rgba(109, 40, 217, 0.9);
       color: var(--white);
-      padding: 8px;
-      border: 3px solid var(--black);
-      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      text-shadow: 2px 2px 0 var(--black);
+      position: relative;
+      z-index: 2;
+      letter-spacing: -0.5px;
       transform: rotate(-1deg);
-      backdrop-filter: blur(2px);
-      -webkit-backdrop-filter: blur(2px);
+      transition: transform 0.3s ease;
+    }
+    
+    .title-link:hover h1 {
+      transform: rotate(0deg) translateX(2px);
+    }
+    
+    .title-tagline {
+      color: rgba(255, 255, 255, 0.85);
+      font-size: 13px;
+      font-weight: 500;
+      margin-top: 4px;
+      text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+    }
+    
+    .title-dots {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      display: flex;
+      gap: 6px;
+    }
+    
+    .title-dots span {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--white);
+      opacity: 0.6;
+    }
+    
+    .title-dots span:nth-child(2) {
+      opacity: 0.8;
+    }
+    
+    .title-dots span:nth-child(3) {
+      opacity: 1;
+    }
+    
+    .title-link {
+      text-decoration: none;
+      display: block;
     }
     
     .form-group {
       margin-bottom: 12px;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(255, 255, 255, 0.75);
       padding: 12px;
-      border: 3px solid var(--black);
+      border: 2px solid var(--black);
+      border-radius: 6px;
       box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
@@ -68,30 +238,30 @@
     label {
       display: block;
       margin-bottom: 6px;
-      font-weight: 700;
-      font-size: 15px;
+      font-weight: 600;
+      font-size: 14px;
       color: var(--black);
     }
     
     select {
       width: 100%;
       padding: 8px 10px;
-      border: 3px solid var(--black);
-      border-radius: 0;
+      border: 2px solid var(--black);
+      border-radius: 6px;
       background-color: var(--white);
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
       cursor: pointer;
       appearance: none;
       position: relative;
       z-index: 1;
-      box-shadow: 3px 3px 0 var(--black);
-      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 2px 2px 0 var(--black);
+      transition: all 0.2s ease;
     }
     
     select:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 5px 5px 0 var(--black);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--black);
     }
     
     .select-wrapper {
@@ -99,7 +269,9 @@
     }
     
     .select-wrapper::after {
-      content: '▼';
+      content: '\f0d7'; /* FontAwesome下拉箭头 */
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
       position: absolute;
       right: 15px;
       top: 9px;
@@ -109,35 +281,43 @@
       pointer-events: none;
     }
     
-    button {
+    button#start-screenshot {
       width: 100%;
       padding: 12px;
-      background-color: rgba(109, 40, 217, 0.9);
+      background-color: rgba(124, 58, 237, 0.92);
       color: var(--white);
-      border: 3px solid var(--black);
+      border: 2px solid var(--black);
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 800;
+      font-weight: 700;
       font-size: 16px;
-      text-transform: uppercase;
       box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: all 0.2s ease;
       margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
     }
     
-    button:hover {
-      background-color: rgba(139, 92, 246, 0.9);
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0 var(--black);
+    button#start-screenshot i {
+      font-size: 16px;
     }
     
-    button:active {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0 var(--black);
+    button#start-screenshot:hover {
+      background-color: rgba(139, 92, 246, 0.95);
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--black);
     }
     
-    button:disabled {
+    button#start-screenshot:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--black);
+    }
+    
+    button#start-screenshot:disabled {
       background-color: var(--gray-300);
       color: var(--gray-100);
       cursor: not-allowed;
@@ -148,17 +328,20 @@
     .app-footer {
       margin-top: 10px;
       text-align: center;
-      font-size: 11px;
+      font-size: 12px;
       color: var(--primary-dark);
       font-weight: 600;
     }
     
     .shortcut-info {
       margin-top: 15px;
-      background-color: rgba(255, 255, 255, 0.8);
+      background-color: rgba(255, 255, 255, 0.75);
       padding: 12px;
-      border: 3px solid var(--black);
+      border: 2px solid var(--black);
+      border-radius: 6px;
       box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
     
     .shortcut-header {
@@ -166,13 +349,14 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-      font-weight: 700;
+      font-weight: 600;
+      font-size: 14px;
     }
     
     .shortcut-header a {
       color: var(--primary-color);
       text-decoration: none;
-      font-size: 14px;
+      font-size: 13px;
     }
     
     .shortcut-header a:hover {
@@ -182,26 +366,23 @@
     .shortcuts-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
     }
     
     .shortcut-item {
       display: flex;
       justify-content: space-between;
       font-size: 13px;
+      align-items: center;
     }
     
     .shortcut-key {
       font-family: monospace;
       background-color: var(--gray-100);
       padding: 2px 6px;
-      border-radius: 3px;
+      border-radius: 4px;
       border: 1px solid var(--gray-300);
-    }
-    
-    .title-link {
-      text-decoration: none;
-      display: block;
+      font-size: 12px;
     }
     
     .mode-switch {
@@ -212,30 +393,49 @@
     
     .mode-switch button {
       flex: 1;
-      padding: 10px;
-      background-color: var(--white);
+      padding: 8px 10px;
+      background-color: rgba(244, 244, 245, 0.92);
       color: var(--black);
-      border: 3px solid var(--black);
+      border: 2px solid var(--black);
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 600;
+      font-size: 13px;
+      box-shadow: 2px 2px 0 var(--black);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    
+    .mode-switch button i {
       font-size: 14px;
-      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
-      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .mode-switch button#normal-mode::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='currentColor' d='M2 2v12h12V2H2zm10 10H4V4h8v8z'/%3E%3C/svg%3E");
+    }
+    
+    .mode-switch button#inspect-mode::before {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='currentColor' d='M8 1C4.1 1 1 4.1 1 8s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm1-7.5c0-.8-.7-1.5-1.5-1.5S6 4.7 6 5.5 6.7 7 7.5 7 9 6.3 9 5.5zM8 9c-1.9 0-3.5 1.1-4 2.5 1 1.5 2.4 2.5 4 2.5s3-1 4-2.5c-.5-1.4-2.1-2.5-4-2.5z'/%3E%3C/svg%3E");
     }
     
     .mode-switch button.active {
-      background-color: rgba(109, 40, 217, 0.9);
+      background-color: rgba(124, 58, 237, 0.92);
       color: var(--white);
-
-      box-shadow: 6px 6px 0 var(--black);
+      box-shadow: 2px 2px 0 var(--black);
     }
     
     .mode-switch button:hover:not(.active) {
-      box-shadow: 6px 6px 0 var(--black);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0 var(--black);
+      background-color: rgba(250, 250, 252, 1);
     }
     
     .mode-switch button:active:not(.active) {
-      box-shadow: 2px 2px 0 var(--black);
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--black);
     }
     
     .shortcut-note {
@@ -245,16 +445,81 @@
       font-style: italic;
       text-align: center;
     }
+    
+    /* 快速操作按钮样式 */
+    .quick-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      margin-bottom: 12px;
+    }
+    
+    .action-button {
+      flex: 1;
+      padding: 10px 12px;
+      background-color: rgba(255, 255, 255, 0.8);
+      color: var(--black);
+      border: 2px solid var(--black);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+    
+    .action-button:hover {
+      transform: translate(-1px, -1px);
+      box-shadow: 4px 4px 0 var(--black);
+      background-color: rgba(250, 250, 252, 1);
+    }
+    
+    .action-button:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0 var(--black);
+    }
+    
+    .action-button i {
+      font-size: 16px;
+      color: var(--primary-dark);
+    }
+    
+    #quick-share {
+      background-color: rgba(237, 233, 254, 0.9);
+    }
+    
+    #quick-feedback {
+      background-color: rgba(243, 244, 246, 0.9);
+    }
   </style>
 </head>
 <body>
   <a href="https://puzzledu.com/" class="title-link" id="title-link">
-    <h1 data-i18n="title">精准截图</h1>
+    <div class="title-container">
+      <div class="logo-icon">
+        <img src="../assets/icons/icon16.svg" alt="精准截图">
+      </div>
+      <h1>精准截图</h1>
+      <div class="title-tagline">一键智能精准截图</div>
+      <div class="title-decoration">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
   </a>
   
   <div class="mode-switch">
-    <button id="normal-mode" class="active" data-i18n="normalMode">普通模式</button>
-    <button id="inspect-mode" data-i18n="inspectMode">智能模式</button>
+    <button id="normal-mode" class="active" data-i18n="normalMode"><i class="fas fa-crop-alt"></i> 普通模式</button>
+    <button id="inspect-mode" data-i18n="inspectMode"><i class="fas fa-magic"></i> 智能模式</button>
   </div>
   
   <div class="form-row">
@@ -300,31 +565,38 @@
     </div>
   </div>
   
-  <button id="start-screenshot" data-i18n="startButton">开始截图</button>
+  <button id="start-screenshot" data-i18n="startButton"><i class="fas fa-camera"></i> 开始截图</button>
   
-  <div class="app-footer" data-i18n="footer">
-    精准截图 v1.5 - 一键智能精准截图
+  <div class="quick-actions">
+    <button id="quick-share" class="action-button">
+      <i class="fas fa-share-alt"></i>
+      <span class="action-text" data-i18n="quickActions_share">分享美好</span>
+    </button>
+    <button id="quick-feedback" class="action-button">
+      <i class="fas fa-comment-dots"></i>
+      <span class="action-text" data-i18n="quickActions_feedback">创造美好</span>
+    </button>
   </div>
   
   <div class="shortcut-info">
     <div class="shortcut-header">
-      <span data-i18n="shortcuts">快捷键</span>
+      <span data-i18n="shortcuts"><i class="fas fa-keyboard"></i> 快捷键</span>
     </div>
     <div class="shortcuts-list">
       <div class="shortcut-item">
-        <span class="shortcut-name" data-i18n="startScreenshot">开始截图:</span>
+        <span class="shortcut-name" data-i18n="startScreenshot"><i class="fas fa-play fa-sm"></i> 开始截图:</span>
         <span class="shortcut-key" data-command="screenshot_start">Ctrl+Shift+S</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name" data-i18n="confirmScreenshot">确认截图:</span>
+        <span class="shortcut-name" data-i18n="confirmScreenshot"><i class="fas fa-check fa-sm"></i> 确认截图:</span>
         <span class="shortcut-key">Enter</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name" data-i18n="cancelScreenshot">取消截图:</span>
+        <span class="shortcut-name" data-i18n="cancelScreenshot"><i class="fas fa-times fa-sm"></i> 取消截图:</span>
         <span class="shortcut-key">Esc</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name" data-i18n="copyToClipboard">复制:</span>
+        <span class="shortcut-name" data-i18n="copyToClipboard"><i class="fas fa-copy fa-sm"></i> 复制:</span>
         <span class="shortcut-key">Ctrl+C</span>
       </div>
     </div>

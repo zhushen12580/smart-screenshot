@@ -16,5 +16,44 @@
   },
   "cancelScreenshot": {
     "message": "Annuler la Capture"
+  },
+  "copyToClipboard": {
+    "message": "Copier"
+  },
+  "title": {
+    "message": "Capture d'écran précise"
+  },
+  "normalMode": {
+    "message": "Mode normal"
+  },
+  "inspectMode": {
+    "message": "Mode intelligent"
+  },
+  "ratioLabel": {
+    "message": "Sélectionner le ratio"
+  },
+  "formatLabel": {
+    "message": "Format de sauvegarde"
+  },
+  "startButton": {
+    "message": "Commencer la capture"
+  },
+  "capturing": {
+    "message": "Capture en cours..."
+  },
+  "shortcuts": {
+    "message": "Raccourcis"
+  },
+  "quickActions_share": {
+    "message": "Partager"
+  },
+  "quickActions_feedback": {
+    "message": "Créer de la beauté"
+  },
+  "quickActions_shareSuccess": {
+    "message": "Texte de partage copié dans le presse-papiers !"
+  },
+  "quickActions_shareFailed": {
+    "message": "Échec de la copie, veuillez réessayer"
   }
 } 

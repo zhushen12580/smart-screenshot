@@ -20,6 +20,11 @@ const i18n = {
     socialMediaRatios: "社交媒体",
     otherRatios: "其他",
     footer: "精准截图 v1.5 - 一键智能精准截图",
+    // 快速操作按钮
+    quickActions_share: "分享美好",
+    quickActions_feedback: "创造美好",
+    quickActions_shareSuccess: "分享文本已复制到剪贴板！",
+    quickActions_shareFailed: "复制失败，请重试",
     // 工具栏文本
     toolbar: {
       saveArea: "保存此区域",
@@ -94,6 +99,11 @@ const i18n = {
     socialMediaRatios: "Social Media",
     otherRatios: "Others",
     footer: "Precision Screenshot v1.5 - Smart Screenshot Tool",
+    // 快速操作按钮
+    quickActions_share: "Share with Others",
+    quickActions_feedback: "Create Beauty",
+    quickActions_shareSuccess: "Share text copied to clipboard!",
+    quickActions_shareFailed: "Copy failed, please try again",
     // 工具栏文本
     toolbar: {
       saveArea: "Save This Area",
@@ -168,6 +178,11 @@ const i18n = {
     socialMediaRatios: "Redes Sociales",
     otherRatios: "Otros",
     footer: "Captura de Pantalla Precisa v1.5 - Herramienta Inteligente de Captura",
+    // 快速操作按钮
+    quickActions_share: "Compartir",
+    quickActions_feedback: "Crear Belleza",
+    quickActions_shareSuccess: "¡Texto para compartir copiado al portapapeles!",
+    quickActions_shareFailed: "Error al copiar, inténtalo de nuevo",
     // Textos de la barra de herramientas
     toolbar: {
       saveArea: "Guardar Esta Área",
@@ -242,6 +257,11 @@ const i18n = {
     socialMediaRatios: "وسائل التواصل الاجتماعي",
     otherRatios: "أخرى",
     footer: "لقطة شاشة دقيقة الإصدار 1.5 - أداة لقطة شاشة ذكية",
+    // أزرار العمليات السريعة
+    quickActions_share: "مشاركة الجمال",
+    quickActions_feedback: "إبداع الجمال",
+    quickActions_shareSuccess: "تم نسخ نص المشاركة إلى الحافظة!",
+    quickActions_shareFailed: "فشل النسخ، يرجى المحاولة مرة أخرى",
     // نصوص شريط الأدوات
     toolbar: {
       saveArea: "حفظ هذه المنطقة",
@@ -316,12 +336,17 @@ const i18n = {
     socialMediaRatios: "Soziale Medien",
     otherRatios: "Sonstige",
     footer: "Präzisions-Screenshot v1.5 - Intelligentes Screenshot-Tool",
+    // Schnellaktionsbuttons
+    quickActions_share: "Teilen",
+    quickActions_feedback: "Schönheit schaffen",
+    quickActions_shareSuccess: "Freigabetext in Zwischenablage kopiert!",
+    quickActions_shareFailed: "Kopieren fehlgeschlagen, bitte erneut versuchen",
     // Toolbar-Texte
     toolbar: {
       saveArea: "Diesen Bereich speichern",
       copyToClipboard: "Kopieren",
       saveAllAreas: "Alle Bereiche speichern",
-      keepAndContinue: "Beibehalten und fortfahren",
+      keepAndContinue: "Behalten & Fortfahren",
       cancel: "Abbrechen",
       lockSize: "Größe sperren",
       lockSizeActive: "✓ Größe gesperrt",
@@ -334,7 +359,7 @@ const i18n = {
         standard: "Standard",
         light: "Leicht"
       },
-      fileSizeEstimate: "Etwa {size} {unit}"
+      fileSizeEstimate: "Ungefähr {size} {unit}"
     },
     ratioGroups: {
       common: {
@@ -358,13 +383,13 @@ const i18n = {
           "2:1": "2:1 (Twitter Querformat)",
           "1:2": "1:2 (Pinterest)",
           "4:5": "4:5 (Instagram Hochformat)",
-          "3:2": "3:2 (Social Media Cover)"
+          "3:2": "3:2 (Social Cover)"
         }
       },
       other: {
         label: "Sonstige",
         options: {
-          "21:9": "21:9 (Ultrabreit)",
+          "21:9": "21:9 (Ultrawide)",
           "free": "Freies Seitenverhältnis"
         }
       }
@@ -446,15 +471,15 @@ const i18n = {
   },
   ja: {
     title: "精密スクリーンショット",
-    description: "ウェブページの内容をスマートに認識し、ワンクリックで設定比率のスクリーンショットを撮影",
-    startButton: "スクリーンショット開始",
+    description: "スマートなウェブコンテンツ認識、ワンクリックでプリセット比率のスクリーンショット",
+    startButton: "スクリーンショットを開始",
     capturing: "キャプチャ中...",
     normalMode: "通常モード",
     inspectMode: "スマートモード",
     ratioLabel: "比率を選択",
     formatLabel: "保存形式",
     shortcuts: "ショートカット",
-    openPopup: "拡張ポップアップを開く",
+    openPopup: "拡張機能ポップアップを開く",
     startScreenshot: "スクリーンショット開始:",
     confirmScreenshot: "スクリーンショット確認:",
     cancelScreenshot: "スクリーンショットキャンセル:",
@@ -464,6 +489,11 @@ const i18n = {
     socialMediaRatios: "ソーシャルメディア",
     otherRatios: "その他",
     footer: "精密スクリーンショット v1.5 - スマートスクリーンショットツール",
+    // クイックアクションボタン
+    quickActions_share: "シェアする",
+    quickActions_feedback: "美を創造する",
+    quickActions_shareSuccess: "共有テキストがクリップボードにコピーされました！",
+    quickActions_shareFailed: "コピーに失敗しました、再試行してください",
     // ツールバーテキスト
     toolbar: {
       saveArea: "この領域を保存",
@@ -472,9 +502,9 @@ const i18n = {
       keepAndContinue: "保持して続行",
       cancel: "キャンセル",
       lockSize: "サイズをロック",
-      lockSizeActive: "✓ サイズロック中",
-      magnetic: "マグネットスナップ",
-      magneticActive: "✓ マグネットスナップ",
+      lockSizeActive: "✓ サイズロック",
+      magnetic: "マグネティックスナップ",
+      magneticActive: "✓ マグネティックスナップ",
       freeRatio: "自由比率",
       imageQuality: {
         original: "オリジナル品質",
@@ -488,8 +518,8 @@ const i18n = {
       common: {
         label: "一般的な比率",
         options: {
-          "16:9": "16:9 (ビデオ/スクリーン)",
-          "4:3": "4:3 (従来のスクリーン)",
+          "16:9": "16:9 (ビデオ/画面)",
+          "4:3": "4:3 (従来の画面)",
           "1:1": "1:1 (正方形/Instagram)"
         }
       },
@@ -519,40 +549,45 @@ const i18n = {
     }
   },
   fr: {
-    title: "Capture d'Écran Précise",
-    description: "Reconnaissance intelligente du contenu web, captures d'écran avec proportions prédéfinies en un clic",
-    startButton: "Démarrer la Capture",
+    title: "Capture d'écran précise",
+    description: "Reconnaissance intelligente du contenu web, captures d'écran à ratios prédéfinis en un clic",
+    startButton: "Commencer la capture",
     capturing: "Capture en cours...",
-    normalMode: "Mode Normal",
-    inspectMode: "Mode Intelligent",
-    ratioLabel: "Sélectionner le Ratio",
-    formatLabel: "Format de Sauvegarde",
+    normalMode: "Mode normal",
+    inspectMode: "Mode intelligent",
+    ratioLabel: "Sélectionner le ratio",
+    formatLabel: "Format de sauvegarde",
     shortcuts: "Raccourcis",
-    openPopup: "Ouvrir la Fenêtre d'Extension",
-    startScreenshot: "Démarrer la Capture:",
-    confirmScreenshot: "Confirmer la Capture:",
-    cancelScreenshot: "Annuler la Capture:",
+    openPopup: "Ouvrir la fenêtre d'extension",
+    startScreenshot: "Commencer la capture:",
+    confirmScreenshot: "Confirmer la capture:",
+    cancelScreenshot: "Annuler la capture:",
     copyToClipboard: "Copier:",
-    commonRatios: "Ratios Courants",
+    commonRatios: "Ratios courants",
     mobileRatios: "Mobile/Portrait",
-    socialMediaRatios: "Réseaux Sociaux",
+    socialMediaRatios: "Médias sociaux",
     otherRatios: "Autres",
-    footer: "Capture d'Écran Précise v1.5 - Outil de Capture Intelligent",
+    footer: "Capture d'écran précise v1.5 - Outil de capture intelligent",
+    // Boutons d'action rapide
+    quickActions_share: "Partager",
+    quickActions_feedback: "Créer de la beauté",
+    quickActions_shareSuccess: "Texte de partage copié dans le presse-papiers !",
+    quickActions_shareFailed: "Échec de la copie, veuillez réessayer",
     // Textes de la barre d'outils
     toolbar: {
-      saveArea: "Enregistrer Cette Zone",
+      saveArea: "Enregistrer cette zone",
       copyToClipboard: "Copier",
-      saveAllAreas: "Enregistrer Toutes les Zones",
-      keepAndContinue: "Conserver et Continuer",
+      saveAllAreas: "Enregistrer toutes les zones",
+      keepAndContinue: "Garder et continuer",
       cancel: "Annuler",
-      lockSize: "Verrouiller la Taille",
-      lockSizeActive: "✓ Taille Verrouillée",
-      magnetic: "Accrochage Magnétique",
-      magneticActive: "✓ Accrochage Magnétique",
-      freeRatio: "Ratio Libre",
+      lockSize: "Verrouiller la taille",
+      lockSizeActive: "✓ Taille verrouillée",
+      magnetic: "Accrochage magnétique",
+      magneticActive: "✓ Accrochage magnétique",
+      freeRatio: "Ratio libre",
       imageQuality: {
-        original: "Qualité Originale",
-        high: "Haute Qualité",
+        original: "Qualité originale",
+        high: "Haute qualité",
         standard: "Standard",
         light: "Légère"
       },
@@ -560,41 +595,41 @@ const i18n = {
     },
     ratioGroups: {
       common: {
-        label: "Ratios Courants",
+        label: "Ratios courants",
         options: {
           "16:9": "16:9 (Vidéo/Écran)",
-          "4:3": "4:3 (Écran Traditionnel)",
+          "4:3": "4:3 (Écran traditionnel)",
           "1:1": "1:1 (Carré/Instagram)"
         }
       },
       mobile: {
         label: "Mobile/Portrait",
         options: {
-          "9:16": "9:16 (Mobile Portrait/Stories)",
+          "9:16": "9:16 (Mobile portrait/Stories)",
           "3:4": "3:4 (Instagram/iPad)"
         }
       },
       social: {
-        label: "Réseaux Sociaux",
+        label: "Médias sociaux",
         options: {
-          "2:1": "2:1 (Twitter Paysage)",
+          "2:1": "2:1 (Twitter paysage)",
           "1:2": "1:2 (Pinterest)",
-          "4:5": "4:5 (Instagram Portrait)",
-          "3:2": "3:2 (Couverture Sociale)"
+          "4:5": "4:5 (Instagram portrait)",
+          "3:2": "3:2 (Couverture sociale)"
         }
       },
       other: {
         label: "Autres",
         options: {
           "21:9": "21:9 (Ultra-large)",
-          "free": "Ratio Libre"
+          "free": "Ratio libre"
         }
       }
     }
   },
   ko: {
     title: "정밀 스크린샷",
-    description: "웹 페이지 콘텐츠 스마트 인식, 원클릭 프리셋 비율 스크린샷",
+    description: "스마트 웹페이지 콘텐츠 인식, 원클릭 프리셋 비율 스크린샷",
     startButton: "스크린샷 시작",
     capturing: "캡처 중...",
     normalMode: "일반 모드",
@@ -612,6 +647,11 @@ const i18n = {
     socialMediaRatios: "소셜 미디어",
     otherRatios: "기타",
     footer: "정밀 스크린샷 v1.5 - 스마트 스크린샷 도구",
+    // 빠른 액션 버튼
+    quickActions_share: "공유하기",
+    quickActions_feedback: "아름다움 창조",
+    quickActions_shareSuccess: "공유 텍스트가 클립보드에 복사되었습니다!",
+    quickActions_shareFailed: "복사 실패, 다시 시도하세요",
     // 툴바 텍스트
     toolbar: {
       saveArea: "이 영역 저장",
@@ -620,7 +660,7 @@ const i18n = {
       keepAndContinue: "유지 및 계속",
       cancel: "취소",
       lockSize: "크기 잠금",
-      lockSizeActive: "✓ 크기 잠금됨",
+      lockSizeActive: "✓ 크기 잠금",
       magnetic: "자석 스냅",
       magneticActive: "✓ 자석 스냅",
       freeRatio: "자유 비율",
@@ -638,22 +678,22 @@ const i18n = {
         options: {
           "16:9": "16:9 (비디오/화면)",
           "4:3": "4:3 (전통적인 화면)",
-          "1:1": "1:1 (정사각형/인스타그램)"
+          "1:1": "1:1 (정사각형/Instagram)"
         }
       },
       mobile: {
         label: "모바일/세로",
         options: {
           "9:16": "9:16 (모바일 세로/스토리)",
-          "3:4": "3:4 (인스타그램/아이패드)"
+          "3:4": "3:4 (Instagram/iPad)"
         }
       },
       social: {
         label: "소셜 미디어",
         options: {
-          "2:1": "2:1 (트위터 가로)",
-          "1:2": "1:2 (핀터레스트)",
-          "4:5": "4:5 (인스타그램 세로)",
+          "2:1": "2:1 (Twitter 가로)",
+          "1:2": "1:2 (Pinterest)",
+          "4:5": "4:5 (Instagram 세로)",
           "3:2": "3:2 (소셜 커버)"
         }
       },
@@ -662,6 +702,85 @@ const i18n = {
         options: {
           "21:9": "21:9 (울트라와이드)",
           "free": "자유 비율"
+        }
+      }
+    }
+  },
+  pt_BR: {
+    title: "Captura de Tela Precisa",
+    description: "Reconhecimento inteligente de conteúdo web, capturas de tela com proporções predefinidas com um clique",
+    startButton: "Iniciar Captura",
+    capturing: "Capturando...",
+    normalMode: "Modo Normal",
+    inspectMode: "Modo Inteligente",
+    ratioLabel: "Selecionar Proporção",
+    formatLabel: "Formato de Salvamento",
+    shortcuts: "Atalhos",
+    openPopup: "Abrir Popup da Extensão",
+    startScreenshot: "Iniciar Captura:",
+    confirmScreenshot: "Confirmar Captura:",
+    cancelScreenshot: "Cancelar Captura:",
+    copyToClipboard: "Copiar:",
+    commonRatios: "Proporções Comuns",
+    mobileRatios: "Móvel/Retrato",
+    socialMediaRatios: "Mídias Sociais",
+    otherRatios: "Outros",
+    footer: "Captura de Tela Precisa v1.5 - Ferramenta Inteligente de Captura",
+    // Botões de ação rápida
+    quickActions_share: "Compartilhar",
+    quickActions_feedback: "Criar Beleza",
+    quickActions_shareSuccess: "Texto de compartilhamento copiado para a área de transferência!",
+    quickActions_shareFailed: "Falha ao copiar, tente novamente",
+    // Textos da barra de ferramentas
+    toolbar: {
+      saveArea: "Salvar Esta Área",
+      copyToClipboard: "Copiar",
+      saveAllAreas: "Salvar Todas as Áreas",
+      keepAndContinue: "Manter e Continuar",
+      cancel: "Cancelar",
+      lockSize: "Travar Tamanho",
+      lockSizeActive: "✓ Tamanho Travado",
+      magnetic: "Ajuste Magnético",
+      magneticActive: "✓ Ajuste Magnético",
+      freeRatio: "Proporção Livre",
+      imageQuality: {
+        original: "Qualidade Original",
+        high: "Alta Qualidade",
+        standard: "Padrão",
+        light: "Leve"
+      },
+      fileSizeEstimate: "Aproximadamente {size} {unit}"
+    },
+    ratioGroups: {
+      common: {
+        label: "Proporções Comuns",
+        options: {
+          "16:9": "16:9 (Vídeo/Tela)",
+          "4:3": "4:3 (Tela Tradicional)",
+          "1:1": "1:1 (Quadrado/Instagram)"
+        }
+      },
+      mobile: {
+        label: "Móvel/Retrato",
+        options: {
+          "9:16": "9:16 (Celular Retrato/Stories)",
+          "3:4": "3:4 (Instagram/iPad)"
+        }
+      },
+      social: {
+        label: "Mídias Sociais",
+        options: {
+          "2:1": "2:1 (Twitter Paisagem)",
+          "1:2": "1:2 (Pinterest)",
+          "4:5": "4:5 (Instagram Retrato)",
+          "3:2": "3:2 (Capa Social)"
+        }
+      },
+      other: {
+        label: "Outros",
+        options: {
+          "21:9": "21:9 (Ultralargo)",
+          "free": "Proporção Livre"
         }
       }
     }
@@ -684,152 +803,20 @@ function getCurrentLanguage() {
 
 // 获取翻译文本
 function getText(key) {
-  const lang = getCurrentLanguage();
+  const currentLanguage = getCurrentLanguage();
   
-  // 处理嵌套的键，例如 "toolbar.saveArea"
-  if (key.includes('.')) {
-    const parts = key.split('.');
-    let value = i18n[lang];
-    
-    for (const part of parts) {
-      if (value && value[part] !== undefined) {
-        value = value[part];
-      } else {
-        value = null;
-        break;
-      }
-    }
-    
-    if (value) return value;
-    
-    // 如果在当前语言中找不到，尝试韩语（如果当前语言不是韩语）
-    if (lang !== 'ko') {
-      value = i18n['ko'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在当前语言和韩语中都找不到，尝试法语（如果当前语言不是法语）
-    if (lang !== 'fr') {
-      value = i18n['fr'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在当前语言、韩语和法语中都找不到，尝试日语（如果当前语言不是日语）
-    if (lang !== 'ja') {
-      value = i18n['ja'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在当前语言、韩语、法语和日语中都找不到，尝试葡萄牙语（如果当前语言不是葡萄牙语）
-    if (lang !== 'pt') {
-      value = i18n['pt'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在当前语言、韩语、法语、日语和葡萄牙语中都找不到，尝试德语（如果当前语言不是德语）
-    if (lang !== 'de') {
-      value = i18n['de'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在当前语言、韩语、法语、日语、葡萄牙语和德语中都找不到，尝试阿拉伯语（如果当前语言不是阿拉伯语）
-    if (lang !== 'ar') {
-      value = i18n['ar'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在当前语言、韩语、法语、日语、葡萄牙语、德语和阿拉伯语中都找不到，尝试西班牙语（如果当前语言不是西班牙语）
-    if (lang !== 'es') {
-      value = i18n['es'];
-      for (const part of parts) {
-        if (value && value[part] !== undefined) {
-          value = value[part];
-        } else {
-          value = null;
-          break;
-        }
-      }
-      
-      if (value) return value;
-    }
-    
-    // 如果在所有语言中都找不到，尝试英语
-    value = i18n['en'];
-    for (const part of parts) {
-      if (value && value[part] !== undefined) {
-        value = value[part];
-      } else {
-        return key; // 如果英语中也没有，返回原始键
-      }
-    }
-    
-    return value;
+  // 非嵌套键的处理
+  if (i18n[currentLanguage] && i18n[currentLanguage][key]) {
+    return i18n[currentLanguage][key];
   }
   
-  return i18n[lang][key] || 
-         (lang !== 'ko' && i18n['ko'][key]) ||
-         (lang !== 'fr' && i18n['fr'][key]) ||
-         (lang !== 'ja' && i18n['ja'][key]) ||
-         (lang !== 'pt' && i18n['pt'][key]) || 
-         (lang !== 'de' && i18n['de'][key]) || 
-         (lang !== 'ar' && i18n['ar'][key]) || 
-         (lang !== 'es' && i18n['es'][key]) || 
-         i18n['en'][key] || 
-         key;
+  // 如果在当前语言中找不到，尝试使用英语
+  if (i18n.en && i18n.en[key]) {
+    return i18n.en[key];
+  }
+  
+  // 如果都找不到，返回键本身
+  return key;
 }
 
 // 获取工具栏文本
@@ -857,6 +844,29 @@ function formatFileSizeEstimate(size, unit) {
   return template.replace('{size}', size).replace('{unit}', unit);
 }
 
+// 更新所有带有data-i18n属性的元素的文本
+function updateI18nTexts() {
+  // 更新普通文本
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    const key = element.getAttribute('data-i18n');
+    element.textContent = getText(key);
+  });
+
+  // 更新比例选择器的组标签和选项
+  const ratioSelect = document.getElementById('ratio-select');
+  if (ratioSelect) {
+    ratioSelect.querySelectorAll('optgroup').forEach(group => {
+      const groupKey = group.getAttribute('data-group');
+      group.label = getRatioGroupLabel(groupKey);
+      
+      group.querySelectorAll('option').forEach(option => {
+        const optionKey = option.getAttribute('data-option');
+        option.textContent = getRatioOptionText(groupKey, optionKey);
+      });
+    });
+  }
+}
+
 // 导出函数
 export { 
   getCurrentLanguage, 
@@ -864,5 +874,6 @@ export {
   getToolbarText,
   getRatioGroupLabel, 
   getRatioOptionText,
-  formatFileSizeEstimate
+  formatFileSizeEstimate,
+  updateI18nTexts
 }; 

@@ -1,30 +1,7 @@
 // 精准截图弹出窗口脚本
-import { getCurrentLanguage, getText, getRatioGroupLabel, getRatioOptionText } from '../utils/i18n.js';
+import { getCurrentLanguage, getText, getRatioGroupLabel, getRatioOptionText, updateI18nTexts } from '../utils/i18n.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-  // 更新所有带有data-i18n属性的元素的文本
-  function updateI18nTexts() {
-    // 更新普通文本
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-      const key = element.getAttribute('data-i18n');
-      element.textContent = getText(key);
-    });
-
-    // 更新比例选择器的组标签和选项
-    const ratioSelect = document.getElementById('ratio-select');
-    if (ratioSelect) {
-      ratioSelect.querySelectorAll('optgroup').forEach(group => {
-        const groupKey = group.getAttribute('data-group');
-        group.label = getRatioGroupLabel(groupKey);
-        
-        group.querySelectorAll('option').forEach(option => {
-          const optionKey = option.getAttribute('data-option');
-          option.textContent = getRatioOptionText(groupKey, optionKey);
-        });
-      });
-    }
-  }
-
   // 获取DOM元素
   const startScreenshotBtn = document.getElementById('start-screenshot');
   const ratioSelect = document.getElementById('ratio-select');
@@ -33,6 +10,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const normalModeBtn = document.getElementById('normal-mode');
   const inspectModeBtn = document.getElementById('inspect-mode');
   const shortcutKey = document.querySelector('[data-command="screenshot_start"]');
+  const quickShareBtn = document.getElementById('quick-share');
+  const quickFeedbackBtn = document.getElementById('quick-feedback');
   
   // 获取截图参数
   let selectedRatio = ratioSelect.value;
@@ -73,6 +52,93 @@ document.addEventListener('DOMContentLoaded', function() {
       e.preventDefault();
       chrome.tabs.create({ url: 'https://puzzledu.com/' });
     });
+  }
+  
+  // 一键分享按钮点击事件
+  if (quickShareBtn) {
+    quickShareBtn.addEventListener('click', function() {
+      // 准备要分享的介绍文字
+      const introText = 
+        "🔍 精准截图 | 高效智能的屏幕截图工具\n\n" +
+        "✨ 特色功能：\n" +
+        "✅ 支持多种屏幕比例，适合社交媒体分享\n" +
+        "✅ 智能模式自动识别界面元素边缘\n" +
+        "✅ 一键截取、复制、保存，操作便捷\n" +
+        "✅ 高清无损截图，还原真实画面效果\n\n" +
+        "👉 立即下载体验：https://puzzledu.com/shot";
+      
+      // 复制到剪贴板
+      navigator.clipboard.writeText(introText)
+        .then(() => {
+          // 显示成功通知
+          showNotification(getText('quickActions_shareSuccess'));
+        })
+        .catch(err => {
+          // 复制失败时的处理
+          console.error('复制失败:', err);
+          showNotification(getText('quickActions_shareFailed'));
+        });
+    });
+  }
+  
+  // 问题反馈按钮点击事件
+  if (quickFeedbackBtn) {
+    quickFeedbackBtn.addEventListener('click', function() {
+      // 打开反馈页面
+      chrome.tabs.create({ url: 'https://tally.so/r/mZe4go' });
+    });
+  }
+  
+  // 显示通知提示
+  function showNotification(message) {
+    // 检查是否已存在通知，如果有则移除
+    const existingNotification = document.querySelector('.popup-notification');
+    if (existingNotification) {
+      existingNotification.remove();
+    }
+    
+    // 创建新通知
+    const notification = document.createElement('div');
+    notification.className = 'popup-notification';
+    notification.textContent = message;
+    
+    // 添加到页面
+    document.body.appendChild(notification);
+    
+    // 添加样式
+    notification.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 13px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 9999;
+    `;
+    
+    // 淡入
+    notification.animate([
+      { opacity: 0, transform: 'translate(-50%, 20px)' },
+      { opacity: 1, transform: 'translate(-50%, 0)' }
+    ], {
+      duration: 300,
+      easing: 'ease-out'
+    });
+    
+    // 3秒后淡出
+    setTimeout(() => {
+      notification.animate([
+        { opacity: 1, transform: 'translate(-50%, 0)' },
+        { opacity: 0, transform: 'translate(-50%, -10px)' }
+      ], {
+        duration: 300,
+        easing: 'ease-in'
+      }).onfinish = () => notification.remove();
+    }, 3000);
   }
   
   // 加载上次使用的设置

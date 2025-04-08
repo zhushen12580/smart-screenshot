@@ -110,6 +110,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     saveScreenshot(message, sendResponse);
   }
   
+  // 处理保存最近截图数据
+  else if (message.action === 'saveLastScreenshotData') {
+    saveLastScreenshotData(message.dataUrl);
+    sendResponse({ success: true });
+  }
+  
   // 处理GLM-4V-Flash API调用请求
   else if (message.action === 'callGLM4VFlashAPI') {
     callGLM4VFlashAPI(message, sendResponse);
@@ -788,4 +794,14 @@ function openAIDialog(url, options = {}) {
       console.log("成功创建对话窗口, ID:", window.id);
     }
   });
+}
+
+// 保存最近截图数据
+function saveLastScreenshotData(dataUrl) {
+  // 保存到本地存储
+  chrome.storage.local.set({
+    lastScreenshotData: dataUrl,
+    lastScreenshotTime: Date.now()
+  });
+  console.log("已保存最近截图数据");
 } 

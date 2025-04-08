@@ -16,5 +16,44 @@
   },
   "cancelScreenshot": {
     "message": "Cancel Screenshot"
+  },
+  "copyToClipboard": {
+    "message": "Copy"
+  },
+  "title": {
+    "message": "Precision Screenshot"
+  },
+  "normalMode": {
+    "message": "Normal Mode"
+  },
+  "inspectMode": {
+    "message": "Smart Mode"
+  },
+  "ratioLabel": {
+    "message": "Select Ratio"
+  },
+  "formatLabel": {
+    "message": "Save Format"
+  },
+  "startButton": {
+    "message": "Start Screenshot"
+  },
+  "capturing": {
+    "message": "Capturing..."
+  },
+  "shortcuts": {
+    "message": "Shortcuts"
+  },
+  "quickActions_share": {
+    "message": "Share with Others"
+  },
+  "quickActions_feedback": {
+    "message": "Create Beauty"
+  },
+  "quickActions_shareSuccess": {
+    "message": "Share text copied to clipboard!"
+  },
+  "quickActions_shareFailed": {
+    "message": "Copy failed, please try again"
   }
 } 

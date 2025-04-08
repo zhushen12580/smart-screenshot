@@ -16,5 +16,44 @@
   },
   "cancelScreenshot": {
     "message": "Cancelar Captura"
+  },
+  "copyToClipboard": {
+    "message": "Copiar"
+  },
+  "title": {
+    "message": "Captura de Pantalla Precisa"
+  },
+  "normalMode": {
+    "message": "Modo Normal"
+  },
+  "inspectMode": {
+    "message": "Modo Inteligente"
+  },
+  "ratioLabel": {
+    "message": "Seleccionar Proporción"
+  },
+  "formatLabel": {
+    "message": "Formato de Guardado"
+  },
+  "startButton": {
+    "message": "Iniciar Captura"
+  },
+  "capturing": {
+    "message": "Capturando..."
+  },
+  "shortcuts": {
+    "message": "Atajos"
+  },
+  "quickActions_share": {
+    "message": "Compartir"
+  },
+  "quickActions_feedback": {
+    "message": "Crear Belleza"
+  },
+  "quickActions_shareSuccess": {
+    "message": "¡Texto para compartir copiado al portapapeles!"
+  },
+  "quickActions_shareFailed": {
+    "message": "Error al copiar, inténtalo de nuevo"
   }
 } 
