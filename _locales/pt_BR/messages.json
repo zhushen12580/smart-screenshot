@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Captura de Tela Precisa - Ferramenta Inteligente de Captura"
+    "message": "Captura de Tela Precisa - Ferramenta Inteligente de Captura com Um Clique"
   },
   "appDescription": {
-    "message": "Ferramenta de captura de tela com proporções predefinidas e detecção de elementos. Ideal para designers e criadores."
+    "message": "Reconhece conteúdo web de forma inteligente, cria capturas de tela com proporções predefinidas com um único clique. Suporta alinhamento automático e modo de captura contínua para capturas mais fáceis e eficientes. Perfeito para designers, profissionais de marketing, e-commerce e muito mais."
   },
   "openPopup": {
     "message": "Abrir Janela de Extensão"

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>图像对话</title>
+    <title>精准截图</title>
     <link rel="stylesheet" href="dialog.css">
     <!-- 使用本地Markdown和DOMPurify库 -->
     <script src="lib/simple-markdown.js"></script>
@@ -12,8 +12,17 @@
 <body>
     <div class="ai-dialog-container">
         <div class="ai-dialog-header">
-            <h3><span class="material-icons">auto_awesome</span> 智能图像对话</h3>
-            <button id="close-dialog" class="close-button"><span class="material-icons">close</span></button>
+            <h3><span class="material-icons">auto_awesome</span>与截图智能对话</h3>
+            <div class="header-controls">
+                <div class="dialog-mode-toggle">
+                    <span class="toggle-label">对话增强</span>
+                    <label class="switch">
+                        <input type="checkbox" id="enhanced-mode-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <button id="close-dialog" class="close-button"><span class="material-icons">close</span></button>
+            </div>
         </div>
         <div class="ai-dialog-content">
             <div class="image-container">

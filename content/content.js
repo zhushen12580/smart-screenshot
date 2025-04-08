@@ -1240,8 +1240,18 @@ if (window._ratioScreenshotLoaded) {
           left: this.startX,
           top: this.startY,
           width: this.endX - this.startX,
-          height: this.endY - this.startY
+          height: this.endY - this.startY,
+          ratio: this.ratio, // 保存当前比例信息
+          scrollX: scrollX, // 保存当前滚动位置
+          scrollY: scrollY
         }
+      });
+      
+      console.log(`已保存区域 #${this.selections.length}`, {
+        位置: { left: this.startX, top: this.startY },
+        尺寸: { width: this.endX - this.startX, height: this.endY - this.startY },
+        比例: this.ratio,
+        滚动位置: { x: scrollX, y: scrollY }
       });
       
       // 保存当前模式状态，确保连续截图保持相同模式
@@ -1450,18 +1460,6 @@ if (window._ratioScreenshotLoaded) {
       const divider3 = document.createElement('div');
       divider3.className = 'ratio-screenshot-divider';
       primaryRow.appendChild(divider3);
-      
-      // 添加取消按钮
-      const cancelButton = document.createElement('button');
-      cancelButton.className = 'ratio-screenshot-button';
-      this.addButtonContent(cancelButton, 
-        I18nHelper.getNotificationText('escape'), 
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1C4.1 1 1 4.1 1 8s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm3.7 9.3c.4.4.4 1 0 1.4-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3L8 9.4l-2.3 2.3c-.2.2-.4.3-.7.3-.3 0-.5-.1-.7-.3-.4-.4-.4-1 0-1.4L6.6 8 4.3 5.7c-.4-.4-.4-1 0-1.4.4-.4 1-.4 1.4 0L8 6.6l2.3-2.3c.4-.4 1-.4 1.4 0 .4.4.4 1 0 1.4L9.4 8l2.3 2.3z"/></svg>');
-      cancelButton.onclick = () => {
-        console.log("取消按钮被点击");
-        this.end();
-      };
-      primaryRow.appendChild(cancelButton);
       
       return primaryRow;
     }
@@ -2639,8 +2637,15 @@ if (window._ratioScreenshotLoaded) {
       // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
       this.hideUIElementsForCapture();
       
-      // 添加短延迟以确保DOM更新已渲染
+      // 增加延迟时间，确保DOM更新和所有UI元素完全隐藏
       setTimeout(() => {
+        // 确保工具栏和所有UI元素都被隐藏
+        if (this.toolbar) {
+          this.toolbar.style.display = 'none';
+          this.toolbar.style.visibility = 'hidden';
+          this.toolbar.style.opacity = '0';
+        }
+        
         // 根据区域是否在当前视口内，选择不同的截图方法
         if (isRectVisible) {
           console.log("选择区域在当前视口内，使用标准截图方法");
@@ -2674,7 +2679,7 @@ if (window._ratioScreenshotLoaded) {
             this.processScreenshotResponse(response, absoluteRect, captureMsg, true);
           });
         }
-      }, 30); // 添加30毫秒延迟，足够DOM更新但不影响用户体验
+      }, 100); // 增加到100毫秒，确保DOM更新和UI隐藏有足够时间
     }
     
     // 处理截图响应的通用方法
@@ -2791,13 +2796,19 @@ if (window._ratioScreenshotLoaded) {
         width: Math.abs(this.endX - this.startX),
         height: Math.abs(this.endY - this.startY),
         // 添加当前选择的比例信息
-        ratio: this.ratio
+        ratio: this.ratio,
+        // 添加当前滚动位置
+        scrollX: window.pageXOffset || document.documentElement.scrollLeft,
+        scrollY: window.pageYOffset || document.documentElement.scrollTop
       };
       
+      // 获取所有区域，包括当前选择和之前保存的区域
       const allAreas = [
         ...this.selections.map(s => s.rect),
         currentSelection
       ];
+      
+      console.log("待处理的所有区域:", allAreas);
       
       // 临时隐藏UI元素，确保截图不包含黑色蒙版和边框
       this.hideUIElementsForCapture();
@@ -2834,12 +2845,12 @@ if (window._ratioScreenshotLoaded) {
       }
       
       // 获取当前的滚动位置和视口信息
-      const scrollX = window.scrollX;
-      const scrollY = window.scrollY;
+      const scrollX = area.scrollX || window.scrollX;
+      const scrollY = area.scrollY || window.scrollY;
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
       
-      // 检查区域是否在当前视口内
+      // 检查区域是否在当前视口内，使用区域保存时的滚动位置
       const isAreaVisible = (
         area.left >= scrollX && 
         area.top >= scrollY && 
@@ -2849,49 +2860,61 @@ if (window._ratioScreenshotLoaded) {
       
       console.log(`处理区域 ${index+1}/${areas.length}`, area, isAreaVisible ? "在视口内" : "不在视口内");
       
-      // 根据区域是否在视口内选择截图方法
-      if (isAreaVisible) {
-        chrome.runtime.sendMessage({ 
-          action: 'captureScreen',
-          debug: {
-            scrollX: scrollX,
-            scrollY: scrollY,
-            viewportWidth: viewportWidth,
-            viewportHeight: viewportHeight
-          }
-        }, response => {
-          if (response && response.success && response.dataUrl) {
-            this.processAreaScreenshot(response, area, index, areas, captureMsg, false, originalRatio);
-          } else {
-            console.error(`区域 ${index+1} 截图失败:`, response?.error || '未知错误');
-            // 恢复原始比例
-            this.ratio = originalRatio;
-            // 继续处理下一个区域
-            this.processAreasSequentially(areas, index + 1, captureMsg);
-          }
-        });
-      } else {
-        chrome.runtime.sendMessage({
-          action: 'captureFullPage',
-          targetArea: area,
-          debug: {
-            scrollX: scrollX,
-            scrollY: scrollY,
-            viewportWidth: viewportWidth,
-            viewportHeight: viewportHeight
-          }
-        }, response => {
-          if (response && response.success && response.dataUrl) {
-            this.processAreaScreenshot(response, area, index, areas, captureMsg, true, originalRatio);
-          } else {
-            console.error(`区域 ${index+1} 全页面截图失败:`, response?.error || '未知错误');
-            // 恢复原始比例
-            this.ratio = originalRatio;
-            // 继续处理下一个区域
-            this.processAreasSequentially(areas, index + 1, captureMsg);
-          }
-        });
+      // 确保工具栏和UI元素在每个区域的截图前都被隐藏
+      if (this.toolbar) {
+        this.toolbar.style.display = 'none';
+        this.toolbar.style.visibility = 'hidden';
+        this.toolbar.style.opacity = '0';
+        this.toolbar.style.position = 'absolute';
+        this.toolbar.style.left = '-9999px';
       }
+      
+      // 延迟一点时间确保UI隐藏生效
+      setTimeout(() => {
+        // 根据区域是否在视口内选择截图方法
+        if (isAreaVisible) {
+          chrome.runtime.sendMessage({ 
+            action: 'captureScreen',
+            debug: {
+              scrollX: scrollX,
+              scrollY: scrollY,
+              viewportWidth: viewportWidth,
+              viewportHeight: viewportHeight
+            }
+          }, response => {
+            if (response && response.success && response.dataUrl) {
+              this.processAreaScreenshot(response, area, index, areas, captureMsg, false, originalRatio);
+            } else {
+              console.error(`区域 ${index+1} 截图失败:`, response?.error || '未知错误');
+              // 恢复原始比例
+              this.ratio = originalRatio;
+              // 继续处理下一个区域
+              this.processAreasSequentially(areas, index + 1, captureMsg);
+            }
+          });
+        } else {
+          chrome.runtime.sendMessage({
+            action: 'captureFullPage',
+            targetArea: area,
+            debug: {
+              scrollX: scrollX,
+              scrollY: scrollY,
+              viewportWidth: viewportWidth,
+              viewportHeight: viewportHeight
+            }
+          }, response => {
+            if (response && response.success && response.dataUrl) {
+              this.processAreaScreenshot(response, area, index, areas, captureMsg, true, originalRatio);
+            } else {
+              console.error(`区域 ${index+1} 全页面截图失败:`, response?.error || '未知错误');
+              // 恢复原始比例
+              this.ratio = originalRatio;
+              // 继续处理下一个区域
+              this.processAreasSequentially(areas, index + 1, captureMsg);
+            }
+          });
+        }
+      }, 50);
     }
     
     // 处理区域截图
@@ -2910,17 +2933,35 @@ if (window._ratioScreenshotLoaded) {
           dpr: window.devicePixelRatio || 1
         };
         
-        // 计算裁剪区域在截图中的相对位置
-        const captureRect = {
-          left: area.left - viewportInfo.scrollX,
-          top: area.top - viewportInfo.scrollY,
-          width: area.width,
-          height: area.height
-        };
+        // 计算裁剪区域在截图中的相对位置 - 修正相对位置计算
+        let captureRect;
+        
+        if (isFullPageCapture) {
+          // 对于全页面截图，区域坐标是相对于文档的绝对坐标
+          captureRect = {
+            left: area.left - response.viewportInfo.scrollX,
+            top: area.top - response.viewportInfo.scrollY,
+            width: area.width,
+            height: area.height
+          };
+        } else {
+          // 对于普通截图，区域坐标需要相对于当前视口
+          captureRect = {
+            left: area.left - viewportInfo.scrollX,
+            top: area.top - viewportInfo.scrollY,
+            width: area.width,
+            height: area.height
+          };
+        }
+        
+        console.log(`区域 ${index+1} 视口信息:`, viewportInfo);
+        console.log(`区域 ${index+1} 计算的裁剪区域:`, captureRect);
         
         // 检查是否需要缩放调整
         const scaleX = image.width / viewportInfo.viewportWidth;
         const scaleY = image.height / viewportInfo.viewportHeight;
+        
+        console.log(`区域 ${index+1} 缩放比例: scaleX=${scaleX}, scaleY=${scaleY}`);
         
         // 应用缩放到裁剪区域
         const scaledRect = {
@@ -2932,7 +2973,24 @@ if (window._ratioScreenshotLoaded) {
         
         console.log(`区域 ${index+1} 最终裁剪区域:`, scaledRect);
         
+        // 检查裁剪区域是否在图像范围内
+        const isRectInImage = (
+          scaledRect.left >= 0 && 
+          scaledRect.top >= 0 && 
+          scaledRect.left + scaledRect.width <= image.width &&
+          scaledRect.top + scaledRect.height <= image.height
+        );
+        
         try {
+          if (!isRectInImage) {
+            console.warn(`区域 ${index+1} 裁剪区域部分超出图像范围，尝试调整`);
+            // 调整裁剪区域确保在图像范围内
+            scaledRect.left = Math.max(0, Math.min(scaledRect.left, image.width - 1));
+            scaledRect.top = Math.max(0, Math.min(scaledRect.top, image.height - 1));
+            scaledRect.width = Math.min(scaledRect.width, image.width - scaledRect.left);
+            scaledRect.height = Math.min(scaledRect.height, image.height - scaledRect.top);
+          }
+          
           // 处理和保存截图
           this.processAndSaveImage(image, scaledRect, index);
         } catch (error) {
@@ -3062,19 +3120,19 @@ if (window._ratioScreenshotLoaded) {
       const startTime = performance.now();
       
       // 为保存创建画布
-        const canvas = document.createElement('canvas');
-        canvas.width = rect.width;
-        canvas.height = rect.height;
+      const canvas = document.createElement('canvas');
+      canvas.width = rect.width;
+      canvas.height = rect.height;
       
       const ctx = canvas.getContext('2d');
       
       // 确保图片绘制在正确位置（考虑到部分可见的滚动元素）
-          ctx.drawImage(
-            image,
-        0, 0, rect.width, rect.height,
-            0, 0, rect.width, rect.height
-          );
-          
+      ctx.drawImage(
+        image,
+        rect.left, rect.top, rect.width, rect.height,
+        0, 0, rect.width, rect.height
+      );
+      
       // 获取图像质量
       let quality = 1.0;
       
@@ -3085,7 +3143,7 @@ if (window._ratioScreenshotLoaded) {
       if (format === 'jpg' || format === 'jpeg') {
         mimeType = 'image/jpeg';
         quality = 0.95; // JPEG默认使用较高质量
-        } else {
+      } else {
         mimeType = 'image/png';
       }
       
@@ -3519,9 +3577,33 @@ if (window._ratioScreenshotLoaded) {
       this.originalToolbarVisibility = this.toolbar ? this.toolbar.style.visibility : null;
       this.originalEventBlockerVisibility = this.eventBlocker ? this.eventBlocker.style.visibility : null;
       
-      // 隐藏所有相关UI元素
-      if (this.overlay) this.overlay.style.visibility = 'hidden';
-      if (this.eventBlocker) this.eventBlocker.style.visibility = 'hidden';
+      // 强制隐藏所有UI元素 - 使用display:none而不仅是visibility:hidden
+      if (this.overlay) {
+        this.overlay.style.visibility = 'hidden';
+        this.overlay.style.display = 'none';
+        this.overlay.style.opacity = '0';
+      }
+      
+      if (this.eventBlocker) {
+        this.eventBlocker.style.visibility = 'hidden';
+        this.eventBlocker.style.display = 'none';
+        this.eventBlocker.style.opacity = '0';
+      }
+      
+      // 更强力地隐藏工具栏
+      if (this.toolbar) {
+        this.originalToolbarDisplay = this.toolbar.style.display;
+        this.originalToolbarOpacity = this.toolbar.style.opacity;
+        this.originalToolbarPosition = this.toolbar.style.position;
+        
+        this.toolbar.style.visibility = 'hidden';
+        this.toolbar.style.display = 'none';
+        this.toolbar.style.opacity = '0';
+        this.toolbar.style.position = 'absolute';
+        this.toolbar.style.left = '-9999px';
+        this.toolbar.style.top = '-9999px';
+      }
+      
       if (this.selection) {
         // 保存选择框的原始样式
         this.originalSelectionStyles = {
@@ -3530,7 +3612,8 @@ if (window._ratioScreenshotLoaded) {
           boxShadow: this.selection.style.boxShadow,
           backgroundColor: this.selection.style.backgroundColor,
           opacity: this.selection.style.opacity,
-          pointerEvents: this.selection.style.pointerEvents
+          pointerEvents: this.selection.style.pointerEvents,
+          display: this.selection.style.display
         };
         
         // 确保完全移除选择框的所有边框、轮廓和阴影效果
@@ -3540,6 +3623,7 @@ if (window._ratioScreenshotLoaded) {
         this.selection.style.backgroundColor = 'transparent';
         this.selection.style.opacity = '0';
         this.selection.style.pointerEvents = 'none';
+        this.selection.style.display = 'block'; // 保持display:block但透明不可见
         
         // 临时隐藏任何可能的伪元素样式和子元素
         const tempStyleElement = document.createElement('style');
@@ -3576,12 +3660,30 @@ if (window._ratioScreenshotLoaded) {
             opacity: 0 !important;
             visibility: hidden !important;
           }
+          
+          #ratio-screenshot-toolbar,
+          #ratio-screenshot-toolbar * {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            position: absolute !important;
+            left: -9999px !important;
+            top: -9999px !important;
+            pointer-events: none !important;
+            z-index: -9999 !important;
+          }
+          
+          .ratio-screenshot-button,
+          .ratio-screenshot-button-group,
+          .ratio-screenshot-toolbar-row {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+          }
         `;
         document.head.appendChild(tempStyleElement);
         this.tempStyleElement = tempStyleElement;
       }
-      
-      if (this.toolbar) this.toolbar.style.visibility = 'hidden';
       
       // 隐藏所有调整手柄
       const resizeHandles = document.querySelectorAll('.ratio-screenshot-resize-handle');
@@ -3652,10 +3754,24 @@ if (window._ratioScreenshotLoaded) {
       // 恢复UI元素可见性
       if (this.overlay && this.originalOverlayVisibility !== null) {
         this.overlay.style.visibility = this.originalOverlayVisibility;
+        this.overlay.style.display = '';
+        this.overlay.style.opacity = '';
       }
       
       if (this.eventBlocker && this.originalEventBlockerVisibility !== null) {
         this.eventBlocker.style.visibility = this.originalEventBlockerVisibility;
+        this.eventBlocker.style.display = '';
+        this.eventBlocker.style.opacity = '';
+      }
+      
+      // 完全恢复工具栏
+      if (this.toolbar) {
+        this.toolbar.style.visibility = this.originalToolbarVisibility || '';
+        this.toolbar.style.display = this.originalToolbarDisplay || '';
+        this.toolbar.style.opacity = this.originalToolbarOpacity || '';
+        this.toolbar.style.position = this.originalToolbarPosition || '';
+        this.toolbar.style.left = '';
+        this.toolbar.style.top = '';
       }
       
       if (this.selection) {
@@ -3677,10 +3793,6 @@ if (window._ratioScreenshotLoaded) {
           this.tempStyleElement.remove();
           this.tempStyleElement = null;
         }
-      }
-      
-      if (this.toolbar && this.originalToolbarVisibility !== null) {
-        this.toolbar.style.visibility = this.originalToolbarVisibility;
       }
       
       // 恢复调整手柄的可见性

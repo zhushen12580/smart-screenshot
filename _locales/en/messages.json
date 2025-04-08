@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Precision Screenshot - Smart Screenshot Tool"
+    "message": "Precision Screenshot - One-Click Smart Screenshot Tool"
   },
   "appDescription": {
-    "message": "Webpage screenshot tool with preset ratios and element detection. Ideal for designers and content creators."
+    "message": "Intelligently recognizes web content, creates preset ratio screenshots with one click. Supports auto-alignment and continuous capture mode for easier and more efficient screenshots. Perfect for designers, marketers, e-commerce, and more."
   },
   "openPopup": {
     "message": "Open Extension Popup"
@@ -21,7 +21,7 @@
     "message": "Copy"
   },
   "title": {
-    "message": "Precision Screenshot"
+    "message": "Ratio Screenshot"
   },
   "normalMode": {
     "message": "Normal Mode"

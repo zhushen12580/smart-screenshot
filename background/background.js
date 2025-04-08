@@ -121,6 +121,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     callGLM4VFlashAPI(message, sendResponse);
   }
   
+  // 处理DeepSeek API调用请求（新增）
+  else if (message.action === 'callDeepSeekAPI') {
+    callDeepSeekAPI(message, sendResponse);
+  }
+  
   // 处理打开AI对话窗口请求
   else if (message.action === 'openAIDialog') {
     openAIDialog(message.url, message.options);
@@ -804,4 +809,185 @@ function saveLastScreenshotData(dataUrl) {
     lastScreenshotTime: Date.now()
   });
   console.log("已保存最近截图数据");
+}
+
+// 调用DeepSeek API
+function callDeepSeekAPI(request, sendResponse) {
+  console.log("准备调用DeepSeek API...");
+  
+  // 从存储中获取API密钥
+  chrome.storage.sync.get(['deepseek_api_key'], (data) => {
+    // 优先使用用户设置的API密钥，如果没有则使用默认配置
+    const apiKey = data.deepseek_api_key || config.DEEPSEEK_API_KEY;
+    
+    // 如果没有设置API密钥，返回错误
+    if (!apiKey) {
+      console.error("DeepSeek API密钥未设置");
+      sendResponse({
+        success: false,
+        error: "DeepSeek API密钥未设置，请在设置中配置"
+      });
+      return;
+    }
+    
+    // 准备API请求参数
+    const apiEndpoint = config.DEEPSEEK_API_ENDPOINT || "https://api.deepseek.com/chat/completions";
+    
+    // 构建请求体 - 启用流式输出
+    const requestBody = {
+      model: "deepseek-chat",
+      messages: request.messages,
+      stream: true
+    };
+    
+    console.log("发送DeepSeek API流式请求...");
+    
+    // 通过fetch API发送请求并处理流式响应
+    fetch(apiEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+      }
+      
+      // 创建响应读取器
+      const reader = response.body.getReader();
+      // 完整消息内容
+      let fullContent = "";
+      // 用于解码
+      const decoder = new TextDecoder();
+      // 标记流是否结束
+      let streamDone = false;
+      
+      // 初始化成功响应
+      sendResponse({
+        success: true,
+        streaming: true,
+        content: "",
+        done: false
+      });
+      
+      // 递归读取数据流
+      function readStream() {
+        // 如果流已结束，不再继续读取
+        if (streamDone) return;
+        
+        reader.read().then(({ done, value }) => {
+          // 检查流是否结束
+          if (done) {
+            console.log("DeepSeek API流式响应已完成");
+            // 通知前端流已结束
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+              if (tabs && tabs.length > 0) {
+                chrome.tabs.sendMessage(tabs[0].id, {
+                  action: 'streamComplete',
+                  content: fullContent
+                });
+              }
+            });
+            streamDone = true;
+            return;
+          }
+          
+          // 解码二进制数据
+          const chunk = decoder.decode(value, { stream: true });
+          // 分割成行
+          const lines = chunk.split('\n');
+          
+          // 处理每一行数据
+          for (const line of lines) {
+            // 跳过空行
+            if (!line.trim()) continue;
+            
+            // 处理SSE格式数据
+            if (line.startsWith('data: ')) {
+              // 提取JSON数据
+              const jsonData = line.substring(6);
+              
+              // 跳过[DONE]标记
+              if (jsonData.trim() === '[DONE]') {
+                continue;
+              }
+              
+              try {
+                // 解析JSON数据
+                const data = JSON.parse(jsonData);
+                // 提取delta内容
+                if (data.choices && data.choices[0] && data.choices[0].delta) {
+                  const delta = data.choices[0].delta;
+                  
+                  // 如果有新内容
+                  if (delta.content) {
+                    // 累加到完整内容
+                    fullContent += delta.content;
+                    
+                    // 发送增量更新到前端
+                    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                      if (tabs && tabs.length > 0) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                          action: 'streamUpdate',
+                          content: delta.content,
+                          fullContent: fullContent
+                        });
+                      }
+                    });
+                  }
+                  
+                  // 检查是否结束
+                  if (data.choices[0].finish_reason === 'stop') {
+                    console.log("DeepSeek API流式响应已完成");
+                    streamDone = true;
+                    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                      if (tabs && tabs.length > 0) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                          action: 'streamComplete',
+                          content: fullContent
+                        });
+                      }
+                    });
+                    return;
+                  }
+                }
+              } catch (error) {
+                console.error("处理流数据出错:", error, "原数据:", jsonData);
+              }
+            }
+          }
+          
+          // 继续读取流
+          readStream();
+        }).catch(error => {
+          console.error("读取响应流时出错:", error);
+          // 通知前端错误
+          chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (tabs && tabs.length > 0) {
+              chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'streamError',
+                error: error.message || "读取响应流时出错"
+              });
+            }
+          });
+        });
+      }
+      
+      // 开始读取流
+      readStream();
+    })
+    .catch(error => {
+      console.error("DeepSeek API调用出错:", error);
+      sendResponse({
+        success: false,
+        error: error.message || "调用DeepSeek API失败"
+      });
+    });
+  });
+  
+  // 必须返回true以保持sendResponse有效
+  return true;
 } 

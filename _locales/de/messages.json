@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Präzisions-Screenshot - Intelligentes Screenshot-Tool"
+    "message": "Präzisions-Screenshot - Intelligentes Bildschirmfoto-Tool mit einem Klick"
   },
   "appDescription": {
-    "message": "Screenshot-Tool mit voreingestellten Seitenverhältnissen und Elementenerkennung. Ideal für Designer und Content-Ersteller."
+    "message": "Erkennt Webinhalte intelligent und erstellt Screenshots mit voreingestellten Seitenverhältnissen mit einem Klick. Unterstützt automatische Ausrichtung und kontinuierlichen Aufnahmemodus für einfachere und effizientere Screenshots. Perfekt für Designer, Vermarkter, E-Commerce und mehr."
   },
   "openPopup": {
     "message": "Erweiterungsfenster öffnen"

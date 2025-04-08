@@ -752,3 +752,97 @@ body.loaded {
     -webkit-font-feature-settings: 'liga';
     -webkit-font-smoothing: antialiased;
   }
+
+/* 头部控制区域样式 */
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* 对话模式切换样式 */
+.dialog-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 10px;
+}
+
+.toggle-label {
+    font-size: 14px;
+    color: #555;
+}
+
+/* 开关按钮样式 */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(18px);
+}
+
+/* 圆形滑块 */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* 流式内容样式 */
+.streaming-content {
+    position: relative;
+}
+
+.streaming-content::after {
+    content: '▋';
+    display: inline-block;
+    margin-left: 2px;
+    animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
