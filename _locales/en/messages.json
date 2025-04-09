@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Precision Screenshot - One-Click Smart Screenshot Tool"
+    "message": "Precision Screenshot - Smart Screenshot Tool"
   },
   "appDescription": {
-    "message": "Intelligently recognizes web content, creates preset ratio screenshots with one click. Supports auto-alignment and continuous capture mode for easier and more efficient screenshots. Perfect for designers, marketers, e-commerce, and more."
+    "message": "Smart web element recognition for precise screenshots at preset ratios. Features magnetic snap, continuous capture, QR code scanning, AI image dialogue and background removal. A powerful screenshot tool for designers, content creators and e-commerce operators."
   },
   "openPopup": {
     "message": "Open Extension Popup"
@@ -21,7 +21,10 @@
     "message": "Copy"
   },
   "title": {
-    "message": "Ratio Screenshot"
+    "message": "Precision Screenshot"
+  },
+  "tagline": {
+    "message": "Smart screenshot with one click"
   },
   "normalMode": {
     "message": "Normal Mode"
@@ -55,5 +58,20 @@
   },
   "quickActions_shareFailed": {
     "message": "Copy failed, please try again"
+  },
+  "aiDialogTitle": {
+    "message": "Have an intelligent conversation about the screenshot content"
+  },
+  "qrDecodeTitle": {
+    "message": "Decode QR code in the screenshot"
+  },
+  "lockSizeTitle": {
+    "message": "Lock current size for continuous capture"
+  },
+  "magneticTitle": {
+    "message": "Auto-snap to page element edges when enabled"
+  },
+  "moveHint": {
+    "message": "Drag selection area (Space + drag)"
   }
 } 

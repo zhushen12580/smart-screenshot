@@ -23,6 +23,9 @@
   "title": {
     "message": "精准截图"
   },
+  "tagline": {
+    "message": "一键智能精准截图"
+  },
   "normalMode": {
     "message": "普通模式"
   },
@@ -55,5 +58,20 @@
   },
   "quickActions_shareFailed": {
     "message": "复制失败，请重试"
+  },
+  "aiDialogTitle": {
+    "message": "与截图内容进行智能对话"
+  },
+  "qrDecodeTitle": {
+    "message": "解析截图中的二维码"
+  },
+  "lockSizeTitle": {
+    "message": "锁定当前尺寸用于连续截图"
+  },
+  "magneticTitle": {
+    "message": "启用后会自动吸附到页面元素边缘"
+  },
+  "moveHint": {
+    "message": "拖动选择区域 (Space + 拖动)"
   }
 } 

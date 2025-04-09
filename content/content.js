@@ -1739,80 +1739,27 @@ if (window._ratioScreenshotLoaded) {
     
     // 获取AI对话按钮标题
     getAIDialogTitle() {
-      const currentLang = I18nHelper.getCurrentLanguage();
-      if (currentLang === 'zh') return '使用GLM-4V-Flash进行图像对话';
-      if (currentLang === 'es') return 'Chatear con la imagen usando GLM-4V-Flash';
-      if (currentLang === 'ar') return 'دردشة مع الصورة باستخدام GLM-4V-Flash';
-      if (currentLang === 'de') return 'Mit dem Bild chatten mit GLM-4V-Flash';
-      if (currentLang === 'pt') return 'Conversar com a imagem usando GLM-4V-Flash';
-      if (currentLang === 'ja') return 'GLM-4V-Flashを使用して画像とチャット';
-      if (currentLang === 'fr') return 'Discuter avec l\'image en utilisant GLM-4V-Flash';
-      if (currentLang === 'ko') return 'GLM-4V-Flash를 사용하여 이미지와 채팅';
-      return 'Chat with image using GLM-4V-Flash';
+      return chrome.i18n.getMessage("aiDialogTitle") || "Have an intelligent conversation about the screenshot content";
     }
     
     // 获取二维码解码按钮标题
     getQRDecodeTitle() {
-      const currentLang = I18nHelper.getCurrentLanguage();
-      if (currentLang === 'zh') return '解析截图中的二维码';
-      if (currentLang === 'es') return 'Decodificar código QR';
-      if (currentLang === 'ar') return 'فك رمز QR';
-      if (currentLang === 'de') return 'QR-Code dekodieren';
-      if (currentLang === 'pt') return 'Decodificar QR Code';
-      if (currentLang === 'ja') return 'QRコードを解析';
-      if (currentLang === 'fr') return 'Décoder le QR Code';
-      if (currentLang === 'ko') return 'QR 코드 해독';
-      return 'Decode QR Code';
+      return chrome.i18n.getMessage("qrDecodeTitle") || "Decode QR code in the screenshot";
     }
     
     // 获取锁定尺寸按钮标题
     getLockSizeTitle() {
-        const currentLang = I18nHelper.getCurrentLanguage();
-        if (currentLang === 'zh') return '锁定当前尺寸用于连续截图';
-        if (currentLang === 'es') return 'Bloquear tamaño para captura continua';
-        if (currentLang === 'ar') return 'قفل الحجم للتصوير المستمر';
-        if (currentLang === 'de') return 'Größe sperren für fortlaufende Aufnahme';
-        if (currentLang === 'pt') return 'Bloquear tamanho para captura contínua';
-        if (currentLang === 'ja') return '連続キャプチャのために現在のサイズをロック';
-        if (currentLang === 'fr') return 'Verrouiller la taille actuelle pour une capture continue';
-        if (currentLang === 'ko') return '연속 캡처를 위한 현재 크기 잠금';
-        return 'Lock current size for continuous capture';
+      return chrome.i18n.getMessage("lockSizeTitle") || "Lock current size for continuous capture";
     }
     
     // 获取磁性吸附按钮标题
     getMagneticTitle() {
-        const currentLang = I18nHelper.getCurrentLanguage();
-        if (currentLang === 'zh') return '启用后会自动吸附到页面元素边缘';
-        if (currentLang === 'es') return 'Auto-snap para elementos de la página cuando está activado';
-        if (currentLang === 'ar') return 'تمكين التقاط التلقائي للعناصر الموجودة على الصفحة عند تمكينه';
-        if (currentLang === 'de') return 'Automatisches Einrasten an Seitenelementkanten bei Aktivierung';
-        if (currentLang === 'pt') return 'Encaixe automático nos elementos da página quando ativado';
-        if (currentLang === 'ja') return '有効にするとページ要素に自動的に吸着';
-        if (currentLang === 'fr') return 'Accrochage automatique aux éléments de la page lorsqu\'activé';
-        if (currentLang === 'ko') return '활성화시 페이지 요소에 자동으로 스냅';
-        return 'Auto-snap to page element edges when enabled';
+      return chrome.i18n.getMessage("magneticTitle") || "Auto-snap to page element edges when enabled";
     }
     
-    // 获取移动提示文本
+    // 获取移动提示文本的本地化版本
     getLocalizedMoveHint() {
-        const currentLang = I18nHelper.getCurrentLanguage();
-        if (currentLang === 'zh') 
-          return '提示: <strong>拖动边缘</strong>调整大小, <strong>鼠标滚轮</strong>微调位置';
-        if (currentLang === 'es') 
-          return 'Tip: <strong>Arrastra los bordes</strong> para cambiar el tamaño, <strong>Rueda del mouse</strong> para ajustar la posición';
-        if (currentLang === 'ar') 
-          return 'تلميح: <strong>سحب الحافة</strong> لتغيير الحجم, <strong>عجلة الماوس</strong> للضبط الدقيق';
-        if (currentLang === 'de') 
-          return 'Tipp: <strong>Ränder ziehen</strong> zum Größe anpassen, <strong>Mausrad</strong> für Feineinstellung';
-        if (currentLang === 'pt') 
-          return 'Dica: <strong>Arraste as bordas</strong> para redimensionar, <strong>Roda do mouse</strong> para ajuste fino';
-        if (currentLang === 'ja') 
-          return 'ヒント: <strong>端をドラッグ</strong>してサイズ変更、<strong>マウスホイール</strong>で微調整';
-        if (currentLang === 'fr') 
-          return 'Astuce: <strong>Faire glisser les bords</strong> pour redimensionner, <strong>Molette de la souris</strong> pour ajustement fin';
-        if (currentLang === 'ko') 
-          return '팁: <strong>가장자리 드래그</strong>로 크기 조정, <strong>마우스 휠</strong>로 미세 조정';
-        return 'Tip: <strong>Drag edges</strong> to resize, <strong>Mouse wheel</strong> for fine adjustment';
+      return chrome.i18n.getMessage("moveHint") || "Drag selection area (Space + drag)";
     }
     
     // 添加事件监听

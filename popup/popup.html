@@ -32,7 +32,7 @@
     
     .title-container {
       position: relative;
-      padding: 20px 15px 25px;
+      padding: 20px 15px 12px;
       margin: -16px -16px 20px;
       background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
       overflow: hidden;
@@ -62,13 +62,13 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: 6px;
+      height: 2px;
       background: repeating-linear-gradient(
         to right,
         var(--black) 0,
-        var(--black) 8px,
-        transparent 8px,
-        transparent 16px
+        var(--black) 16px,
+        transparent 10px,
+        transparent 6px
       );
     }
     
@@ -162,7 +162,7 @@
     h1 {
       text-align: left;
       margin: 0;
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 800;
       color: var(--white);
       text-shadow: 2px 2px 0 var(--black);
@@ -503,10 +503,10 @@
   <a href="https://puzzledu.com/" class="title-link" id="title-link">
     <div class="title-container">
       <div class="logo-icon">
-        <img src="../assets/icons/icon16.svg" alt="精准截图">
+        <img src="../assets/icons/icon16.svg" alt="" data-i18n="title">
       </div>
-      <h1>精准截图</h1>
-      <div class="title-tagline">一键智能精准截图</div>
+      <h1 data-i18n="title">精准截图</h1>
+      <div class="title-tagline" data-i18n="tagline">一键智能精准截图</div>
       <div class="title-decoration">
         <span></span>
         <span></span>

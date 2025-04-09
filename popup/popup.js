@@ -1,5 +1,5 @@
 // 精准截图弹出窗口脚本
-import { getCurrentLanguage, getText, getRatioGroupLabel, getRatioOptionText, updateI18nTexts } from '../utils/i18n.js';
+import { getCurrentLanguage, getText, getShareIntroText, getRatioGroupLabel, getRatioOptionText, updateI18nTexts } from '../utils/i18n.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   // 获取DOM元素
@@ -58,14 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (quickShareBtn) {
     quickShareBtn.addEventListener('click', function() {
       // 准备要分享的介绍文字
-      const introText = 
-        "🔍 精准截图 | 高效智能的屏幕截图工具\n\n" +
-        "✨ 特色功能：\n" +
-        "✅ 支持多种屏幕比例，适合社交媒体分享\n" +
-        "✅ 智能模式自动识别界面元素边缘\n" +
-        "✅ 一键截取、复制、保存，操作便捷\n" +
-        "✅ 高清无损截图，还原真实画面效果\n\n" +
-        "👉 立即下载体验：https://puzzledu.com/shot";
+      const introText = getShareIntroText();
       
       // 复制到剪贴板
       navigator.clipboard.writeText(introText)

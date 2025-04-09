@@ -2,6 +2,7 @@
 const i18n = {
   zh: {
     title: "精准截图",
+    tagline: "一键智能精准截图",
     description: "智能识别网页内容，一键完成预设比例截图",
     startButton: "开始截图",
     capturing: "截图中...",
@@ -25,6 +26,24 @@ const i18n = {
     quickActions_feedback: "创造美好",
     quickActions_shareSuccess: "分享文本已复制到剪贴板！",
     quickActions_shareFailed: "复制失败，请重试",
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "与截图内容进行智能对话",
+      qrDecode: "解析截图中的二维码",
+      lockSize: "锁定当前尺寸用于连续截图",
+      magnetic: "启用后会自动吸附到页面元素边缘",
+      move: "拖动选择区域 (Space + 拖动)"
+    },
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
+      features_title: "✨ 特色功能：",
+      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
+      feature2: "✅ 智能模式自动识别界面元素边缘",
+      feature3: "✅ 智能识别二维码、支持与截图智能对话",
+      feature4: "✅ 一键抠图、智能优化图像效果",
+      download: "👉 立即下载体验：https://puzzledu.com/shot"
+    },
     // 工具栏文本
     toolbar: {
       saveArea: "保存此区域",
@@ -81,6 +100,7 @@ const i18n = {
   },
   en: {
     title: "Precision Screenshot",
+    tagline: "Smart screenshot with one click",
     description: "Smart webpage content recognition, one-click preset ratio screenshots",
     startButton: "Start Screenshot",
     capturing: "Capturing...",
@@ -104,6 +124,24 @@ const i18n = {
     quickActions_feedback: "Create Beauty",
     quickActions_shareSuccess: "Share text copied to clipboard!",
     quickActions_shareFailed: "Copy failed, please try again",
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "Have an intelligent conversation about the screenshot content",
+      qrDecode: "Decode QR code in the screenshot",
+      lockSize: "Lock current size for continuous capture",
+      magnetic: "Auto-snap to page element edges when enabled",
+      move: "Drag selection area (Space + drag)"
+    },
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 Precision Screenshot | Efficient Smart Screenshot Tool",
+      features_title: "✨ Features:",
+      feature1: "✅ Support for multiple screen ratios, ideal for social media sharing",
+      feature2: "✅ Smart mode automatically recognizes UI element edges",
+      feature3: "✅ QR code recognition and AI image conversation",
+      feature4: "✅ One-click background removal and smart image optimization",
+      download: "👉 Download now: https://puzzledu.com/shot"
+    },
     // 工具栏文本
     toolbar: {
       saveArea: "Save This Area",
@@ -160,6 +198,7 @@ const i18n = {
   },
   es: {
     title: "Captura de Pantalla Precisa",
+    tagline: "Captura inteligente con un clic",
     description: "Reconocimiento inteligente del contenido web, capturas con proporciones preestablecidas con un clic",
     startButton: "Iniciar Captura",
     capturing: "Capturando...",
@@ -183,6 +222,24 @@ const i18n = {
     quickActions_feedback: "Crear Belleza",
     quickActions_shareSuccess: "¡Texto para compartir copiado al portapapeles!",
     quickActions_shareFailed: "Error al copiar, inténtalo de nuevo",
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "Mantener una conversación inteligente sobre el contenido de la captura",
+      qrDecode: "Decodificar código QR en la captura",
+      lockSize: "Bloquear tamaño para captura continua",
+      magnetic: "Auto-snap para elementos de la página cuando está activado",
+      move: "Arrastrar área de selección (Espacio + arrastrar)"
+    },
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 Captura de Pantalla Precisa | Herramienta de captura inteligente y eficiente",
+      features_title: "✨ Características:",
+      feature1: "✅ Soporte para múltiples proporciones de pantalla, ideal para redes sociales",
+      feature2: "✅ El modo inteligente reconoce automáticamente los bordes de los elementos",
+      feature3: "✅ Reconocimiento de códigos QR y conversación de imágenes con IA",
+      feature4: "✅ Eliminación de fondo con un clic y optimización inteligente de imágenes",
+      download: "👉 Descarga ahora: https://puzzledu.com/shot"
+    },
     // Textos de la barra de herramientas
     toolbar: {
       saveArea: "Guardar Esta Área",
@@ -239,6 +296,7 @@ const i18n = {
   },
   ar: {
     title: "لقطة شاشة دقيقة",
+    tagline: "لقطة ذكية بنقرة واحدة",
     description: "التعرف الذكي على محتوى صفحة الويب، لقطات شاشة بنسب محددة مسبقًا بنقرة واحدة",
     startButton: "بدء اللقطة",
     capturing: "جاري التقاط...",
@@ -262,6 +320,16 @@ const i18n = {
     quickActions_feedback: "إبداع الجمال",
     quickActions_shareSuccess: "تم نسخ نص المشاركة إلى الحافظة!",
     quickActions_shareFailed: "فشل النسخ، يرجى المحاولة مرة أخرى",
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
+      features_title: "✨ 特色功能：",
+      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
+      feature2: "✅ 智能模式自动识别界面元素边缘",
+      feature3: "✅ 智能识别二维码、支持与截图智能对话",
+      feature4: "✅ 一键抠图、智能优化图像效果",
+      download: "👉 立即下载体验：https://puzzledu.com/shot"
+    },
     // نصوص شريط الأدوات
     toolbar: {
       saveArea: "حفظ هذه المنطقة",
@@ -318,6 +386,7 @@ const i18n = {
   },
   de: {
     title: "Präzisions-Screenshot",
+    tagline: "Intelligentes Screenshot mit einem Klick",
     description: "Intelligente Erkennung von Webseiteninhalten, Bildschirmfotos mit voreingestellten Seitenverhältnissen mit einem Klick",
     startButton: "Screenshot starten",
     capturing: "Aufnahme läuft...",
@@ -341,6 +410,16 @@ const i18n = {
     quickActions_feedback: "Schönheit schaffen",
     quickActions_shareSuccess: "Freigabetext in Zwischenablage kopiert!",
     quickActions_shareFailed: "Kopieren fehlgeschlagen, bitte erneut versuchen",
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
+      features_title: "✨ 特色功能：",
+      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
+      feature2: "✅ 智能模式自动识别界面元素边缘",
+      feature3: "✅ 智能识别二维码、支持与截图智能对话",
+      feature4: "✅ 一键抠图、智能优化图像效果",
+      download: "👉 立即下载体验：https://puzzledu.com/shot"
+    },
     // Toolbar-Texte
     toolbar: {
       saveArea: "Diesen Bereich speichern",
@@ -389,7 +468,7 @@ const i18n = {
       other: {
         label: "Sonstige",
         options: {
-          "21:9": "21:9 (Ultrawide)",
+          "21:9": "21:9 (Ultra-large)",
           "free": "Freies Seitenverhältnis"
         }
       }
@@ -397,6 +476,7 @@ const i18n = {
   },
   pt: {
     title: "Captura de Tela Precisa",
+    tagline: "Captura precisa com um clique",
     description: "Reconhecimento inteligente de conteúdo web, capturas de tela com proporções predefinidas com um clique",
     startButton: "Iniciar Captura",
     capturing: "Capturando...",
@@ -471,6 +551,7 @@ const i18n = {
   },
   ja: {
     title: "精密スクリーンショット",
+    tagline: "スマートなスクリーンショット",
     description: "スマートなウェブコンテンツ認識、ワンクリックでプリセット比率のスクリーンショット",
     startButton: "スクリーンショットを開始",
     capturing: "キャプチャ中...",
@@ -550,6 +631,7 @@ const i18n = {
   },
   fr: {
     title: "Capture d'écran précise",
+    tagline: "Capture précise avec un clic",
     description: "Reconnaissance intelligente du contenu web, captures d'écran à ratios prédéfinis en un clic",
     startButton: "Commencer la capture",
     capturing: "Capture en cours...",
@@ -573,6 +655,16 @@ const i18n = {
     quickActions_feedback: "Créer de la beauté",
     quickActions_shareSuccess: "Texte de partage copié dans le presse-papiers !",
     quickActions_shareFailed: "Échec de la copie, veuillez réessayer",
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
+      features_title: "✨ 特色功能：",
+      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
+      feature2: "✅ 智能模式自动识别界面元素边缘",
+      feature3: "✅ 智能识别二维码、支持与截图智能对话",
+      feature4: "✅ 一键抠图、智能优化图像效果",
+      download: "👉 立即下载体验：https://puzzledu.com/shot"
+    },
     // Textes de la barre d'outils
     toolbar: {
       saveArea: "Enregistrer cette zone",
@@ -629,6 +721,7 @@ const i18n = {
   },
   ko: {
     title: "정밀 스크린샷",
+    tagline: "스마트한 스크린샷",
     description: "스마트 웹페이지 콘텐츠 인식, 원클릭 프리셋 비율 스크린샷",
     startButton: "스크린샷 시작",
     capturing: "캡처 중...",
@@ -708,6 +801,7 @@ const i18n = {
   },
   pt_BR: {
     title: "Captura de Tela Precisa",
+    tagline: "Captura precisa com um clique",
     description: "Reconhecimento inteligente de conteúdo web, capturas de tela com proporções predefinidas com um clique",
     startButton: "Iniciar Captura",
     capturing: "Capturando...",
@@ -821,27 +915,91 @@ function getText(key) {
 
 // 获取工具栏文本
 function getToolbarText(key) {
-  return getText(`toolbar.${key}`);
+  const currentLanguage = getCurrentLanguage();
+  
+  if (i18n[currentLanguage] && i18n[currentLanguage].toolbar && i18n[currentLanguage].toolbar[key]) {
+    return i18n[currentLanguage].toolbar[key];
+  }
+  
+  if (i18n.en && i18n.en.toolbar && i18n.en.toolbar[key]) {
+    return i18n.en.toolbar[key];
+  }
+  
+  return key;
+}
+
+// 获取分享介绍文本
+function getShareIntroText() {
+  const currentLanguage = getCurrentLanguage();
+  let text = {};
+  
+  // 使用当前语言的分享文本，如果不存在则使用英文
+  if (i18n[currentLanguage] && i18n[currentLanguage].shareIntroText) {
+    text = i18n[currentLanguage].shareIntroText;
+  } else if (i18n.en && i18n.en.shareIntroText) {
+    text = i18n.en.shareIntroText;
+  }
+  
+  // 将对象中的所有文本组合成一个字符串
+  return text.title + "\n\n" + 
+         text.features_title + "\n" + 
+         text.feature1 + "\n" + 
+         text.feature2 + "\n" + 
+         text.feature3 + "\n" + 
+         text.feature4 + "\n\n" + 
+         text.download;
 }
 
 // 获取比例组标签
 function getRatioGroupLabel(groupKey) {
-  const lang = getCurrentLanguage();
-  return i18n[lang].ratioGroups[groupKey].label || i18n['en'].ratioGroups[groupKey].label || groupKey;
+  const currentLanguage = getCurrentLanguage();
+  return i18n[currentLanguage].ratioGroups[groupKey].label || i18n['en'].ratioGroups[groupKey].label || groupKey;
 }
 
 // 获取比例选项文本
 function getRatioOptionText(groupKey, ratioKey) {
-  const lang = getCurrentLanguage();
-  return i18n[lang].ratioGroups[groupKey].options[ratioKey] || 
-         i18n['en'].ratioGroups[groupKey].options[ratioKey] || 
-         ratioKey;
+  const currentLanguage = getCurrentLanguage();
+  
+  if (i18n[currentLanguage] && i18n[currentLanguage].ratioGroups && 
+      i18n[currentLanguage].ratioGroups[groupKey] && 
+      i18n[currentLanguage].ratioGroups[groupKey].options && 
+      i18n[currentLanguage].ratioGroups[groupKey].options[ratioKey]) {
+    return i18n[currentLanguage].ratioGroups[groupKey].options[ratioKey];
+  }
+  
+  if (i18n.en && i18n.en.ratioGroups && 
+      i18n.en.ratioGroups[groupKey] && 
+      i18n.en.ratioGroups[groupKey].options && 
+      i18n.en.ratioGroups[groupKey].options[ratioKey]) {
+    return i18n.en.ratioGroups[groupKey].options[ratioKey];
+  }
+  
+  return ratioKey;
+}
+
+// 获取标题提示文本
+function getTitleTip(key) {
+  const currentLanguage = getCurrentLanguage();
+  
+  if (i18n[currentLanguage] && i18n[currentLanguage].titleTips && i18n[currentLanguage].titleTips[key]) {
+    return i18n[currentLanguage].titleTips[key];
+  }
+  
+  if (i18n.en && i18n.en.titleTips && i18n.en.titleTips[key]) {
+    return i18n.en.titleTips[key];
+  }
+  
+  return key;
 }
 
 // 格式化文件大小估计
 function formatFileSizeEstimate(size, unit) {
-  const template = getText('toolbar.fileSizeEstimate');
-  return template.replace('{size}', size).replace('{unit}', unit);
+  const currentLanguage = getCurrentLanguage();
+  const template = i18n[currentLanguage]?.toolbar?.fileSizeEstimate || 
+                  i18n.en.toolbar.fileSizeEstimate || 
+                  "About {size} {unit}";
+  
+  return template.replace("{size}", size).replace("{unit}", unit);
 }
 
 // 更新所有带有data-i18n属性的元素的文本
@@ -872,6 +1030,8 @@ export {
   getCurrentLanguage, 
   getText, 
   getToolbarText,
+  getShareIntroText,
+  getTitleTip,
   getRatioGroupLabel, 
   getRatioOptionText,
   formatFileSizeEstimate,
