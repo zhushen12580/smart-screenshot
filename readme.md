@@ -1,4 +1,5 @@
-![image](https://github.com/user-attachments/assets/d4c89b42-fa87-459d-b2fe-2dd1c2092688)
+![精准截图_20250409_221022](https://github.com/user-attachments/assets/3b8c0ae8-f535-4311-9b94-6964fefd3d88)
+
 
 # 精准截图 - 一款更懂内容创作者的一键智能精准截图工具
 
