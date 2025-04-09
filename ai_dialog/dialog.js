@@ -19,6 +19,7 @@
     const templateDropdown = document.getElementById('template-dropdown');
     const templateItems = document.querySelectorAll('.template-item');
     const enhancedModeToggle = document.getElementById('enhanced-mode-toggle');
+    const languageSelector = document.getElementById('language-selector'); // 新增：语言选择器
     
     // 存储图像的base64数据
     let imageBase64 = '';
@@ -61,7 +62,7 @@
             
             // 添加欢迎消息
             setTimeout(() => {
-                addMessage("你好！我已经看到了这张图片。请问有什么可以帮助你的？", 'ai');
+                addMessage(window.Translations.getTranslation('welcome_message'), 'ai');
             }, 500);
         }
         
@@ -86,18 +87,26 @@
             isEnhancedMode = this.checked;
             // 当切换到增强模式时，显示提示消息
             if (isEnhancedMode) {
-                addMessage("已切换到对话增强模式。该模式结合图像识别和高级对话能力，提供更连贯的交流体验。", 'ai');
+                addMessage(window.Translations.getTranslation('enhanced_mode_on'), 'ai');
                 
                 // 如果已经有图片但还没有描述，则获取图片描述
                 if (imageBase64 && !imageDescription) {
                     getInitialImageDescription();
                 }
             } else {
-                addMessage("已切换到标准模式。", 'ai');
+                addMessage(window.Translations.getTranslation('standard_mode_on'), 'ai');
                 // 在标准模式下重置聊天历史
                 chatHistory = [];
             }
         });
+        
+        // 语言选择器变更事件
+        languageSelector.addEventListener('change', function() {
+            window.Translations.setLanguage(this.value);
+        });
+        
+        // 初始化语言设置
+        initializeLanguage();
         
         // 模板下拉菜单的事件监听
         templateToggle.addEventListener('click', function(event) {
@@ -175,6 +184,17 @@
         });
     }
     
+    // 初始化语言设置
+    function initializeLanguage() {
+        // 设置默认语言为浏览器语言
+        const browserLang = window.Translations.getBrowserLanguage();
+        languageSelector.value = browserLang;
+        window.Translations.setLanguage(browserLang);
+        
+        // 更新整个界面的语言
+        window.Translations.updateUILanguage();
+    }
+    
     // 获取初始图像描述（用于增强模式）
     function getInitialImageDescription() {
         // 显示加载指示器
@@ -196,7 +216,7 @@
                 console.log("已获取图像初始描述用于增强模式");
             } else {
                 // 显示错误信息
-                const errorMsg = response?.error || '无法获取图像描述，增强模式可能受限';
+                const errorMsg = response?.error || window.Translations.getTranslation('image_desc_failed');
                 showWarning(errorMsg);
             }
         });
@@ -229,7 +249,7 @@
         
         // 检查图像大小是否超过5MB
         if (imageSize > 5 * 1024 * 1024) {
-            showWarning('图像大小超过5MB，可能无法正常处理。请考虑使用更小的图像。');
+            showWarning(window.Translations.getTranslation('image_size_warning'));
             
             // 自动压缩图像
             resizeImage(base64Data, function(resizedBase64) {
@@ -237,7 +257,7 @@
                 dialogImage.src = resizedBase64;
                 
                 const newSize = calculateImageSize(resizedBase64);
-                imageSizeElement.textContent = formatFileSize(newSize) + ' (已压缩)';
+                imageSizeElement.textContent = formatFileSize(newSize) + ' (' + window.Translations.getTranslation('image_compressed') + ')';
                 
                 // 如果在增强模式下，获取图像描述
                 if (isEnhancedMode && !imageDescription) {
@@ -393,7 +413,7 @@
                 sendButton.disabled = false;
                 hideLoadingIndicator();
                 
-                const errorMsg = response?.error || '无法获取图像描述，请重试或切换到标准模式';
+                const errorMsg = response?.error || window.Translations.getTranslation('image_desc_failed');
                 showWarning(errorMsg);
             }
         });
@@ -447,7 +467,7 @@
         hideLoadingIndicator();
         
         // 显示错误消息
-        showWarning(error || "接收响应时出错");
+        showWarning(error || window.Translations.getTranslation('streaming_error'));
         
         // 清理任何正在进行的消息
         if (currentStreamMessageElement) {
@@ -565,11 +585,11 @@
                 
                 if (!response.success) {
                     // 显示错误信息
-                    const errorMsg = response.error || '增强对话请求失败，请稍后重试或切换到标准模式';
+                    const errorMsg = response.error || window.Translations.getTranslation('enhanced_mode_failed');
                     showWarning(errorMsg);
                 } else {
                     // 处理非流式响应（虽然我们期望流式响应）
-                    addMessage(response.aiResponse || "收到回复但无内容", 'ai');
+                    addMessage(response.aiResponse || window.Translations.getTranslation('empty_response'), 'ai');
                     chatHistory.push({role: 'assistant', content: response.aiResponse || ""});
                 }
             }
@@ -587,7 +607,7 @@
         spinner.className = 'loading-spinner';
         
         const text = document.createElement('span');
-        text.textContent = '正在思考...';
+        text.textContent = window.Translations.getTranslation('thinking');
         
         loadingElement.appendChild(spinner);
         loadingElement.appendChild(text);
@@ -673,7 +693,7 @@
                 addMessage(response.aiResponse, 'ai');
             } else {
                 // 显示错误信息
-                const errorMsg = response?.error || '请求失败，请稍后重试';
+                const errorMsg = response?.error || window.Translations.getTranslation('request_failed');
                 showWarning(errorMsg);
             }
         });

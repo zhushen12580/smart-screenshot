@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="dialog.css">
     <!-- 使用本地Markdown和DOMPurify库 -->
     <script src="lib/simple-markdown.js"></script>
-
+    <!-- 添加多语言翻译支持 -->
+    <script src="translations.js"></script>
 </head>
 <body>
     <div class="ai-dialog-container">
@@ -20,6 +21,13 @@
                         <input type="checkbox" id="enhanced-mode-toggle">
                         <span class="slider round"></span>
                     </label>
+                </div>
+                <!-- 添加语言选择器 -->
+                <div class="language-selector">
+                    <select id="language-selector">
+                        <option value="zh-CN">中文</option>
+                        <option value="en-US">English</option>
+                    </select>
                 </div>
                 <button id="close-dialog" class="close-button"><span class="material-icons">close</span></button>
             </div>
