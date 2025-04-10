@@ -7,9 +7,8 @@
 
 ## 项目概述
 "精准截图"是一款Chrome浏览器插件，旨在解决用户在网页截图时需要频繁调整截图区域比例的问题。该插件允许用户预先设定截图比例，然后进行连续截图操作，每次截图都会自动保持所选比例，大大提高截图效率。
-![二维码解析功能演示](https://github.com/user-attachments/assets/c01f4e75-8e0b-481f-ab46-b5d9e8402f85)
-
-![智能截图功能演示 (2)](https://github.com/user-attachments/assets/5b89ade7-fe85-443f-9d62-470a0c7c0e96)
+![跟上国际动态](https://github.com/user-attachments/assets/3abc26e5-4fee-4410-994c-ceb6c825a85c)
+![二维码解析功能演示](https://github.com/user-attachments/assets/46913bcf-c9f7-4fca-a904-d7e676a42408)
 
 ## 快速开始
 
