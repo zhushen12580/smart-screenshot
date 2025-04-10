@@ -1,7 +1,7 @@
 ![精准截图_20250409_221022](https://github.com/user-attachments/assets/3b8c0ae8-f535-4311-9b94-6964fefd3d88)
 
 
-# 精准截图 - 一款更懂内容创作者的一键智能精准截图工具
+# 精准截图 - AI时代的首款智能截图工具
 
 [English](README_EN.md) | 简体中文
 
