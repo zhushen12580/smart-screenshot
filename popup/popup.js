@@ -24,6 +24,19 @@ document.addEventListener('DOMContentLoaded', function() {
     inspectModeBtn.classList.remove('active');
     ratioSelect.disabled = false;
     
+    // 从存储中获取最近一次使用的比例
+    chrome.storage.sync.get(['lastUsedRatio'], function(data) {
+      if (data.lastUsedRatio) {
+        // 应用最近一次使用的比例
+        ratioSelect.value = data.lastUsedRatio;
+        selectedRatio = data.lastUsedRatio;
+      } else {
+        // 首次使用应用自由比例
+        ratioSelect.value = 'free';
+        selectedRatio = 'free';
+      }
+    });
+    
     // 保存模式设置，以便快捷键可以使用正确的模式
     chrome.storage.sync.set({ isInspectMode: false });
   });
@@ -178,6 +191,10 @@ document.addEventListener('DOMContentLoaded', function() {
       if (data.lastUsedRatio && ratioSelect && !data.isInspectMode) {
         ratioSelect.value = data.lastUsedRatio;
         selectedRatio = data.lastUsedRatio;
+      } else if (!data.lastUsedRatio && ratioSelect && !data.isInspectMode) {
+        // 首次使用设置为自由比例
+        ratioSelect.value = "free";
+        selectedRatio = "free";
       }
       
       // 设置保存格式

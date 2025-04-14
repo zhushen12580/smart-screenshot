@@ -6,7 +6,7 @@ import config from '../config.local.js';
 
 // 默认设置
 const DEFAULT_SETTINGS = {
-  ratio: "16:9",
+  ratio: "free",
   saveFormat: "png",
   imageQuality: 1.0,
   isInspectMode: false
@@ -22,8 +22,8 @@ chrome.commands.onCommand.addListener((command) => {
     
     // 从存储中获取最近使用的比例和其他设置，包括智能模式设置
     chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality', 'isInspectMode'], (data) => {
-      // 使用最近一次使用的比例，如果没有则使用16:9作为默认值
-      const ratio = data.isInspectMode ? "free" : (data.lastUsedRatio || "16:9");
+      // 使用最近一次使用的比例，如果没有则使用free作为默认值
+      const ratio = data.isInspectMode ? "free" : (data.lastUsedRatio || "free");
       
       const screenshotOptions = {
         ratio: ratio,

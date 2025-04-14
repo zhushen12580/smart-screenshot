@@ -675,7 +675,7 @@ if (window._ratioScreenshotLoaded) {
       this.currentElement = null;
       
       // 现有属性
-      this.ratio = null;
+      this.ratio = 'free';
       this.saveFormat = 'png';
       this.imageQuality = 1.0;
       
