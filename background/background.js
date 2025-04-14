@@ -12,6 +12,114 @@ const DEFAULT_SETTINGS = {
   isInspectMode: false
 };
 
+// 自定义快捷键配置
+let customShortcuts = {};
+
+// 加载自定义快捷键
+loadCustomShortcuts();
+
+// 加载用户自定义的快捷键
+function loadCustomShortcuts() {
+  chrome.storage.sync.get('custom_shortcuts', (data) => {
+    if (data.custom_shortcuts) {
+      customShortcuts = data.custom_shortcuts;
+      console.log("已加载自定义快捷键:", customShortcuts);
+    }
+  });
+}
+
+// 添加全局键盘事件监听
+chrome.runtime.onInstalled.addListener(() => {
+  // 注册全局键盘事件监听器(用于自定义快捷键)
+  chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+    if (changeInfo.status === 'complete' && tab.url && 
+        !tab.url.startsWith('chrome://') && 
+        !tab.url.startsWith('edge://') && 
+        !tab.url.startsWith('about:')) {
+      
+      // 注入键盘监听脚本
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        function: injectKeyboardListener
+      }).catch(error => {
+        console.log('无法在此页面注入键盘监听:', error);
+      });
+    }
+  });
+
+  // 立即为所有活动标签页注入键盘监听器
+  chrome.tabs.query({active: true}, function(tabs) {
+    tabs.forEach(tab => {
+      if (tab.url && 
+          !tab.url.startsWith('chrome://') && 
+          !tab.url.startsWith('edge://') && 
+          !tab.url.startsWith('about:')) {
+        
+        chrome.scripting.executeScript({
+          target: { tabId: tab.id },
+          function: injectKeyboardListener
+        }).catch(error => {
+          console.log('无法在此页面注入键盘监听:', error);
+        });
+      }
+    });
+  });
+});
+
+// 注入键盘监听函数
+function injectKeyboardListener() {
+  // 防止重复注入
+  if (window._ratioScreenshotKeyboardListenerInjected) return;
+  window._ratioScreenshotKeyboardListenerInjected = true;
+  
+  // 添加键盘事件监听
+  document.addEventListener('keydown', function(e) {
+    // 跳过输入框中的按键
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.isContentEditable) {
+      return;
+    }
+    
+    // 构建快捷键字符串
+    let shortcut = '';
+    if (e.ctrlKey) shortcut += 'Ctrl+';
+    if (e.shiftKey) shortcut += 'Shift+';
+    if (e.altKey) shortcut += 'Alt+';
+    
+    // 获取主键名称
+    function getKeyName(keyCode) {
+      // 基本键映射
+      const keyMap = {
+        8: 'Backspace', 9: 'Tab', 13: 'Enter', 16: 'Shift', 17: 'Ctrl', 18: 'Alt',
+        27: 'Escape', 32: 'Space', 37: 'ArrowLeft', 38: 'ArrowUp', 39: 'ArrowRight',
+        40: 'ArrowDown', 46: 'Delete'
+      };
+      
+      // 数字键 0-9
+      if (keyCode >= 48 && keyCode <= 57) return String.fromCharCode(keyCode);
+      
+      // 字母键 A-Z
+      if (keyCode >= 65 && keyCode <= 90) return String.fromCharCode(keyCode);
+      
+      // 功能键 F1-F12
+      if (keyCode >= 112 && keyCode <= 123) return 'F' + (keyCode - 111);
+      
+      return keyMap[keyCode] || String.fromCharCode(keyCode);
+    }
+    
+    shortcut += getKeyName(e.keyCode);
+    
+    console.log("检测到按键组合:", shortcut);
+    
+    // 发送消息到后台脚本
+    chrome.runtime.sendMessage({
+      action: 'keyboardShortcut',
+      shortcut: shortcut
+    });
+  });
+  
+  console.log('精准截图: 键盘监听器已注入');
+}
+
 // 监听键盘命令
 chrome.commands.onCommand.addListener((command) => {
   console.log("收到键盘命令:", command);
@@ -74,6 +182,71 @@ chrome.commands.onCommand.addListener((command) => {
   }
 });
 
+// 监听自定义键盘快捷键
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === 'keyboardShortcut') {
+    const shortcut = message.shortcut;
+    console.log("收到快捷键:", shortcut, "当前配置:", customShortcuts);
+    
+    // 检查是否匹配任何自定义快捷键
+    if (customShortcuts.screenshot_start && shortcut === customShortcuts.screenshot_start) {
+      console.log("触发自定义开始截图快捷键:", shortcut);
+      
+      // 从存储中获取最近使用的比例和其他设置
+      chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality', 'isInspectMode'], (data) => {
+        const ratio = data.isInspectMode ? "free" : (data.lastUsedRatio || "free");
+        
+        const screenshotOptions = {
+          ratio: ratio,
+          saveFormat: data.saveFormat || DEFAULT_SETTINGS.saveFormat,
+          imageQuality: data.imageQuality || DEFAULT_SETTINGS.imageQuality,
+          isInspectMode: data.isInspectMode || DEFAULT_SETTINGS.isInspectMode
+        };
+        
+        console.log("开始截图选项:", screenshotOptions);
+        
+        // 启动截图流程
+        startScreenshotProcess(screenshotOptions);
+      });
+      return true;
+    }
+    // 确认截图快捷键
+    else if (customShortcuts.screenshot_confirm && shortcut === customShortcuts.screenshot_confirm) {
+      console.log("触发自定义确认截图快捷键:", shortcut);
+      
+      // 向当前活动标签页发送确认命令
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (!tabs || tabs.length === 0) return;
+        
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'screenshotConfirm'
+        }).catch(error => {
+          console.log("发送确认命令失败，可能截图模式未启动:", error);
+        });
+      });
+      return true;
+    }
+    // 取消截图快捷键
+    else if (customShortcuts.screenshot_cancel && shortcut === customShortcuts.screenshot_cancel) {
+      console.log("触发自定义取消截图快捷键:", shortcut);
+      
+      // 向当前活动标签页发送取消命令
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (!tabs || tabs.length === 0) return;
+        
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'screenshotCancel'
+        }).catch(error => {
+          console.log("发送取消命令失败，可能截图模式未启动:", error);
+        });
+      });
+      return true;
+    }
+  }
+  
+  return true;  // 保持消息通道开放
+});
+
 // 监听消息
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("收到消息:", message.action);
@@ -129,6 +302,51 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // 处理打开AI对话窗口请求
   else if (message.action === 'openAIDialog') {
     openAIDialog(message.url, message.options);
+    sendResponse({ success: true });
+  }
+  
+  // 处理更新快捷键配置请求
+  else if (message.action === 'updateShortcuts') {
+    if (message.shortcuts) {
+      customShortcuts = message.shortcuts;
+      console.log("已更新自定义快捷键:", customShortcuts);
+      sendResponse({ success: true });
+    } else {
+      sendResponse({ success: false, error: "没有提供快捷键数据" });
+    }
+  }
+  
+  // 处理重新加载键盘监听器请求
+  else if (message.action === 'reloadKeyboardListeners') {
+    // 重新为所有标签页注入键盘监听器
+    chrome.tabs.query({}, function(tabs) {
+      tabs.forEach(tab => {
+        if (tab.url && 
+            !tab.url.startsWith('chrome://') && 
+            !tab.url.startsWith('edge://') && 
+            !tab.url.startsWith('about:')) {
+          
+          // 先移除旧的监听器
+          chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            function: () => {
+              window._ratioScreenshotKeyboardListenerInjected = false;
+            }
+          }).catch(error => {
+            console.log('重置键盘监听器状态失败:', error);
+          });
+          
+          // 再注入新的监听器
+          chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            function: injectKeyboardListener
+          }).catch(error => {
+            console.log('重新注入键盘监听器失败:', error);
+          });
+        }
+      });
+    });
+    
     sendResponse({ success: true });
   }
   

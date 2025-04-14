@@ -2,6 +2,9 @@
 import { getCurrentLanguage, getText, getShareIntroText, getRatioGroupLabel, getRatioOptionText, updateI18nTexts } from '../utils/i18n.js';
 
 document.addEventListener('DOMContentLoaded', function() {
+  // 更新多语言文本
+  updateI18nTexts();
+  
   // 获取DOM元素
   const startScreenshotBtn = document.getElementById('start-screenshot');
   const ratioSelect = document.getElementById('ratio-select');
@@ -12,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const shortcutKey = document.querySelector('[data-command="screenshot_start"]');
   const quickShareBtn = document.getElementById('quick-share');
   const quickFeedbackBtn = document.getElementById('quick-feedback');
+  const openShortcutsSettingsBtn = document.getElementById('open-shortcuts-settings');
   
   // 获取截图参数
   let selectedRatio = ratioSelect.value;
@@ -92,6 +96,15 @@ document.addEventListener('DOMContentLoaded', function() {
     quickFeedbackBtn.addEventListener('click', function() {
       // 打开反馈页面
       chrome.tabs.create({ url: 'https://tally.so/r/mZe4go' });
+    });
+  }
+  
+  // 快捷键设置链接点击事件
+  if (openShortcutsSettingsBtn) {
+    openShortcutsSettingsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      // 打开设置页面
+      chrome.runtime.openOptionsPage();
     });
   }
   
@@ -181,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 加载设置
   function loadSettings() {
-    chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality', 'isInspectMode'], function(data) {
+    chrome.storage.sync.get(['lastUsedRatio', 'saveFormat', 'imageQuality', 'isInspectMode', 'custom_shortcuts'], function(data) {
       // 设置模式
       if (data.isInspectMode) {
         inspectModeBtn.click();
@@ -206,6 +219,33 @@ document.addEventListener('DOMContentLoaded', function() {
       if (data.imageQuality) {
         // 这里不需要设置 imageQuality，因为我们在截图选项中直接使用固定值
       }
+      
+      // 更新快捷键显示
+      if (data.custom_shortcuts) {
+        // 更新开始截图快捷键
+        if (data.custom_shortcuts.screenshot_start) {
+          const startShortcutKey = document.querySelector('[data-command="screenshot_start"]');
+          if (startShortcutKey) {
+            startShortcutKey.textContent = data.custom_shortcuts.screenshot_start;
+          }
+        }
+        
+        // 更新确认截图快捷键
+        if (data.custom_shortcuts.screenshot_confirm) {
+          const confirmShortcutKey = document.querySelector('.shortcut-item:nth-child(2) .shortcut-key');
+          if (confirmShortcutKey) {
+            confirmShortcutKey.textContent = data.custom_shortcuts.screenshot_confirm;
+          }
+        }
+        
+        // 更新取消截图快捷键
+        if (data.custom_shortcuts.screenshot_cancel) {
+          const cancelShortcutKey = document.querySelector('.shortcut-item:nth-child(3) .shortcut-key');
+          if (cancelShortcutKey) {
+            cancelShortcutKey.textContent = data.custom_shortcuts.screenshot_cancel;
+          }
+        }
+      }
     });
   }
   
@@ -218,7 +258,4 @@ document.addEventListener('DOMContentLoaded', function() {
       isInspectMode: options.isInspectMode
     });
   }
-
-  // 初始化时更新所有文本
-  updateI18nTexts();
 }); 

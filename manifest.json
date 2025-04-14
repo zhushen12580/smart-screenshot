@@ -1,9 +1,10 @@
 {
   "manifest_version": 3,
   "name": "__MSG_appName__",
-  "version": "2.8",
+  "version": "2.9",
   "description": "__MSG_appDescription__",
   "default_locale": "zh_CN",
+  "options_page": "options/options.html",
   "permissions": [
     "activeTab",
     "downloads",

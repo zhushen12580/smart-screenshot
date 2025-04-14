@@ -96,7 +96,36 @@ const i18n = {
           "free": "自由比例"
         }
       }
-    }
+    },
+    // 选项页面翻译
+    options: {
+      title: "精准截图设置",
+      shortcuts_section: "快捷键设置",
+      shortcuts_desc: "配置常用操作的快捷键，使用更加便捷",
+      shortcut_start: "开始截图:",
+      shortcut_confirm: "确认截图:",
+      shortcut_cancel: "取消截图:",
+      click_to_set: "点击设置快捷键",
+      default_prefix: "默认:",
+      clear: "清除",
+      save_shortcuts: "保存快捷键",
+      reset_defaults: "恢复默认",
+      shortcut_note: "注意: 这里设置的是扩展内部使用的快捷键。",
+      chrome_shortcut_note: "Chrome浏览器也提供了快捷键配置，可以在 扩展管理页面 中设置。",
+      extension_page: "扩展管理页面",
+      api_section: "API设置",
+      glm4v_api: "智谱GLM-4V API密钥:",
+      deepseek_api: "DeepSeek API密钥:",
+      input_api_key: "输入API密钥",
+      save_api_settings: "保存API设置", 
+      about_section: "关于",
+      version_prefix: "精准截图 版本",
+      rights_reserved: "保留所有权利。",
+      feedback: "问题反馈",
+      privacy_policy: "隐私政策"
+    },
+    // popup设置链接文本
+    settings_link: "设置"
   },
   en: {
     title: "Precision Screenshot",
@@ -194,7 +223,36 @@ const i18n = {
           "free": "Free Ratio"
         }
       }
-    }
+    },
+    // 选项页面翻译
+    options: {
+      title: "Precision Screenshot Settings",
+      shortcuts_section: "Shortcut Settings",
+      shortcuts_desc: "Configure shortcuts for common operations for more convenient use",
+      shortcut_start: "Start Screenshot:",
+      shortcut_confirm: "Confirm Screenshot:",
+      shortcut_cancel: "Cancel Screenshot:",
+      click_to_set: "Click to set shortcut",
+      default_prefix: "Default:",
+      clear: "Clear",
+      save_shortcuts: "Save Shortcuts",
+      reset_defaults: "Reset Defaults",
+      shortcut_note: "Note: These shortcuts are used within the extension.",
+      chrome_shortcut_note: "Chrome browser also provides shortcut configuration in the Extensions page.",
+      extension_page: "Extensions page",
+      api_section: "API Settings",
+      glm4v_api: "Zhipu GLM-4V API Key:",
+      deepseek_api: "DeepSeek API Key:",
+      input_api_key: "Enter API key",
+      save_api_settings: "Save API Settings", 
+      about_section: "About",
+      version_prefix: "Precision Screenshot version",
+      rights_reserved: "All rights reserved.",
+      feedback: "Feedback",
+      privacy_policy: "Privacy Policy"
+    },
+    // popup设置链接文本
+    settings_link: "Settings"
   },
   es: {
     title: "Captura de Pantalla Precisa",
@@ -236,7 +294,7 @@ const i18n = {
       features_title: "✨ Características:",
       feature1: "✅ Soporte para múltiples proporciones de pantalla, ideal para redes sociales",
       feature2: "✅ El modo inteligente reconoce automáticamente los bordes de los elementos",
-      feature3: "✅ Reconocimiento de códigos QR y conversación de imágenes con IA",
+      feature3: "✅ Reconocimiento de códigos QR y conversas de imágenes con IA",
       feature4: "✅ Eliminación de fondo con un clic y optimización inteligente de imágenes",
       download: "👉 Descarga ahora: https://puzzledu.com/shot"
     },
@@ -292,7 +350,36 @@ const i18n = {
           "free": "Proporción Libre"
         }
       }
-    }
+    },
+    // 选项页面翻译
+    options: {
+      title: "Configuración de Captura de Pantalla Precisa",
+      shortcuts_section: "Configuración de Atajos",
+      shortcuts_desc: "Configure atajos para operaciones comunes para un uso más conveniente",
+      shortcut_start: "Iniciar Captura:",
+      shortcut_confirm: "Confirmar Captura:",
+      shortcut_cancel: "Cancelar Captura:",
+      click_to_set: "Haga clic para establecer atajo",
+      default_prefix: "Predeterminado:",
+      clear: "Borrar",
+      save_shortcuts: "Guardar Atajos",
+      reset_defaults: "Restablecer Valores",
+      shortcut_note: "Nota: Estos atajos se utilizan dentro de la extensión.",
+      chrome_shortcut_note: "El navegador Chrome también proporciona configuración de atajos en la página de Extensiones.",
+      extension_page: "página de Extensiones",
+      api_section: "Configuración de API",
+      glm4v_api: "Clave API de Zhipu GLM-4V:",
+      deepseek_api: "Clave API de DeepSeek:",
+      input_api_key: "Introducir clave API",
+      save_api_settings: "Guardar Configuración API", 
+      about_section: "Acerca de",
+      version_prefix: "Captura de Pantalla Precisa versión",
+      rights_reserved: "Todos los derechos reservados.",
+      feedback: "Comentarios",
+      privacy_policy: "Política de Privacidad"
+    },
+    // popup设置链接文本
+    settings_link: "Configuración"
   },
   ar: {
     title: "لقطة شاشة دقيقة",
@@ -322,13 +409,13 @@ const i18n = {
     quickActions_shareFailed: "فشل النسخ، يرجى المحاولة مرة أخرى",
     // 分享介绍文本
     shareIntroText: {
-      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
-      features_title: "✨ 特色功能：",
-      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
-      feature2: "✅ 智能模式自动识别界面元素边缘",
-      feature3: "✅ 智能识别二维码、支持与截图智能对话",
-      feature4: "✅ 一键抠图、智能优化图像效果",
-      download: "👉 立即下载体验：https://puzzledu.com/shot"
+      title: "🔍 لقطة شاشة دقيقة | أداة لقطة شاشة ذكية وفعالة",
+      features_title: "✨ الميزات:",
+      feature1: "✅ دعم لنسب شاشة متعددة، مثالية لمشاركة وسائل التواصل الاجتماعي",
+      feature2: "✅ الوضع الذكي يتعرف تلقائيًا على حواف عناصر واجهة المستخدم",
+      feature3: "✅ التعرف على رمز الاستجابة السريعة ومحادثة الصور بالذكاء الاصطناعي",
+      feature4: "✅ إزالة الخلفية بنقرة واحدة وتحسين الصورة الذكي",
+      download: "👉 قم بالتنزيل الآن: https://puzzledu.com/shot"
     },
     // نصوص شريط الأدوات
     toolbar: {
@@ -382,7 +469,36 @@ const i18n = {
           "free": "نسبة حرة"
         }
       }
-    }
+    },
+    // 选项页面翻译
+    options: {
+      title: "إعدادات لقطة شاشة دقيقة",
+      shortcuts_section: "إعدادات الاختصارات",
+      shortcuts_desc: "تكوين اختصارات للعمليات الشائعة لاستخدام أكثر ملاءمة",
+      shortcut_start: "بدء اللقطة:",
+      shortcut_confirm: "تأكيد اللقطة:",
+      shortcut_cancel: "إلغاء اللقطة:",
+      click_to_set: "انقر لتعيين الاختصار",
+      default_prefix: "افتراضي:",
+      clear: "مسح",
+      save_shortcuts: "حفظ الاختصارات",
+      reset_defaults: "إعادة تعيين الافتراضيات",
+      shortcut_note: "ملاحظة: تُستخدم هذه الاختصارات داخل الامتداد.",
+      chrome_shortcut_note: "يوفر متصفح Chrome أيضًا تكوين الاختصارات في صفحة الملحقات.",
+      extension_page: "صفحة الملحقات",
+      api_section: "إعدادات API",
+      glm4v_api: "مفتاح API لـ Zhipu GLM-4V:",
+      deepseek_api: "مفتاح API لـ DeepSeek:",
+      input_api_key: "أدخل مفتاح API",
+      save_api_settings: "حفظ إعدادات API", 
+      about_section: "حول",
+      version_prefix: "لقطة شاشة دقيقة الإصدار",
+      rights_reserved: "جميع الحقوق محفوظة.",
+      feedback: "ردود الفعل",
+      privacy_policy: "سياسة الخصوصية"
+    },
+    // popup设置链接文本
+    settings_link: "الإعدادات"
   },
   de: {
     title: "Präzisions-Screenshot",
@@ -412,13 +528,13 @@ const i18n = {
     quickActions_shareFailed: "Kopieren fehlgeschlagen, bitte erneut versuchen",
     // 分享介绍文本
     shareIntroText: {
-      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
-      features_title: "✨ 特色功能：",
-      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
-      feature2: "✅ 智能模式自动识别界面元素边缘",
-      feature3: "✅ 智能识别二维码、支持与截图智能对话",
-      feature4: "✅ 一键抠图、智能优化图像效果",
-      download: "👉 立即下载体验：https://puzzledu.com/shot"
+      title: "🔍 Präzisions-Screenshot | Effizientes intelligentes Screenshot-Tool",
+      features_title: "✨ Funktionen:",
+      feature1: "✅ Unterstützung für mehrere Bildschirmverhältnisse, ideal für Social-Media-Sharing",
+      feature2: "✅ Der Smart-Modus erkennt automatisch die Kanten von UI-Elementen",
+      feature3: "✅ QR-Code-Erkennung und KI-Bildkonversation",
+      feature4: "✅ Hintergrundentfernung mit einem Klick und intelligente Bildoptimierung",
+      download: "👉 Jetzt herunterladen: https://puzzledu.com/shot"
     },
     // Toolbar-Texte
     toolbar: {
@@ -472,7 +588,36 @@ const i18n = {
           "free": "Freies Seitenverhältnis"
         }
       }
-    }
+    },
+    // 选项页面翻译
+    options: {
+      title: "Precision Screenshot Settings",
+      shortcuts_section: "Shortcut Settings",
+      shortcuts_desc: "Configure shortcuts for common operations for more convenient use",
+      shortcut_start: "Start Screenshot:",
+      shortcut_confirm: "Confirm Screenshot:",
+      shortcut_cancel: "Cancel Screenshot:",
+      click_to_set: "Click to set shortcut",
+      default_prefix: "Default:",
+      clear: "Clear",
+      save_shortcuts: "Save Shortcuts",
+      reset_defaults: "Reset Defaults",
+      shortcut_note: "Note: These shortcuts are used within the extension.",
+      chrome_shortcut_note: "Chrome browser also provides shortcut configuration in the Extensions page.",
+      extension_page: "Extensions page",
+      api_section: "API Settings",
+      glm4v_api: "Zhipu GLM-4V API Key:",
+      deepseek_api: "DeepSeek API Key:",
+      input_api_key: "Enter API key",
+      save_api_settings: "Save API Settings", 
+      about_section: "About",
+      version_prefix: "Precision Screenshot version",
+      rights_reserved: "All rights reserved.",
+      feedback: "Feedback",
+      privacy_policy: "Privacy Policy"
+    },
+    // popup设置链接文本
+    settings_link: "Settings"
   },
   pt: {
     title: "Captura de Tela Precisa",
@@ -547,7 +692,54 @@ const i18n = {
           "free": "Proporção Livre"
         }
       }
-    }
+    },
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "Ter uma conversa inteligente sobre o conteúdo da captura de tela",
+      qrDecode: "Decodificar código QR na captura de tela",
+      lockSize: "Bloquear tamanho atual para captura contínua",
+      magnetic: "Ajuste automático às bordas dos elementos da página quando ativado",
+      move: "Arrastar área de seleção (Espaço + arrastar)"
+    },
+    // 分享介绍文本
+    shareIntroText: {
+      title: "🔍 Captura de Tela Precisa | Ferramenta de Captura Inteligente e Eficiente",
+      features_title: "✨ Características:",
+      feature1: "✅ Suporte para múltiplas proporções de tela, ideal para compartilhamento em redes sociais",
+      feature2: "✅ Modo inteligente reconhece automaticamente as bordas dos elementos da interface",
+      feature3: "✅ Reconhecimento de código QR e conversas de imagem com IA",
+      feature4: "✅ Remoção de fundo com um clique e otimização inteligente de imagem",
+      download: "👉 Baixe agora: https://puzzledu.com/shot"
+    },
+    // 选项页面翻译
+    options: {
+      title: "Precision Screenshot Settings",
+      shortcuts_section: "Shortcut Settings",
+      shortcuts_desc: "Configure shortcuts for common operations for more convenient use",
+      shortcut_start: "Start Screenshot:",
+      shortcut_confirm: "Confirm Screenshot:",
+      shortcut_cancel: "Cancel Screenshot:",
+      click_to_set: "Click to set shortcut",
+      default_prefix: "Default:",
+      clear: "Clear",
+      save_shortcuts: "Save Shortcuts",
+      reset_defaults: "Reset Defaults",
+      shortcut_note: "Note: These shortcuts are used within the extension.",
+      chrome_shortcut_note: "Chrome browser also provides shortcut configuration in the Extensions page.",
+      extension_page: "Extensions page",
+      api_section: "API Settings",
+      glm4v_api: "Zhipu GLM-4V API Key:",
+      deepseek_api: "DeepSeek API Key:",
+      input_api_key: "Enter API key",
+      save_api_settings: "Save API Settings", 
+      about_section: "About",
+      version_prefix: "Precision Screenshot version",
+      rights_reserved: "All rights reserved.",
+      feedback: "Feedback",
+      privacy_policy: "Privacy Policy"
+    },
+    // popup设置链接文本
+    settings_link: "Settings"
   },
   ja: {
     title: "精密スクリーンショット",
@@ -627,97 +819,44 @@ const i18n = {
           "free": "自由比率"
         }
       }
-    }
-  },
-  fr: {
-    title: "Capture d'écran précise",
-    tagline: "Capture précise avec un clic",
-    description: "Reconnaissance intelligente du contenu web, captures d'écran à ratios prédéfinis en un clic",
-    startButton: "Commencer la capture",
-    capturing: "Capture en cours...",
-    normalMode: "Mode normal",
-    inspectMode: "Mode intelligent",
-    ratioLabel: "Sélectionner le ratio",
-    formatLabel: "Format de sauvegarde",
-    shortcuts: "Raccourcis",
-    openPopup: "Ouvrir la fenêtre d'extension",
-    startScreenshot: "Commencer la capture:",
-    confirmScreenshot: "Confirmer la capture:",
-    cancelScreenshot: "Annuler la capture:",
-    copyToClipboard: "Copier:",
-    commonRatios: "Ratios courants",
-    mobileRatios: "Mobile/Portrait",
-    socialMediaRatios: "Médias sociaux",
-    otherRatios: "Autres",
-    footer: "Capture d'écran précise v1.5 - Outil de capture intelligent",
-    // Boutons d'action rapide
-    quickActions_share: "Partager",
-    quickActions_feedback: "Créer de la beauté",
-    quickActions_shareSuccess: "Texte de partage copié dans le presse-papiers !",
-    quickActions_shareFailed: "Échec de la copie, veuillez réessayer",
-    // 分享介绍文本
-    shareIntroText: {
-      title: "🔍 精准截图 | 高效智能的屏幕截图工具",
-      features_title: "✨ 特色功能：",
-      feature1: "✅ 支持多种屏幕比例，适合社交媒体分享",
-      feature2: "✅ 智能模式自动识别界面元素边缘",
-      feature3: "✅ 智能识别二维码、支持与截图智能对话",
-      feature4: "✅ 一键抠图、智能优化图像效果",
-      download: "👉 立即下载体验：https://puzzledu.com/shot"
     },
-    // Textes de la barre d'outils
-    toolbar: {
-      saveArea: "Enregistrer cette zone",
-      copyToClipboard: "Copier",
-      saveAllAreas: "Enregistrer toutes les zones",
-      keepAndContinue: "Garder et continuer",
-      cancel: "Annuler",
-      lockSize: "Verrouiller la taille",
-      lockSizeActive: "✓ Taille verrouillée",
-      magnetic: "Accrochage magnétique",
-      magneticActive: "✓ Accrochage magnétique",
-      freeRatio: "Ratio libre",
-      imageQuality: {
-        original: "Qualité originale",
-        high: "Haute qualité",
-        standard: "Standard",
-        light: "Légère"
-      },
-      fileSizeEstimate: "Environ {size} {unit}"
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "スクリーンショットの内容に対するインテリジェントな会話を続ける",
+      qrDecode: "スクリーンショットのQRコードをデコード",
+      lockSize: "連続キャプチャのために現在のサイズをロック",
+      magnetic: "アクティブ化されるとページ要素の縁に自動的にスナップ",
+      move: "選択領域をドラッグ (スペース + ドラッグ)"
     },
-    ratioGroups: {
-      common: {
-        label: "Ratios courants",
-        options: {
-          "16:9": "16:9 (Vidéo/Écran)",
-          "4:3": "4:3 (Écran traditionnel)",
-          "1:1": "1:1 (Carré/Instagram)"
-        }
-      },
-      mobile: {
-        label: "Mobile/Portrait",
-        options: {
-          "9:16": "9:16 (Mobile portrait/Stories)",
-          "3:4": "3:4 (Instagram/iPad)"
-        }
-      },
-      social: {
-        label: "Médias sociaux",
-        options: {
-          "2:1": "2:1 (Twitter paysage)",
-          "1:2": "1:2 (Pinterest)",
-          "4:5": "4:5 (Instagram portrait)",
-          "3:2": "3:2 (Couverture sociale)"
-        }
-      },
-      other: {
-        label: "Autres",
-        options: {
-          "21:9": "21:9 (Ultra-large)",
-          "free": "Ratio libre"
-        }
-      }
-    }
+    // 选项页面翻译
+    options: {
+      title: "Precision Screenshot Settings",
+      shortcuts_section: "Shortcut Settings",
+      shortcuts_desc: "Configure shortcuts for common operations for more convenient use",
+      shortcut_start: "Start Screenshot:",
+      shortcut_confirm: "Confirm Screenshot:",
+      shortcut_cancel: "Cancel Screenshot:",
+      click_to_set: "Click to set shortcut",
+      default_prefix: "Default:",
+      clear: "Clear",
+      save_shortcuts: "Save Shortcuts",
+      reset_defaults: "Reset Defaults",
+      shortcut_note: "Note: These shortcuts are used within the extension.",
+      chrome_shortcut_note: "Chrome browser also provides shortcut configuration in the Extensions page.",
+      extension_page: "Extensions page",
+      api_section: "API Settings",
+      glm4v_api: "Zhipu GLM-4V API Key:",
+      deepseek_api: "DeepSeek API Key:",
+      input_api_key: "Enter API key",
+      save_api_settings: "Save API Settings", 
+      about_section: "About",
+      version_prefix: "Precision Screenshot version",
+      rights_reserved: "All rights reserved.",
+      feedback: "Feedback",
+      privacy_policy: "Privacy Policy"
+    },
+    // popup设置链接文本
+    settings_link: "Settings"
   },
   ko: {
     title: "정밀 스크린샷",
@@ -797,7 +936,44 @@ const i18n = {
           "free": "자유 비율"
         }
       }
-    }
+    },
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "스크린샷 내용에 대한 지능형 대화 나누기",
+      qrDecode: "스크린샷의 QR 코드 해독",
+      lockSize: "연속 캡처를 위한 현재 크기 잠금",
+      magnetic: "활성화되면 페이지 요소 가장자리에 자동으로 스냅",
+      move: "선택 영역 드래그 (스페이스 + 드래그)"
+    },
+    // 选项页面翻译
+    options: {
+      title: "Precision Screenshot Settings",
+      shortcuts_section: "Shortcut Settings",
+      shortcuts_desc: "Configure shortcuts for common operations for more convenient use",
+      shortcut_start: "Start Screenshot:",
+      shortcut_confirm: "Confirm Screenshot:",
+      shortcut_cancel: "Cancel Screenshot:",
+      click_to_set: "Click to set shortcut",
+      default_prefix: "Default:",
+      clear: "Clear",
+      save_shortcuts: "Save Shortcuts",
+      reset_defaults: "Reset Defaults",
+      shortcut_note: "Note: These shortcuts are used within the extension.",
+      chrome_shortcut_note: "Chrome browser also provides shortcut configuration in the Extensions page.",
+      extension_page: "Extensions page",
+      api_section: "API Settings",
+      glm4v_api: "Zhipu GLM-4V API Key:",
+      deepseek_api: "DeepSeek API Key:",
+      input_api_key: "Enter API key",
+      save_api_settings: "Save API Settings", 
+      about_section: "About",
+      version_prefix: "Precision Screenshot version",
+      rights_reserved: "All rights reserved.",
+      feedback: "Feedback",
+      privacy_policy: "Privacy Policy"
+    },
+    // popup设置链接文本
+    settings_link: "Settings"
   },
   pt_BR: {
     title: "Captura de Tela Precisa",
@@ -877,7 +1053,44 @@ const i18n = {
           "free": "Proporção Livre"
         }
       }
-    }
+    },
+    // 标题提示文本
+    titleTips: {
+      aiDialog: "Ter uma conversa inteligente sobre o conteúdo da captura de tela",
+      qrDecode: "Decodificar código QR na captura de tela",
+      lockSize: "Bloquear tamanho atual para captura contínua",
+      magnetic: "Ajuste automático às bordas dos elementos da página quando ativado",
+      move: "Arrastar área de seleção (Espaço + arrastar)"
+    },
+    // 选项页面翻译
+    options: {
+      title: "Precision Screenshot Settings",
+      shortcuts_section: "Shortcut Settings",
+      shortcuts_desc: "Configure shortcuts for common operations for more convenient use",
+      shortcut_start: "Start Screenshot:",
+      shortcut_confirm: "Confirm Screenshot:",
+      shortcut_cancel: "Cancel Screenshot:",
+      click_to_set: "Click to set shortcut",
+      default_prefix: "Default:",
+      clear: "Clear",
+      save_shortcuts: "Save Shortcuts",
+      reset_defaults: "Reset Defaults",
+      shortcut_note: "Note: These shortcuts are used within the extension.",
+      chrome_shortcut_note: "Chrome browser also provides shortcut configuration in the Extensions page.",
+      extension_page: "Extensions page",
+      api_section: "API Settings",
+      glm4v_api: "Zhipu GLM-4V API Key:",
+      deepseek_api: "DeepSeek API Key:",
+      input_api_key: "Enter API key",
+      save_api_settings: "Save API Settings", 
+      about_section: "About",
+      version_prefix: "Precision Screenshot version",
+      rights_reserved: "All rights reserved.",
+      feedback: "Feedback",
+      privacy_policy: "Privacy Policy"
+    },
+    // popup设置链接文本
+    settings_link: "Settings"
   }
 };
 
@@ -897,15 +1110,51 @@ function getCurrentLanguage() {
 
 // 获取翻译文本
 function getText(key) {
+  if (!key) return '';
+  
   const currentLanguage = getCurrentLanguage();
   
-  // 非嵌套键的处理
-  if (i18n[currentLanguage] && i18n[currentLanguage][key]) {
+  // 处理嵌套键，例如 "options.title"
+  if (key.includes('.')) {
+    const keys = key.split('.');
+    let result = i18n[currentLanguage];
+    
+    // 逐层访问嵌套对象
+    for (const k of keys) {
+      if (result && typeof result[k] !== 'undefined') {
+        result = result[k];
+      } else {
+        // 如果在当前语言中找不到，尝试使用英语
+        result = null;
+        break;
+      }
+    }
+    
+    if (result !== null) {
+      return result;
+    }
+    
+    // 尝试从英文中获取嵌套键
+    result = i18n.en;
+    for (const k of keys) {
+      if (result && typeof result[k] !== 'undefined') {
+        result = result[k];
+      } else {
+        // 如果在英语中也找不到
+        return key; // 返回原始键
+      }
+    }
+    
+    return result;
+  }
+  
+  // 非嵌套键的处理，增加健壮性检查
+  if (i18n[currentLanguage] && typeof i18n[currentLanguage][key] !== 'undefined') {
     return i18n[currentLanguage][key];
   }
   
   // 如果在当前语言中找不到，尝试使用英语
-  if (i18n.en && i18n.en[key]) {
+  if (i18n.en && typeof i18n.en[key] !== 'undefined') {
     return i18n.en[key];
   }
   
@@ -915,65 +1164,127 @@ function getText(key) {
 
 // 获取工具栏文本
 function getToolbarText(key) {
+  if (!key) return '';
+  
   const currentLanguage = getCurrentLanguage();
   
-  if (i18n[currentLanguage] && i18n[currentLanguage].toolbar && i18n[currentLanguage].toolbar[key]) {
+  // 增加健壮性检查
+  if (i18n[currentLanguage] && 
+      i18n[currentLanguage].toolbar && 
+      typeof i18n[currentLanguage].toolbar[key] !== 'undefined') {
     return i18n[currentLanguage].toolbar[key];
   }
   
-  if (i18n.en && i18n.en.toolbar && i18n.en.toolbar[key]) {
+  // 回退到英文
+  if (i18n.en && 
+      i18n.en.toolbar && 
+      typeof i18n.en.toolbar[key] !== 'undefined') {
     return i18n.en.toolbar[key];
   }
   
+  // 都找不到，返回键本身
   return key;
 }
 
 // 获取分享介绍文本
 function getShareIntroText() {
   const currentLanguage = getCurrentLanguage();
-  let text = {};
   
-  // 使用当前语言的分享文本，如果不存在则使用英文
+  // 默认英文文本，确保即使翻译不完整也有回退选项
+  const defaultText = {
+    title: "🔍 Precision Screenshot | Efficient Smart Screenshot Tool",
+    features_title: "✨ Features:",
+    feature1: "✅ Support for multiple screen ratios, ideal for social media sharing",
+    feature2: "✅ Smart mode automatically recognizes UI element edges",
+    feature3: "✅ QR code recognition and AI image conversation",
+    feature4: "✅ One-click background removal and smart image optimization",
+    download: "👉 Download now: https://puzzledu.com/shot"
+  };
+  
+  // 尝试获取当前语言的分享文本
+  let text = defaultText;
+  
   if (i18n[currentLanguage] && i18n[currentLanguage].shareIntroText) {
-    text = i18n[currentLanguage].shareIntroText;
+    // 使用当前语言文本，但为缺失部分使用默认文本
+    text = {
+      title: i18n[currentLanguage].shareIntroText.title || defaultText.title,
+      features_title: i18n[currentLanguage].shareIntroText.features_title || defaultText.features_title,
+      feature1: i18n[currentLanguage].shareIntroText.feature1 || defaultText.feature1,
+      feature2: i18n[currentLanguage].shareIntroText.feature2 || defaultText.feature2,
+      feature3: i18n[currentLanguage].shareIntroText.feature3 || defaultText.feature3,
+      feature4: i18n[currentLanguage].shareIntroText.feature4 || defaultText.feature4,
+      download: i18n[currentLanguage].shareIntroText.download || defaultText.download
+    };
   } else if (i18n.en && i18n.en.shareIntroText) {
-    text = i18n.en.shareIntroText;
+    // 如果当前语言没有分享文本，使用英文
+    text = {
+      title: i18n.en.shareIntroText.title || defaultText.title,
+      features_title: i18n.en.shareIntroText.features_title || defaultText.features_title,
+      feature1: i18n.en.shareIntroText.feature1 || defaultText.feature1,
+      feature2: i18n.en.shareIntroText.feature2 || defaultText.feature2,
+      feature3: i18n.en.shareIntroText.feature3 || defaultText.feature3,
+      feature4: i18n.en.shareIntroText.feature4 || defaultText.feature4,
+      download: i18n.en.shareIntroText.download || defaultText.download
+    };
   }
   
-  // 将对象中的所有文本组合成一个字符串
-  return text.title + "\n\n" + 
-         text.features_title + "\n" + 
-         text.feature1 + "\n" + 
-         text.feature2 + "\n" + 
-         text.feature3 + "\n" + 
-         text.feature4 + "\n\n" + 
-         text.download;
+  // 组合成完整的分享文本
+  return (text.title || "") + "\n\n" + 
+         (text.features_title || "") + "\n" + 
+         (text.feature1 || "") + "\n" + 
+         (text.feature2 || "") + "\n" + 
+         (text.feature3 || "") + "\n" + 
+         (text.feature4 || "") + "\n\n" + 
+         (text.download || "");
 }
 
 // 获取比例组标签
 function getRatioGroupLabel(groupKey) {
   const currentLanguage = getCurrentLanguage();
-  return i18n[currentLanguage].ratioGroups[groupKey].label || i18n['en'].ratioGroups[groupKey].label || groupKey;
+  
+  // 增强健壮性检查，确保所有路径上的对象都存在
+  if (i18n[currentLanguage] && 
+      i18n[currentLanguage].ratioGroups && 
+      i18n[currentLanguage].ratioGroups[groupKey] && 
+      i18n[currentLanguage].ratioGroups[groupKey].label) {
+    return i18n[currentLanguage].ratioGroups[groupKey].label;
+  }
+  
+  // 回退到英文
+  if (i18n.en && 
+      i18n.en.ratioGroups && 
+      i18n.en.ratioGroups[groupKey] && 
+      i18n.en.ratioGroups[groupKey].label) {
+    return i18n.en.ratioGroups[groupKey].label;
+  }
+  
+  // 都找不到，返回原始键
+  return groupKey;
 }
 
 // 获取比例选项文本
 function getRatioOptionText(groupKey, ratioKey) {
   const currentLanguage = getCurrentLanguage();
   
-  if (i18n[currentLanguage] && i18n[currentLanguage].ratioGroups && 
+  // 增强健壮性检查
+  if (i18n[currentLanguage] && 
+      i18n[currentLanguage].ratioGroups && 
       i18n[currentLanguage].ratioGroups[groupKey] && 
       i18n[currentLanguage].ratioGroups[groupKey].options && 
       i18n[currentLanguage].ratioGroups[groupKey].options[ratioKey]) {
     return i18n[currentLanguage].ratioGroups[groupKey].options[ratioKey];
   }
   
-  if (i18n.en && i18n.en.ratioGroups && 
+  // 回退到英文
+  if (i18n.en && 
+      i18n.en.ratioGroups && 
       i18n.en.ratioGroups[groupKey] && 
       i18n.en.ratioGroups[groupKey].options && 
       i18n.en.ratioGroups[groupKey].options[ratioKey]) {
     return i18n.en.ratioGroups[groupKey].options[ratioKey];
   }
   
+  // 都找不到，返回原始键
   return ratioKey;
 }
 
@@ -981,23 +1292,40 @@ function getRatioOptionText(groupKey, ratioKey) {
 function getTitleTip(key) {
   const currentLanguage = getCurrentLanguage();
   
-  if (i18n[currentLanguage] && i18n[currentLanguage].titleTips && i18n[currentLanguage].titleTips[key]) {
+  // 增强健壮性检查
+  if (i18n[currentLanguage] && 
+      i18n[currentLanguage].titleTips && 
+      i18n[currentLanguage].titleTips[key]) {
     return i18n[currentLanguage].titleTips[key];
   }
   
-  if (i18n.en && i18n.en.titleTips && i18n.en.titleTips[key]) {
+  // 回退到英文
+  if (i18n.en && 
+      i18n.en.titleTips && 
+      i18n.en.titleTips[key]) {
     return i18n.en.titleTips[key];
   }
   
+  // 都找不到，返回原始键
   return key;
 }
 
 // 格式化文件大小估计
 function formatFileSizeEstimate(size, unit) {
   const currentLanguage = getCurrentLanguage();
-  const template = i18n[currentLanguage]?.toolbar?.fileSizeEstimate || 
-                  i18n.en.toolbar.fileSizeEstimate || 
-                  "About {size} {unit}";
+  
+  // 增强健壮性检查
+  let template = "About {size} {unit}"; // 默认模板
+  
+  if (i18n[currentLanguage] && 
+      i18n[currentLanguage].toolbar && 
+      i18n[currentLanguage].toolbar.fileSizeEstimate) {
+    template = i18n[currentLanguage].toolbar.fileSizeEstimate;
+  } else if (i18n.en && 
+             i18n.en.toolbar && 
+             i18n.en.toolbar.fileSizeEstimate) {
+    template = i18n.en.toolbar.fileSizeEstimate;
+  }
   
   return template.replace("{size}", size).replace("{unit}", unit);
 }
@@ -1008,6 +1336,12 @@ function updateI18nTexts() {
   document.querySelectorAll('[data-i18n]').forEach(element => {
     const key = element.getAttribute('data-i18n');
     element.textContent = getText(key);
+  });
+
+  // 更新placeholder属性
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    const key = element.getAttribute('data-i18n-placeholder');
+    element.placeholder = getText(key);
   });
 
   // 更新比例选择器的组标签和选项

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="__MSG_@@ui_locale__">
+<head>
+  <meta charset="UTF-8">
+  <title data-i18n="options.title">精准截图设置</title>
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <h1 class="title" data-i18n="options.title">
+      精准截图设置
+      <div class="title-decoration">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </h1>
+    
+    <div class="section">
+      <h2 class="section-title"><i class="fas fa-keyboard"></i> <span data-i18n="options.shortcuts_section">快捷键设置</span></h2>
+      <p class="section-desc" data-i18n="options.shortcuts_desc">配置常用操作的快捷键，使用更加便捷</p>
+      
+      <div class="form-group">
+        <label for="shortcut-start" data-i18n="options.shortcut_start">开始截图:</label>
+        <div class="shortcut-input-container">
+          <input type="text" id="shortcut-start" class="shortcut-input" readonly placeholder="点击设置快捷键" data-i18n-placeholder="options.click_to_set">
+          <button class="clear-btn" data-target="shortcut-start" data-i18n="options.clear">清除</button>
+        </div>
+        <div class="shortcut-default"><span data-i18n="options.default_prefix">默认:</span> Ctrl+Shift+S</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="shortcut-confirm" data-i18n="options.shortcut_confirm">确认截图:</label>
+        <div class="shortcut-input-container">
+          <input type="text" id="shortcut-confirm" class="shortcut-input" readonly placeholder="点击设置快捷键" data-i18n-placeholder="options.click_to_set">
+          <button class="clear-btn" data-target="shortcut-confirm" data-i18n="options.clear">清除</button>
+        </div>
+        <div class="shortcut-default"><span data-i18n="options.default_prefix">默认:</span> Enter</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="shortcut-cancel" data-i18n="options.shortcut_cancel">取消截图:</label>
+        <div class="shortcut-input-container">
+          <input type="text" id="shortcut-cancel" class="shortcut-input" readonly placeholder="点击设置快捷键" data-i18n-placeholder="options.click_to_set">
+          <button class="clear-btn" data-target="shortcut-cancel" data-i18n="options.clear">清除</button>
+        </div>
+        <div class="shortcut-default"><span data-i18n="options.default_prefix">默认:</span> Escape</div>
+      </div>
+      
+      <div class="form-actions">
+        <button id="save-shortcuts" class="btn primary"><i class="fas fa-save"></i> <span data-i18n="options.save_shortcuts">保存快捷键</span></button>
+        <button id="reset-shortcuts" class="btn"><i class="fas fa-undo"></i> <span data-i18n="options.reset_defaults">恢复默认</span></button>
+      </div>
+      
+      <div class="info-box">
+        <p data-i18n="options.shortcut_note">注意: 这里设置的是扩展内部使用的快捷键。</p>
+        <p><span data-i18n="options.chrome_shortcut_note">Chrome浏览器也提供了快捷键配置，可以在</span> <a href="#" id="open-chrome-shortcuts" data-i18n="options.extension_page">扩展管理页面</a> <span data-i18n="options.chrome_shortcut_note_2">中设置。</span></p>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2 class="section-title"><i class="fas fa-key"></i> <span data-i18n="options.api_section">API设置</span></h2>
+      <div class="form-group">
+        <label for="glm4v-api-key" data-i18n="options.glm4v_api">智谱GLM-4V API密钥:</label>
+        <input type="password" id="glm4v-api-key" class="text-input" placeholder="输入API密钥" data-i18n-placeholder="options.input_api_key">
+      </div>
+      
+      <div class="form-group">
+        <label for="deepseek-api-key" data-i18n="options.deepseek_api">DeepSeek API密钥:</label>
+        <input type="password" id="deepseek-api-key" class="text-input" placeholder="输入API密钥" data-i18n-placeholder="options.input_api_key">
+      </div>
+      
+      <div class="form-actions">
+        <button id="save-api-keys" class="btn primary"><i class="fas fa-save"></i> <span data-i18n="options.save_api_settings">保存API设置</span></button>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2 class="section-title"><i class="fas fa-info-circle"></i> <span data-i18n="options.about_section">关于</span></h2>
+      <p><span data-i18n="options.version_prefix">精准截图 版本</span> <span id="version">2.9</span></p>
+      <p>© 2025 <a href="https://puzzledu.com" target="_blank">puzzleDu</a>. <span data-i18n="options.rights_reserved">保留所有权利。</span></p>
+      <div class="links">
+        <a href="https://tally.so/r/mZe4go" target="_blank"><i class="fas fa-comment-dots"></i> <span data-i18n="options.feedback">问题反馈</span></a>
+        <span class="divider">|</span>
+        <a href="https://puzzledu.com/privacy" target="_blank"><i class="fas fa-shield-alt"></i> <span data-i18n="options.privacy_policy">隐私政策</span></a>
+      </div>
+    </div>
+  </div>
+  <script src="../utils/i18n.js" type="module"></script>
+  <script src="options.js" type="module"></script>
+</body>
+</html> 
