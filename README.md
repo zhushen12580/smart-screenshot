@@ -263,3 +263,7 @@ graph TD
 3. 确保 `config.local.js` 已添加到 `.gitignore` 中（默认已添加）
 
 注意：不要将你的API密钥提交到GitHub仓库中。如果你不小心提交了API密钥，请立即更改它。
+
+## Star History
+觉得好用，点个星吧⭐⭐⭐
+[![Star History Chart](https://api.star-history.com/svg?repos=zhushen12580/short&type=Date)](https://www.star-history.com/#zhushen12580/short&Date)
