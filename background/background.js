@@ -24,6 +24,14 @@ function loadCustomShortcuts() {
     if (data.custom_shortcuts) {
       customShortcuts = data.custom_shortcuts;
       console.log("已加载自定义快捷键:", customShortcuts);
+      
+      // 确保自定义快捷键不为空字符串
+      Object.keys(customShortcuts).forEach(key => {
+        if (!customShortcuts[key]) {
+          // 如果某个快捷键被清除，使用默认值
+          customShortcuts[key] = DEFAULT_SETTINGS.key;
+        }
+      });
     }
   });
 }
@@ -69,7 +77,10 @@ chrome.runtime.onInstalled.addListener(() => {
 // 注入键盘监听函数
 function injectKeyboardListener() {
   // 防止重复注入
-  if (window._ratioScreenshotKeyboardListenerInjected) return;
+  if (window._ratioScreenshotKeyboardListenerInjected) {
+    console.log('键盘监听器已经注入，跳过');
+    return;
+  }
   window._ratioScreenshotKeyboardListenerInjected = true;
   
   // 添加键盘事件监听
@@ -110,10 +121,20 @@ function injectKeyboardListener() {
     
     console.log("检测到按键组合:", shortcut);
     
+    // 将事件对象转换为可序列化结构
+    const eventData = {
+      keyCode: e.keyCode,
+      ctrlKey: e.ctrlKey,
+      shiftKey: e.shiftKey,
+      altKey: e.altKey,
+      key: e.key
+    };
+    
     // 发送消息到后台脚本
     chrome.runtime.sendMessage({
       action: 'keyboardShortcut',
-      shortcut: shortcut
+      shortcut: shortcut,
+      eventData: eventData
     });
   });
   
@@ -241,6 +262,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
       });
       return true;
+    } else {
+      // 记录未匹配的快捷键
+      console.log("快捷键未匹配任何配置:", shortcut);
     }
   }
   
@@ -308,8 +332,17 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // 处理更新快捷键配置请求
   else if (message.action === 'updateShortcuts') {
     if (message.shortcuts) {
+      // 更新内存中的快捷键
       customShortcuts = message.shortcuts;
       console.log("已更新自定义快捷键:", customShortcuts);
+      
+      // 同时保存到存储中，确保持久化
+      chrome.storage.sync.set({ 
+        custom_shortcuts: customShortcuts 
+      }, function() {
+        console.log("快捷键已保存到存储中");
+      });
+      
       sendResponse({ success: true });
     } else {
       sendResponse({ success: false, error: "没有提供快捷键数据" });
@@ -318,33 +351,50 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   
   // 处理重新加载键盘监听器请求
   else if (message.action === 'reloadKeyboardListeners') {
+    console.log("开始重新加载所有标签页的键盘监听器");
+    
     // 重新为所有标签页注入键盘监听器
     chrome.tabs.query({}, function(tabs) {
+      // 跟踪成功注入的标签页数量
+      let successCount = 0;
+      let totalAttempts = 0;
+      
       tabs.forEach(tab => {
         if (tab.url && 
             !tab.url.startsWith('chrome://') && 
             !tab.url.startsWith('edge://') && 
             !tab.url.startsWith('about:')) {
           
+          totalAttempts++;
+          
           // 先移除旧的监听器
           chrome.scripting.executeScript({
             target: { tabId: tab.id },
             function: () => {
               window._ratioScreenshotKeyboardListenerInjected = false;
+              console.log("键盘监听器标记已重置");
+            }
+          }).then(() => {
+            // 再注入新的监听器
+            return chrome.scripting.executeScript({
+              target: { tabId: tab.id },
+              function: injectKeyboardListener
+            });
+          }).then(() => {
+            successCount++;
+            console.log(`成功重新注入键盘监听器到标签页 ${tab.id} (${tab.url})`);
+            if (successCount === totalAttempts) {
+              console.log(`所有 ${successCount} 个标签页已重新注入键盘监听器`);
             }
           }).catch(error => {
-            console.log('重置键盘监听器状态失败:', error);
-          });
-          
-          // 再注入新的监听器
-          chrome.scripting.executeScript({
-            target: { tabId: tab.id },
-            function: injectKeyboardListener
-          }).catch(error => {
-            console.log('重新注入键盘监听器失败:', error);
+            console.log(`重新注入键盘监听器到标签页 ${tab.id} 失败:`, error);
           });
         }
       });
+      
+      if (totalAttempts === 0) {
+        console.log("没有找到适合注入的标签页");
+      }
     });
     
     sendResponse({ success: true });

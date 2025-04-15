@@ -271,22 +271,42 @@ function clearShortcut(inputId) {
 
 // 保存快捷键设置
 function saveShortcuts() {
+  console.log("开始保存快捷键设置:", currentShortcuts);
+  
+  // 先将快捷键数据保存到存储
   chrome.storage.sync.set({ 
     custom_shortcuts: currentShortcuts 
   }, function() {
-    showSaveSuccess('快捷键设置已保存');
-    
-    // 通知后台脚本更新快捷键配置
-    chrome.runtime.sendMessage({
-      action: 'updateShortcuts',
-      shortcuts: currentShortcuts
-    }, function(response) {
-      console.log('快捷键更新响应:', response);
+    // 检查存储中是否确实保存了快捷键数据
+    chrome.storage.sync.get('custom_shortcuts', (data) => {
+      console.log("验证保存的快捷键:", data.custom_shortcuts);
       
-      // 强制重新注入键盘监听器到所有标签页
-      chrome.runtime.sendMessage({
-        action: 'reloadKeyboardListeners'
-      });
+      if (data.custom_shortcuts) {
+        showSaveSuccess('快捷键设置已保存');
+        
+        // 通知后台脚本更新快捷键配置
+        chrome.runtime.sendMessage({
+          action: 'updateShortcuts',
+          shortcuts: currentShortcuts
+        }, function(response) {
+          console.log('快捷键更新响应:', response);
+          
+          if (response && response.success) {
+            // 强制重新注入键盘监听器到所有标签页
+            chrome.runtime.sendMessage({
+              action: 'reloadKeyboardListeners'
+            }, function(reloadResponse) {
+              console.log('重新加载键盘监听器响应:', reloadResponse);
+            });
+          } else {
+            console.error("更新快捷键失败:", response ? response.error : "未知错误");
+            showSaveSuccess('快捷键设置失败，请刷新页面重试');
+          }
+        });
+      } else {
+        console.error("保存快捷键后无法验证数据");
+        showSaveSuccess('快捷键设置可能未正确保存');
+      }
     });
   });
 }

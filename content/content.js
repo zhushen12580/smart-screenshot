@@ -2361,6 +2361,34 @@ if (window._ratioScreenshotLoaded) {
     
     // 处理键盘事件
     handleKeyDown(e) {
+      // 如果快捷键有修饰键（Ctrl/Shift/Alt），可能是全局自定义快捷键，不阻止事件传播
+      const isModifierKey = e.ctrlKey || e.shiftKey || e.altKey;
+      
+      // 构建当前按下的快捷键字符串，用于与自定义快捷键比较
+      let currentShortcut = '';
+      if (e.ctrlKey) currentShortcut += 'Ctrl+';
+      if (e.shiftKey) currentShortcut += 'Shift+';
+      if (e.altKey) currentShortcut += 'Alt+';
+      
+      // 获取主键名称
+      let mainKey = '';
+      if (e.key === 'Escape') mainKey = 'Escape';
+      else if (e.key === 'Enter') mainKey = 'Enter';
+      else if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || 
+               e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        mainKey = e.key;
+      } else if (e.key.length === 1) {
+        // 单个字符键（字母、数字、符号等）
+        mainKey = e.key.toUpperCase();
+      } else {
+        mainKey = e.key;
+      }
+      
+      currentShortcut += mainKey;
+      
+      // 这里如果能访问到后台脚本中的自定义快捷键设置，可以判断当前按键是否是自定义快捷键
+      // 但由于content script的独立性，我们无法直接访问，所以使用另一种方法
+      
       // 如果在智能检查模式下
       if (this.isInspecting) {
         // ESC键取消智能检查
@@ -2368,6 +2396,8 @@ if (window._ratioScreenshotLoaded) {
           console.log("通过Esc键取消智能检查");
           this.disableInspection();
           this.end();
+          e.preventDefault(); // 阻止事件传播
+          e.stopPropagation();
           return;
         }
         
@@ -2380,24 +2410,33 @@ if (window._ratioScreenshotLoaded) {
             preventDefault: () => {}, 
             stopPropagation: () => {} 
           });
+          e.preventDefault(); // 阻止事件传播
+          e.stopPropagation();
           return;
         }
         
-        return; // 智能检查模式下，其他键不处理
+        // 智能检查模式下，不阻止其他按键传播，允许全局快捷键生效
+        return; 
       }
       
-      // 如果没有选择框，不处理键盘事件
+      // 如果没有选择框，不处理键盘事件，允许全局快捷键生效
       if (!this.selection) return;
       
       // ESC键取消
       if (e.key === 'Escape') {
+        console.log("通过Esc键取消截图");
         this.end();
+        e.preventDefault(); // 阻止事件传播
+        e.stopPropagation();
         return;
       }
       
       // Enter键确认
       if (e.key === 'Enter') {
+        console.log("通过Enter键确认截图");
         this.captureAndSave();
+        e.preventDefault(); // 阻止事件传播
+        e.stopPropagation();
         return;
       }
       
@@ -2405,6 +2444,7 @@ if (window._ratioScreenshotLoaded) {
       if (e.key === 'c' && (e.ctrlKey || e.metaKey)) {
         console.log("通过Ctrl+C快捷键复制到剪贴板");
         e.preventDefault(); // 阻止默认的复制行为
+        e.stopPropagation();
         this.copyToClipboard();
         return;
       }
@@ -2439,6 +2479,7 @@ if (window._ratioScreenshotLoaded) {
       // 如果移动了选择框，更新显示
       if (didMove) {
         e.preventDefault(); // 防止页面滚动
+        e.stopPropagation();
         this.updateSelectionSize(this.startX, this.startY, this.endX, this.endY);
       }
     }
