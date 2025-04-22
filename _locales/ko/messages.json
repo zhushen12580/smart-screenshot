@@ -16,5 +16,8 @@
   },
   "cancelScreenshot": {
     "message": "스크린샷 취소"
+  },
+  "copyToClipboard": {
+    "message": "스크린샷 복사"
   }
 } 

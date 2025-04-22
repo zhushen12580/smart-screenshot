@@ -36,7 +36,19 @@
       margin: -16px -16px 20px;
       background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
       overflow: hidden;
-      border-bottom: 2px solid var(--black);
+    }
+    
+    .header-logo {
+      position: absolute;
+      top: 9px;
+      right: 0px;
+      padding: 8px;
+      /* background-color: var(--white);
+      border: 2px solid var(--black);
+      border-radius: 8px;
+      box-shadow: 4px 4px 0 var(--black); */
+      transform: rotate(0deg) scale(1.05);
+      transition: all 0.3s ease;
     }
     
     .title-container::before {
@@ -49,11 +61,13 @@
       right: -50px;
       border-radius: 50%;
       animation: pulse 8s infinite ease-in-out;
+      opacity: 0.7;
+      transform: scale(1.1);
     }
     
     @keyframes pulse {
-      0%, 100% { opacity: 0.5; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.1); }
+      0%, 100% { opacity: 0.7; transform: scale(1.1); }
+      50% { opacity: 0.8; transform: scale(1.15); }
     }
     
     .title-container::after {
@@ -132,33 +146,6 @@
       75% { transform: translateY(-3px) translateX(-2px); }
     }
     
-    .logo-icon {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      width: 40px;
-      height: 40px;
-      background-color: var(--white);
-      border: 2px solid var(--black);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 3px 3px 0 var(--black);
-      transform: rotate(7deg);
-      transition: all 0.3s ease;
-    }
-    
-    .title-link:hover .logo-icon {
-      transform: rotate(0deg) scale(1.05);
-      box-shadow: 4px 4px 0 var(--black);
-    }
-    
-    .logo-icon img {
-      width: 24px;
-      height: 24px;
-    }
-    
     h1 {
       text-align: left;
       margin: 0;
@@ -169,12 +156,8 @@
       position: relative;
       z-index: 2;
       letter-spacing: -0.5px;
-      transform: rotate(-1deg);
-      transition: transform 0.3s ease;
-    }
-    
-    .title-link:hover h1 {
       transform: rotate(0deg) translateX(2px);
+      transition: transform 0.3s ease;
     }
     
     .title-tagline {
@@ -478,9 +461,7 @@
 <body>
   <a href="https://puzzledu.com/" class="title-link" id="title-link">
     <div class="title-container">
-      <div class="logo-icon">
-        <img src="../assets/icons/icon16.svg" alt="" data-i18n="title">
-      </div>
+      <img src="../assets/icons/icon16.svg" class="header-logo" style="width: 90px; height: 70px;" alt="" data-i18n="title">
       <h1 data-i18n="title">精准截图</h1>
       <div class="title-tagline" data-i18n="tagline">一键智能精准截图</div>
       <div class="title-decoration">
@@ -573,7 +554,7 @@
         <span class="shortcut-key">Esc</span>
       </div>
       <div class="shortcut-item">
-        <span class="shortcut-name" data-i18n="copyToClipboard"><i class="fas fa-copy fa-sm"></i> 复制:</span>
+        <span class="shortcut-name" data-i18n="copyToClipboard"><i class="fas fa-copy fa-sm"></i> 复制截图:</span>
         <span class="shortcut-key">Ctrl+C</span>
       </div>
     </div>

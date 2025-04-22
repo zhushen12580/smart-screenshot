@@ -16,5 +16,8 @@
   },
   "cancelScreenshot": {
     "message": "Cancelar Captura"
+  },
+  "copyToClipboard": {
+    "message": "Copiar captura"
   }
 } 
