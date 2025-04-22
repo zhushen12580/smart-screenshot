@@ -334,74 +334,89 @@
     }
     
     .shortcut-info {
-      margin-top: 15px;
+      margin-top: 12px;
       background-color: rgba(255, 255, 255, 0.75);
       padding: 12px;
       border: 2px solid var(--black);
       border-radius: 6px;
       box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
     }
     
     .shortcut-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .shortcut-header span {
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13px;
+      color: var(--black);
     }
     
     .shortcut-header a {
       color: var(--primary-color);
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12px;
+      opacity: 0.8;
     }
     
     .shortcut-header a:hover {
-      text-decoration: underline;
+      opacity: 1;
     }
     
     .shortcuts-list {
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
     
     .shortcut-item {
       display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      align-items: center;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+    
+    .shortcut-name {
+      color: var(--black);
+      opacity: 0.8;
     }
     
     .shortcut-key {
       font-family: monospace;
       background-color: var(--gray-100);
-      padding: 2px 6px;
-      border-radius: 4px;
-      border: 1px solid var(--gray-300);
-      font-size: 12px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      border: 1px solid var(--gray-200);
+      font-size: 11px;
+      text-align: center;
     }
     
     .mode-switch {
       display: flex;
       margin-bottom: 15px;
       gap: 10px;
+      background-color: rgba(244, 244, 245, 0.92);
+      padding: 4px;
+      border: 2px solid var(--black);
+      border-radius: 6px;
+      box-shadow: 2px 2px 0 var(--black);
     }
     
     .mode-switch button {
       flex: 1;
       padding: 8px 10px;
-      background-color: rgba(244, 244, 245, 0.92);
+      background-color: transparent;
       color: var(--black);
-      border: 2px solid var(--black);
-      border-radius: 6px;
+      border: none;
+      border-radius: 4px;
       cursor: pointer;
       font-weight: 600;
       font-size: 13px;
-      box-shadow: 2px 2px 0 var(--black);
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
@@ -409,85 +424,46 @@
       gap: 5px;
     }
     
-    .mode-switch button i {
-      font-size: 14px;
-    }
-    
-    .mode-switch button#normal-mode::before {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='currentColor' d='M2 2v12h12V2H2zm10 10H4V4h8v8z'/%3E%3C/svg%3E");
-    }
-    
-    .mode-switch button#inspect-mode::before {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='currentColor' d='M8 1C4.1 1 1 4.1 1 8s3.1 7 7 7 7-3.1 7-7-3.1-7-7-7zm0 12c-2.8 0-5-2.2-5-5s2.2-5 5-5 5 2.2 5 5-2.2 5-5 5zm1-7.5c0-.8-.7-1.5-1.5-1.5S6 4.7 6 5.5 6.7 7 7.5 7 9 6.3 9 5.5zM8 9c-1.9 0-3.5 1.1-4 2.5 1 1.5 2.4 2.5 4 2.5s3-1 4-2.5c-.5-1.4-2.1-2.5-4-2.5z'/%3E%3C/svg%3E");
-    }
-    
     .mode-switch button.active {
       background-color: rgba(124, 58, 237, 0.92);
       color: var(--white);
-      box-shadow: 2px 2px 0 var(--black);
-    }
-    
-    .mode-switch button:hover:not(.active) {
-      transform: translate(-1px, -1px);
-      box-shadow: 3px 3px 0 var(--black);
-      background-color: rgba(250, 250, 252, 1);
-    }
-    
-    .mode-switch button:active:not(.active) {
-      transform: translate(1px, 1px);
       box-shadow: 1px 1px 0 var(--black);
     }
     
-    .shortcut-note {
-      font-size: 12px;
-      margin-top: 5px;
-      color: var(--primary-dark);
-      font-style: italic;
-      text-align: center;
+    .mode-switch button:hover:not(.active) {
+      background-color: rgba(250, 250, 252, 0.5);
     }
     
     /* 快速操作按钮样式 */
     .quick-actions {
       display: flex;
-      gap: 12px;
-      margin-top: 12px;
-      margin-bottom: 12px;
+      gap: 8px;
+      margin: 12px 0;
     }
     
     .action-button {
       flex: 1;
-      padding: 10px 12px;
-      background-color: rgba(255, 255, 255, 0.8);
-      color: var(--black);
-      border: 2px solid var(--black);
-      border-radius: 6px;
+      padding: 8px;
+      background-color: transparent;
+      color: var(--primary-dark);
+      border: none;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-      box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+      font-weight: 500;
+      font-size: 13px;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      gap: 6px;
+      border-radius: 4px;
     }
     
     .action-button:hover {
-      transform: translate(-1px, -1px);
-      box-shadow: 4px 4px 0 var(--black);
-      background-color: rgba(250, 250, 252, 1);
-    }
-    
-    .action-button:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0 var(--black);
+      background-color: rgba(237, 233, 254, 0.5);
     }
     
     .action-button i {
-      font-size: 16px;
-      color: var(--primary-dark);
+      font-size: 14px;
     }
     
     #quick-share {
