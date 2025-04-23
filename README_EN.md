@@ -1,11 +1,11 @@
 ![image](https://github.com/user-attachments/assets/d4c89b42-fa87-459d-b2fe-2dd1c2092688)
 
-# Ratio Screenshot - A Smart Screenshot Tool for Content Creators
+# Ratio Screenshot - The First Smart Screenshot Tool in the AI Era
 
-English | [简体中文](readme.md)
+English | [简体中文](README.md)
 
 ## Project Overview
-"Ratio Screenshot" is a Chrome browser extension designed to solve the problem of frequently adjusting screenshot area ratios on web pages. This extension allows users to preset screenshot ratios and then perform continuous screenshot operations, automatically maintaining the selected ratio for each screenshot, greatly improving efficiency.
+"Ratio Screenshot" is a Chrome browser extension designed to solve the problem of frequently adjusting screenshot area ratios on web pages. This extension allows users to preset screenshot ratios and then perform continuous screenshot operations, automatically maintaining the selected ratio for each screenshot, greatly improving efficiency. The extension features a beautiful interface and simple operation, suitable for all types of users.
 ![QR Code Scanning Demo](https://github.com/user-attachments/assets/c01f4e75-8e0b-481f-ab46-b5d9e8402f85)
 
 ![Smart Screenshot Demo (2)](https://github.com/user-attachments/assets/5b89ade7-fe85-443f-9d62-470a0c7c0e96)
@@ -30,7 +30,7 @@ English | [简体中文](readme.md)
 
 2. **Choose Screenshot Mode**
    - Normal mode: Select preset ratios (1:1, 16:9, etc.)
-   - Smart detection mode: Automatically recognize web element boundaries
+   - Smart mode: Automatically recognize web element boundaries
 
 3. **Screenshot Operations**
    - Click and drag to select area
@@ -45,11 +45,14 @@ English | [简体中文](readme.md)
 - **QR Code Scanning**: Recognize and copy QR code content
 - **AI Conversation**: Engage in intelligent conversation with screenshot content
 - **Background Removal**: Instantly remove image background
+- **Quick Share**: Share screenshots to social media instantly
+- **Quick Feedback**: Provide feedback on product usage
 
 ### 4. Shortcut Keys
 - `Ctrl+Shift+S`: Start screenshot
 - `Enter`: Confirm screenshot
 - `Esc`: Cancel screenshot
+- `Ctrl+C`: Copy screenshot to clipboard
 
 ## Target Users
 - Designers: Need materials with specific ratios
@@ -59,7 +62,11 @@ English | [简体中文](readme.md)
 
 ## Core Features
 ### 1. Ratio Settings
-- ✅ Preset common ratios (1:1, 4:3, 16:9, 3:4, 9:16, etc.)
+- ✅ Preset common ratios, organized by groups:
+  - Common ratios: 16:9 (Video/Screen), 4:3 (Traditional Screen), 1:1 (Square/Instagram)
+  - Mobile devices: 9:16 (Mobile Portrait/Story), 3:4 (Xiaohongshu/iPad)
+  - Social media: 2:1 (Xiaohongshu/Twitter Landscape), 1:2 (Pinterest), 4:5 (Instagram Portrait), 3:2 (SNS Cover)
+  - Others: 21:9 (Ultrawide), Free ratio
 - ✅ Support for custom ratio input
 - ✅ Remember user's recently used ratio settings
 - ✅ Support free ratio mode
@@ -119,16 +126,18 @@ English | [简体中文](readme.md)
 - ✅ Preserve clear edges of foreground objects
 
 ### 9. User Interface
-- ✅ Clean and intuitive operation interface
+- ✅ Clean and intuitive interface design with gradient title area and elegant shadow effects
 - ✅ Semi-transparent mask and highlighted selection box during screenshot
 - ✅ Display current ratio and size information
 - ✅ Provide clear operation prompts
 - ✅ Support multilingual interface
+- ✅ Quick share and feedback buttons for easy user interaction
 
 ### 10. Shortcut Key Support
 - ✅ Plugin launch shortcut: Ctrl+Shift+S
 - ✅ Screenshot operation shortcuts (confirm, cancel)
 - ✅ Support ESC key to quickly cancel screenshot
+- ✅ Support Ctrl+C to copy screenshot to clipboard
 - ✅ Support continuous screenshot mode switching
 
 ## Technical Implementation
@@ -143,15 +152,18 @@ English | [简体中文](readme.md)
 - Simple background removal algorithm implementation
 - Integration with GLM-4V API for AI conversation functionality
 - Smart screenshot interaction protection layer: prevent accidental interaction while maintaining element recognition in smart detection mode
+- Use FontAwesome icon library for rich interface icons
 
 ## Project Structure
 ```
 ├── manifest.json       # Extension manifest file
 ├── assets/            # Icons and resource files
+│   └── fontawesome/   # FontAwesome icon library
 ├── background/        # Background service scripts
 ├── content/           # Content scripts (screenshot core logic)
 ├── popup/             # Popup window interface
 ├── utils/             # Utility functions
+│   └── i18n.js        # Internationalization support
 ├── ai_dialog/         # AI conversation interface
 └── _locales/          # Multilingual support
 ```
@@ -173,6 +185,7 @@ graph TD
     C --> K[Multilingual Support]
     C --> M[Background Removal Algorithm]
     N --> O[GLM-4V API]
+    D --> P[FontAwesome Icons]
 ```
 
 ## Shortcut Keys
@@ -181,6 +194,7 @@ graph TD
 | Start Screenshot | Ctrl+Shift+S |
 | Confirm Screenshot | Enter |
 | Cancel Screenshot | Esc |
+| Copy Screenshot | Ctrl+C |
 | Open Plugin | Click toolbar icon |
 | Toggle Continuous Screenshot Mode | Toolbar button |
 | Toggle Magnetic Snap | Toolbar button |
@@ -215,51 +229,55 @@ To further enhance user experience, "Ratio Screenshot" plans to gradually introd
    - ✅ Image-related Q&A and content explanation
 
 ### Near-term Planned Features
-3. **OCR Text Extraction**
+3. **UI Component Replication**
+   - Extract page structure from screenshots
+   - Connect to AI Agent for UI component replication
+   - Browse replication process in real-time
+
+4. **Popular Copywriting Imitation**
    - Extract text content from screenshots
-   - Support copying to clipboard
-   - Recognize text in multiple languages
+   - Connect to AI Agent for copywriting imitation
+   - Browse imitated content in real-time
 
 ### Mid-term Planned Features
-4. **Image Super-resolution**
+5. **Image Super-resolution**
    - Enhance screenshot clarity and resolution
    - Support 2x, 4x scale options
    - Suitable for scenarios requiring high-quality images
 
-5. **Image Translation**
+6. **Image Translation**
    - Recognize and translate text in images
    - Support multilingual translation
    - Maintain original layout and style
 
 ### Long-term Planned Features
-6. **Advanced Smart Image Matting**
+7. **Advanced Smart Image Matting**
    - Advanced background removal and object extraction
    - Preserve complex edge details
    - One-click generation of professional matting effects
 
-7. **One-click Beautification**
+8. **One-click Beautification**
    - Automatically optimize image parameters
    - Intelligently adjust brightness, contrast, saturation
    - Suitable for social media sharing
 
-8. **Batch Processing Workflow**
-   - Apply the same processing to multiple screenshots
-   - Customize processing workflows
-   - Improve content creation efficiency
-
 ### Membership Plan Outlook
 In the future, we plan to launch different levels of membership services to meet the needs of different users:
-- **Basic Version**: Retain all existing features, permanently free
-- **Enhanced Version**: Include basic value-added features like OCR and transparent background
+- **Basic Version**: Retain all existing features, free forever
+- **Enhanced Version**: Include basic value-added features such as OCR and transparent background
 - **Professional Version**: Include all advanced features, suitable for professional creators
 
-If you are particularly interested in a certain feature or have other feature suggestions, feel free to provide feedback through issues!
+If you are particularly interested in a certain feature or have other feature suggestions, welcome to provide feedback through issues!
 
 ## API Key Configuration
-This project uses the GLM-4V API for image analysis and AI conversation functionality. To use this feature, you need to configure an API key:
+This project uses the GLM-4V API for image analysis and AI conversation functionality. To use this feature, you need to configure the API key:
 
 1. Copy `config.example.js` to `config.local.js`
 2. Fill in your GLM-4V API key in `config.local.js`
 3. Ensure `config.local.js` is added to `.gitignore` (added by default)
 
-Note: Do not commit your API key to the GitHub repository. If you accidentally commit your API key, change it immediately. 
+Note: Do not commit your API key to the GitHub repository. If you accidentally commit your API key, please change it immediately.
+
+## Star History
+If you find it useful, please give it a star ⭐⭐⭐
+[![Star History Chart](https://api.star-history.com/svg?repos=zhushen12580/short&type=Date)](https://www.star-history.com/#zhushen12580/short&Date) 
