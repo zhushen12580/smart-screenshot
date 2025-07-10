@@ -491,10 +491,13 @@ function captureFullPage(message, tabId, sendResponse) {
     
     // 获取目标区域信息
     const targetArea = message.targetArea;
+    const isScrollScreenshot = message.isScrollScreenshot || false;
+    
     console.log("目标区域:", targetArea);
+    console.log("是否为长截图:", isScrollScreenshot);
     
     // 使用分块截图方法
-    captureFullPageByTiles(tabId, targetArea, sendResponse);
+    captureFullPageByTiles(tabId, targetArea, sendResponse, isScrollScreenshot);
   } catch (error) {
     console.error("全页面截图过程出错:", error);
     sendResponse({ success: false, error: error.message });
@@ -504,7 +507,7 @@ function captureFullPage(message, tabId, sendResponse) {
 }
 
 // 使用分块截图方法实现全页面截图
-function captureFullPageByTiles(tabId, targetArea, sendResponse) {
+function captureFullPageByTiles(tabId, targetArea, sendResponse, isScrollScreenshot = false) {
   // 步骤1: 获取页面原始滚动位置和视口信息
   chrome.scripting.executeScript({
     target: { tabId: tabId },
@@ -522,14 +525,14 @@ function captureFullPageByTiles(tabId, targetArea, sendResponse) {
     console.log("原始视口信息:", originalInfo);
     
     // 步骤2: 计算需要捕获的块数
-    const tilesInfo = calculateTiles(targetArea, originalInfo);
+    const tilesInfo = calculateTiles(targetArea, originalInfo, isScrollScreenshot);
     console.log("分块信息:", tilesInfo);
     
     // 用于存储所有分块的图像数据
     const tiles = [];
     
     // 步骤3: 开始分块捕获过程
-    captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, 0)
+    captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, 0, isScrollScreenshot)
       .then(() => {
         console.log(`全部 ${tiles.length} 个分块捕获完成`);
         
@@ -548,67 +551,126 @@ function captureFullPageByTiles(tabId, targetArea, sendResponse) {
 }
 
 // 计算需要的分块
-function calculateTiles(targetArea, viewportInfo) {
-  // 使用更大的分块大小以减少总分块数量
-  // 使用视口尺寸的75%作为分块大小，确保不会生成太多分块
-  const effectiveWidth = Math.max(Math.floor(viewportInfo.viewportWidth * 0.75), 600);
-  const effectiveHeight = Math.max(Math.floor(viewportInfo.viewportHeight * 0.75), 500);
+function calculateTiles(targetArea, viewportInfo, isScrollScreenshot = false) {
+  console.log("计算分块，目标区域:", targetArea);
+  console.log("视口信息:", viewportInfo);
   
-  console.log(`分块大小: ${effectiveWidth}x${effectiveHeight}, 视口大小: ${viewportInfo.viewportWidth}x${viewportInfo.viewportHeight}`);
-  
-  // 计算总共需要的行数和列数
-  const startCol = Math.floor(targetArea.left / effectiveWidth);
-  const startRow = Math.floor(targetArea.top / effectiveHeight);
-  const endCol = Math.ceil((targetArea.left + targetArea.width) / effectiveWidth);
-  const endRow = Math.ceil((targetArea.top + targetArea.height) / effectiveHeight);
-  
-  // 当区域特别大时，限制最大分块数，防止过多API调用
-  const maxTiles = 9; // 最多3x3的网格
-  const totalTiles = (endRow - startRow) * (endCol - startCol);
-  
-  // 如果分块太多，增大分块尺寸
-  let adjustedEffectiveWidth = effectiveWidth;
-  let adjustedEffectiveHeight = effectiveHeight;
-  
-  if (totalTiles > maxTiles) {
-    console.log(`分块数量过多(${totalTiles})，调整分块大小`);
-    const scale = Math.sqrt(totalTiles / maxTiles);
-    adjustedEffectiveWidth = Math.ceil(effectiveWidth * scale);
-    adjustedEffectiveHeight = Math.ceil(effectiveHeight * scale);
+  if (isScrollScreenshot) {
+    // 长截图新策略：基于用户选框区域进行分块
+    console.log("长截图模式：使用基于选框区域的分块策略");
     
-    console.log(`调整后分块大小: ${adjustedEffectiveWidth}x${adjustedEffectiveHeight}`);
-  }
-  
-  // 构建分块信息
-  const tiles = [];
-  for (let row = startRow; row < endRow; row++) {
-    for (let col = startCol; col < endCol; col++) {
+    // 分块宽度：用户选框的宽度
+    const tileWidth = targetArea.width;
+    
+    // 分块高度：取视口高度的80%，但不超过用户选框剩余高度
+    const maxTileHeight = Math.min(
+      Math.floor(viewportInfo.viewportHeight * 0.8), 
+      600  // 最大分块高度限制
+    );
+    
+    // 计算需要多少个垂直分块
+    const totalHeight = targetArea.height;
+    const numberOfTiles = Math.ceil(totalHeight / maxTileHeight);
+    
+    // 调整分块高度，确保均匀分布
+    const adjustedTileHeight = Math.ceil(totalHeight / numberOfTiles);
+    
+    console.log(`分块策略: 宽度=${tileWidth}px, 高度=${adjustedTileHeight}px, 分块数=${numberOfTiles}`);
+    
+    // 构建分块信息
+    const tiles = [];
+    for (let i = 0; i < numberOfTiles; i++) {
+      const tileTop = targetArea.top + (i * adjustedTileHeight);
+      const tileHeight = Math.min(adjustedTileHeight, targetArea.top + targetArea.height - tileTop);
+      
       tiles.push({
-        row,
-        col,
-        scrollX: col * adjustedEffectiveWidth,
-        scrollY: row * adjustedEffectiveHeight
+        row: i,
+        col: 0,
+        // 滚动位置：确保分块区域在视口中央
+        scrollX: Math.max(0, targetArea.left - (viewportInfo.viewportWidth - tileWidth) / 2),
+        scrollY: Math.max(0, tileTop - (viewportInfo.viewportHeight - tileHeight) / 2),
+        // 分块实际区域
+        tileLeft: targetArea.left,
+        tileTop: tileTop,
+        tileWidth: tileWidth,
+        tileHeight: tileHeight
       });
     }
+    
+    console.log(`生成了 ${tiles.length} 个长截图分块`);
+    
+    return {
+      startCol: 0,
+      startRow: 0,
+      endCol: 1,
+      endRow: numberOfTiles,
+      rows: numberOfTiles,
+      cols: 1,
+      effectiveWidth: tileWidth,
+      effectiveHeight: adjustedTileHeight,
+      tiles
+    };
+  } else {
+    // 普通截图：使用原有策略
+    let effectiveWidth = Math.max(Math.floor(viewportInfo.viewportWidth * 0.75), 600);
+    let effectiveHeight = Math.max(Math.floor(viewportInfo.viewportHeight * 0.75), 500);
+    const maxTiles = 9; // 最多3x3的网格
+    
+    console.log(`普通截图分块大小: ${effectiveWidth}x${effectiveHeight}, 视口大小: ${viewportInfo.viewportWidth}x${viewportInfo.viewportHeight}`);
+    
+    // 计算总共需要的行数和列数
+    const startCol = Math.floor(targetArea.left / effectiveWidth);
+    const startRow = Math.floor(targetArea.top / effectiveHeight);
+    const endCol = Math.ceil((targetArea.left + targetArea.width) / effectiveWidth);
+    const endRow = Math.ceil((targetArea.top + targetArea.height) / effectiveHeight);
+    
+    // 当区域特别大时，限制最大分块数，防止过多API调用
+    const totalTiles = (endRow - startRow) * (endCol - startCol);
+    
+    // 如果分块太多，增大分块尺寸
+    let adjustedEffectiveWidth = effectiveWidth;
+    let adjustedEffectiveHeight = effectiveHeight;
+    
+    if (totalTiles > maxTiles) {
+      console.log(`分块数量过多(${totalTiles})，调整分块大小`);
+      const scale = Math.sqrt(totalTiles / maxTiles);
+      adjustedEffectiveWidth = Math.ceil(effectiveWidth * scale);
+      adjustedEffectiveHeight = Math.ceil(effectiveHeight * scale);
+      
+      console.log(`调整后分块大小: ${adjustedEffectiveWidth}x${adjustedEffectiveHeight}`);
+    }
+    
+    // 构建分块信息
+    const tiles = [];
+    for (let row = startRow; row < endRow; row++) {
+      for (let col = startCol; col < endCol; col++) {
+        tiles.push({
+          row,
+          col,
+          scrollX: col * adjustedEffectiveWidth,
+          scrollY: row * adjustedEffectiveHeight
+        });
+      }
+    }
+    
+    console.log(`生成了 ${tiles.length} 个普通截图分块`);
+    
+    return {
+      startCol,
+      startRow,
+      endCol,
+      endRow,
+      rows: endRow - startRow,
+      cols: endCol - startCol,
+      effectiveWidth: adjustedEffectiveWidth,
+      effectiveHeight: adjustedEffectiveHeight,
+      tiles
+    };
   }
-  
-  console.log(`生成了 ${tiles.length} 个分块`);
-  
-  return {
-    startCol,
-    startRow,
-    endCol,
-    endRow,
-    rows: endRow - startRow,
-    cols: endCol - startCol,
-    effectiveWidth: adjustedEffectiveWidth,
-    effectiveHeight: adjustedEffectiveHeight,
-    tiles
-  };
 }
 
 // 递归捕获每个分块
-function captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex) {
+function captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex, isScrollScreenshot = false) {
   return new Promise((resolve, reject) => {
     // 所有分块都已处理完成
     if (currentIndex >= tilesInfo.tiles.length) {
@@ -665,8 +727,15 @@ function captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, curr
       console.log(`已滚动到位置: (${actualScroll.actualScrollX}, ${actualScroll.actualScrollY})`);
       
       // 给页面充分的时间来适应滚动和加载内容
-      // 增加延迟以避免超出配额限制
-      const captureDelay = 500 + (currentIndex * 100); // 随着分块数增加延迟
+      // 根据是否为长截图调整延迟策略
+      let captureDelay;
+      if (isScrollScreenshot) {
+        // 长截图需要更长的延迟，因为页面内容可能需要更多时间加载
+        captureDelay = 800 + (currentIndex * 150); // 更长的基础延迟和递增延迟
+      } else {
+        // 普通截图使用原有延迟
+        captureDelay = 500 + (currentIndex * 100);
+      }
       
       console.log(`等待 ${captureDelay}ms 后捕获...`);
       setTimeout(() => {
@@ -682,7 +751,7 @@ function captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, curr
                 console.log("检测到配额限制，增加更长的延迟后重试...");
                 // 遇到配额限制，增加延迟后重试同一分块
                 setTimeout(() => {
-                  captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex)
+                  captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex, isScrollScreenshot)
                     .then(resolve)
                     .catch(reject);
                 }, 2000);  // 增加2秒长延迟后重试
@@ -701,18 +770,31 @@ function captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, curr
             console.log(`成功捕获分块 ${currentIndex + 1}`);
             
             // 记录这个分块的信息
-            tiles.push({
+            const tileData = {
               dataUrl,
               position: {
                 scrollX: actualScroll.actualScrollX,
-                scrollY: actualScroll.actualScrollY
+                scrollY: actualScroll.actualScrollY,
+                row: tile.row,
+                col: tile.col
               }
-            });
+            };
+            
+            // 如果是长截图模式，添加额外的区域信息
+            if (tile.tileLeft !== undefined) {
+              tileData.position.tileLeft = tile.tileLeft;
+              tileData.position.tileTop = tile.tileTop;
+              tileData.position.tileWidth = tile.tileWidth;
+              tileData.position.tileHeight = tile.tileHeight;
+              console.log(`长截图分块区域: (${tile.tileLeft},${tile.tileTop}) 尺寸: ${tile.tileWidth}x${tile.tileHeight}`);
+            }
+            
+            tiles.push(tileData);
             
             // 为下一个分块添加间隔，避免触发配额限制
             setTimeout(() => {
               // 继续下一个分块
-              captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex + 1)
+              captureNextTile(tabId, targetArea, originalInfo, tilesInfo, tiles, currentIndex + 1, isScrollScreenshot)
                 .then(resolve)
                 .catch(reject);
             }, 500);
@@ -775,43 +857,98 @@ function mergeAndProcessTiles(targetArea, originalInfo, tiles, sendResponse, tab
               
               img.onload = () => {
                 try {
-                  // 计算这个分块的位置
+                  // 获取分块信息
                   const tilePosition = tile.position;
                   
-                  // 计算源区域 - 该分块中要提取的区域
-                  const srcX = Math.max(0, targetArea.left - tilePosition.scrollX);
-                  const srcY = Math.max(0, targetArea.top - tilePosition.scrollY);
-                  const srcWidth = Math.min(
-                    originalInfo.viewportWidth, 
-                    targetArea.width, 
-                    originalInfo.viewportWidth - srcX
-                  );
-                  const srcHeight = Math.min(
-                    originalInfo.viewportHeight, 
-                    targetArea.height, 
-                    originalInfo.viewportHeight - srcY
-                  );
-                  
-                  // 计算目标区域 - 这个分块应绘制到画布上的位置
-                  const dstX = Math.max(0, tilePosition.scrollX - targetArea.left) * originalInfo.dpr;
-                  const dstY = Math.max(0, tilePosition.scrollY - targetArea.top) * originalInfo.dpr;
-                  
-                  // 应用设备像素比
-                  const scaledSrcX = srcX * originalInfo.dpr;
-                  const scaledSrcY = srcY * originalInfo.dpr;
-                  const scaledSrcWidth = srcWidth * originalInfo.dpr;
-                  const scaledSrcHeight = srcHeight * originalInfo.dpr;
-                  
-                  console.log(`内容脚本: 处理分块 ${index + 1}/${totalTiles}, 源区域: (${srcX},${srcY},${srcWidth},${srcHeight}), 目标位置: (${dstX},${dstY})`);
-                  
-                  // 绘制到合并画布
-                  ctx.drawImage(
-                    img, 
-                    scaledSrcX, scaledSrcY, scaledSrcWidth, scaledSrcHeight,
-                    dstX, dstY, scaledSrcWidth, scaledSrcHeight
-                  );
-                  
-                  console.log(`内容脚本: 分块 ${index + 1} 已绘制`);
+                  // 检查分块是否有新的区域信息（长截图模式）
+                  if (tilePosition.tileLeft !== undefined) {
+                    // 新的长截图分块模式
+                    console.log(`内容脚本: 处理长截图分块 ${index + 1}/${totalTiles}`);
+                    console.log(`  分块区域: (${tilePosition.tileLeft},${tilePosition.tileTop}) 尺寸: ${tilePosition.tileWidth}x${tilePosition.tileHeight}`);
+                    console.log(`  滚动位置: (${tilePosition.scrollX},${tilePosition.scrollY})`);
+                    
+                    // 计算在视口中的相对位置（源区域）
+                    const srcX = tilePosition.tileLeft - tilePosition.scrollX;
+                    const srcY = tilePosition.tileTop - tilePosition.scrollY;
+                    const srcWidth = tilePosition.tileWidth;
+                    const srcHeight = tilePosition.tileHeight;
+                    
+                    // 计算在最终画布中的位置（目标区域）
+                    const dstX = 0; // 因为长截图只有一列，所以x位置总是0
+                    const dstY = (tilePosition.tileTop - targetArea.top) * originalInfo.dpr;
+                    
+                    // 应用设备像素比
+                    const scaledSrcX = srcX * originalInfo.dpr;
+                    const scaledSrcY = srcY * originalInfo.dpr;
+                    const scaledSrcWidth = srcWidth * originalInfo.dpr;
+                    const scaledSrcHeight = srcHeight * originalInfo.dpr;
+                    
+                    console.log(`  源区域: (${srcX},${srcY},${srcWidth},${srcHeight}), 目标位置: (${dstX},${dstY})`);
+                    
+                    // 绘制到合并画布
+                    ctx.drawImage(
+                      img, 
+                      scaledSrcX, scaledSrcY, scaledSrcWidth, scaledSrcHeight,
+                      dstX, dstY, scaledSrcWidth, scaledSrcHeight
+                    );
+                    
+                    console.log(`内容脚本: 长截图分块 ${index + 1} 已绘制`);
+                  } else {
+                    // 原有的普通截图分块模式
+                    console.log(`内容脚本: 处理普通截图分块 ${index + 1}/${totalTiles}`);
+                    
+                    // 计算该分块与目标区域的交集
+                    const tileLeft = tilePosition.scrollX;
+                    const tileTop = tilePosition.scrollY;
+                    const tileRight = tileLeft + originalInfo.viewportWidth;
+                    const tileBottom = tileTop + originalInfo.viewportHeight;
+                    
+                    const targetLeft = targetArea.left;
+                    const targetTop = targetArea.top;
+                    const targetRight = targetArea.left + targetArea.width;
+                    const targetBottom = targetArea.top + targetArea.height;
+                    
+                    // 计算交集区域
+                    const intersectLeft = Math.max(tileLeft, targetLeft);
+                    const intersectTop = Math.max(tileTop, targetTop);
+                    const intersectRight = Math.min(tileRight, targetRight);
+                    const intersectBottom = Math.min(tileBottom, targetBottom);
+                    
+                    // 如果没有交集，跳过这个分块
+                    if (intersectLeft >= intersectRight || intersectTop >= intersectBottom) {
+                      console.log(`分块 ${index + 1} 与目标区域无交集，跳过`);
+                      return;
+                    }
+                    
+                    // 计算在视口中的相对位置（源区域）
+                    const srcX = intersectLeft - tileLeft;
+                    const srcY = intersectTop - tileTop;
+                    const srcWidth = intersectRight - intersectLeft;
+                    const srcHeight = intersectBottom - intersectTop;
+                    
+                    // 计算在最终画布中的位置（目标区域）
+                    const dstX = (intersectLeft - targetLeft) * originalInfo.dpr;
+                    const dstY = (intersectTop - targetTop) * originalInfo.dpr;
+                    
+                    // 应用设备像素比
+                    const scaledSrcX = srcX * originalInfo.dpr;
+                    const scaledSrcY = srcY * originalInfo.dpr;
+                    const scaledSrcWidth = srcWidth * originalInfo.dpr;
+                    const scaledSrcHeight = srcHeight * originalInfo.dpr;
+                    
+                    console.log(`  分块区域: (${tileLeft},${tileTop}) 到 (${tileRight},${tileBottom})`);
+                    console.log(`  交集区域: (${intersectLeft},${intersectTop}) 到 (${intersectRight},${intersectBottom})`);
+                    console.log(`  源区域: (${srcX},${srcY},${srcWidth},${srcHeight}), 目标位置: (${dstX},${dstY})`);
+                    
+                    // 绘制到合并画布 - 只绘制交集部分
+                    ctx.drawImage(
+                      img, 
+                      scaledSrcX, scaledSrcY, scaledSrcWidth, scaledSrcHeight,
+                      dstX, dstY, scaledSrcWidth, scaledSrcHeight
+                    );
+                    
+                    console.log(`内容脚本: 普通截图分块 ${index + 1} 已绘制`);
+                  }
                 } catch (error) {
                   console.error(`内容脚本: 处理分块 ${index + 1} 时出错:`, error);
                 }

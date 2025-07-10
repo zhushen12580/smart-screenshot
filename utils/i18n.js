@@ -56,6 +56,7 @@ const i18n = {
       magnetic: "磁性吸附",
       magneticActive: "✓ 磁性吸附",
       freeRatio: "自由比例",
+      scrollScreenshot: "长截图",
       imageQuality: {
         original: "原图质量",
         high: "高清",
@@ -63,6 +64,21 @@ const i18n = {
         light: "轻量"
       },
       fileSizeEstimate: "约 {size} {unit}"
+    },
+    // 长截图配置
+    scrollScreenshotConfig: {
+      title: "长截图设置",
+      heightLabel: "滚动高度:",
+      heightUnit: "像素",
+      autoHeight: "自动到页面底部",
+      customHeight: "自定义高度:",
+      manualControl: "手动滚动控制",
+      manualControlDesc: "进入滚动模式，您可以手动滚动页面到想要的位置，然后点击停止按钮完成长截图",
+      confirm: "开始长截图",
+      cancel: "取消",
+      currentSelectionSize: "当前选区: {width} × {height}",
+      estimatedFinalSize: "预计长截图: {width} × {height}",
+      warning: "注意：长截图可能需要较长时间，请耐心等待"
     },
     ratioGroups: {
       common: {
@@ -183,6 +199,7 @@ const i18n = {
       magnetic: "Magnetic Snap",
       magneticActive: "✓ Magnetic Snap",
       freeRatio: "Free Ratio",
+      scrollScreenshot: "Long Screenshot",
       imageQuality: {
         original: "Original Quality",
         high: "High Quality",
@@ -190,6 +207,21 @@ const i18n = {
         light: "Light"
       },
       fileSizeEstimate: "About {size} {unit}"
+    },
+    // 长截图配置
+    scrollScreenshotConfig: {
+      title: "Long Screenshot Settings",
+      heightLabel: "Scroll Height:",
+      heightUnit: "pixels",
+      autoHeight: "Auto to page bottom",
+      customHeight: "Custom height:",
+      manualControl: "Manual scroll control",
+      manualControlDesc: "Enter scroll mode, manually scroll to desired position, then click stop to complete long screenshot",
+      confirm: "Start Long Screenshot",
+      cancel: "Cancel",
+      currentSelectionSize: "Current selection: {width} × {height}",
+      estimatedFinalSize: "Estimated final: {width} × {height}",
+      warning: "Note: Long screenshot may take a while, please be patient"
     },
     ratioGroups: {
       common: {
@@ -1359,6 +1391,28 @@ function updateI18nTexts() {
   }
 }
 
+// 获取长截图配置文本
+function getScrollScreenshotConfigText(key) {
+  const currentLanguage = getCurrentLanguage();
+  
+  // 尝试获取当前语言的长截图配置文本
+  if (i18n[currentLanguage] && 
+      i18n[currentLanguage].scrollScreenshotConfig && 
+      typeof i18n[currentLanguage].scrollScreenshotConfig[key] !== 'undefined') {
+    return i18n[currentLanguage].scrollScreenshotConfig[key];
+  }
+  
+  // 回退到英文
+  if (i18n.en && 
+      i18n.en.scrollScreenshotConfig && 
+      typeof i18n.en.scrollScreenshotConfig[key] !== 'undefined') {
+    return i18n.en.scrollScreenshotConfig[key];
+  }
+  
+  // 都找不到，返回键本身
+  return key;
+}
+
 // 导出函数
 export { 
   getCurrentLanguage, 
@@ -1369,5 +1423,6 @@ export {
   getRatioGroupLabel, 
   getRatioOptionText,
   formatFileSizeEstimate,
+  getScrollScreenshotConfigText,
   updateI18nTexts
 }; 

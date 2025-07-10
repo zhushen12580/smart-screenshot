@@ -68,7 +68,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "正在解析二维码...",
           qrSuccess: "二维码解析成功，已复制到剪贴板",
           qrNoQRFound: "未检测到有效的二维码",
-          qrError: "二维码解析失败: {0}"
+          qrError: "二维码解析失败: {0}",
+          scrollScreenshot: "长截图"
         },
         en: {
           saveArea: "Save This Area",
@@ -95,7 +96,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "Decoding QR code...",
           qrSuccess: "QR code decoded successfully, copied to clipboard",
           qrNoQRFound: "No valid QR code detected",
-          qrError: "QR code decoding failed: {0}"
+          qrError: "QR code decoding failed: {0}",
+          scrollScreenshot: "Long Screenshot"
         },
         es: {
           saveArea: "Guardar Esta Área",
@@ -122,7 +124,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "Decodificando código QR...",
           qrSuccess: "Código QR decodificado correctamente, copiado al portapapeles",
           qrNoQRFound: "No se detectó un código QR válido",
-          qrError: "Error al decodificar código QR: {0}"
+          qrError: "Error al decodificar código QR: {0}",
+          scrollScreenshot: "Captura Larga"
         },
         ar: {
           saveArea: "حفظ هذه المنطقة",
@@ -149,7 +152,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "فك رمز QR...",
           qrSuccess: "تم فك رمز QR بنجاح، تم نسخه إلى الملصق",
           qrNoQRFound: "لم يتم الكشف عن رمز QR صالح",
-          qrError: "فشل فك رمز QR: {0}"
+          qrError: "فشل فك رمز QR: {0}",
+          scrollScreenshot: "لقطة شاشة طويلة"
         },
         de: {
           saveArea: "Diesen Bereich speichern",
@@ -176,7 +180,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "QR-Code wird decodiert...",
           qrSuccess: "QR-Code erfolgreich dekodiert, in die Zwischenablage kopiert",
           qrNoQRFound: "Kein gültiges QR-Code erkannt",
-          qrError: "QR-Code-Dekodierung fehlgeschlagen: {0}"
+          qrError: "QR-Code-Dekodierung fehlgeschlagen: {0}",
+          scrollScreenshot: "Langer Screenshot"
         },
         pt: {
           saveArea: "Salvar Esta Área",
@@ -203,7 +208,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "Decodificando QR Code...",
           qrSuccess: "QR Code decodificado com sucesso, copiado para a área de transferência",
           qrNoQRFound: "Nenhum QR Code válido detectado",
-          qrError: "Falha ao decodificar QR Code: {0}"
+          qrError: "Falha ao decodificar QR Code: {0}",
+          scrollScreenshot: "Captura Longa"
         },
         ja: {
           saveArea: "この領域を保存",
@@ -230,7 +236,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "QRコードを解析中...",
           qrSuccess: "QRコードが正常に解析されました、クリップボードにコピーされました",
           qrNoQRFound: "有効なQRコードが検出されませんでした",
-          qrError: "QRコードの解析に失敗しました: {0}"
+          qrError: "QRコードの解析に失敗しました: {0}",
+          scrollScreenshot: "長いスクリーンショット"
         },
         fr: {
           saveArea: "Enregistrer Cette Zone",
@@ -257,7 +264,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "Décodage du QR Code...",
           qrSuccess: "QR Code décodé avec succès, copié dans le presse-papiers",
           qrNoQRFound: "Aucun QR Code valide détecté",
-          qrError: "Échec du décodage du QR Code: {0}"
+          qrError: "Échec du décodage du QR Code: {0}",
+          scrollScreenshot: "Capture Longue"
         },
         ko: {
           saveArea: "이 영역 저장",
@@ -284,7 +292,8 @@ if (window._ratioScreenshotLoaded) {
           qrDecoding: "QR 코드 해독중...",
           qrSuccess: "QR 코드가 성공적으로 해독되었습니다, 클립보드에 복사되었습니다",
           qrNoQRFound: "유효한 QR 코드를 감지하지 못했습니다",
-          qrError: "QR 코드 해독에 실패했습니다: {0}"
+          qrError: "QR 코드 해독에 실패했습니다: {0}",
+          scrollScreenshot: "긴 스크린샷"
         }
       };
       
@@ -888,17 +897,17 @@ if (window._ratioScreenshotLoaded) {
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          background-color: rgba(250, 250, 252, 0.75);
+          background-color: rgba(250, 250, 252, 0.35);
           border-radius: 8px;
-          border: 2px solid var(--black);
-          box-shadow: 3px 3px 0 var(--black);
+          border: 2px solid rgba(0, 0, 0, 0.4);
+          box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
           padding: 12px 16px;
           display: flex;
           flex-direction: column;
           gap: 12px;
           z-index: 10001;
           max-width: calc(100% - 40px);
-          backdrop-filter: blur(4px);
+          backdrop-filter: blur(1px);
         }
         
         .ratio-screenshot-toolbar-row {
@@ -920,7 +929,7 @@ if (window._ratioScreenshotLoaded) {
         /* 分隔线 */
         .ratio-screenshot-divider {
           width: 1px;
-          background-color: rgba(0, 0, 0, 0.2);
+          background-color: rgba(0, 0, 0, 0.15);
           margin: 0 4px;
         }
         
@@ -1417,6 +1426,16 @@ if (window._ratioScreenshotLoaded) {
       qrButton.title = this.getQRDecodeTitle();
       qrButton.addEventListener('click', () => this.decodeQRCode());
       processGroup.appendChild(qrButton);
+      
+      // 长截图按钮
+      const scrollScreenshotButton = document.createElement('button');
+      scrollScreenshotButton.className = 'ratio-screenshot-button';
+      this.addButtonContent(scrollScreenshotButton, 
+        I18nHelper.getToolbarText('scrollScreenshot'), 
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="currentColor" d="M2 1v14h12V1H2zm10 12H4V3h8v10zM6 5h4v1H6V5zm0 2h4v1H6V7zm0 2h2v1H6V9z"/><path fill="currentColor" d="M8 12l2-2H9V8H7v2H6l2 2z"/></svg>');
+      scrollScreenshotButton.title = I18nHelper.isZh() ? '创建滚动长截图' : 'Create scrolling long screenshot';
+      scrollScreenshotButton.addEventListener('click', () => this.showScrollScreenshotConfig());
+      processGroup.appendChild(scrollScreenshotButton);
       
       primaryRow.appendChild(processGroup);
       
@@ -3418,6 +3437,11 @@ if (window._ratioScreenshotLoaded) {
       // 移除事件监听器
       this.removeEventListeners();
       
+      // 清除滚动控制界面
+      this.removeScrollControlPanel();
+      this.removeScrollListener();
+      this.manualScrollStart = null;
+      
       // 清除当前选择框
       this.clearCurrentSelection();
       
@@ -3449,6 +3473,11 @@ if (window._ratioScreenshotLoaded) {
         this.safeRemove('ratio-screenshot-selection');
         this.safeRemove('ratio-screenshot-toolbar');
         this.safeRemove('ratio-screenshot-inspect-cancel');
+        
+        // 清理长截图相关元素
+        this.safeRemove('scroll-screenshot-config-dialog');
+        this.safeRemove('scroll-screenshot-config-overlay');
+        this.safeRemove('scroll-control-panel');
         
         // 清理所有类名元素
         this.safeRemoveAll('.ratio-screenshot-magnetic-guide');
@@ -4873,6 +4902,537 @@ if (window._ratioScreenshotLoaded) {
       }
     }
     
+    // 显示长截图配置界面
+    showScrollScreenshotConfig() {
+      if (!this.selection) {
+        console.error("未找到选择框，无法进行长截图");
+        this.showNotification(I18nHelper.isZh() ? "请先选择截图区域" : "Please select an area first");
+        return;
+      }
+
+      // 创建配置对话框容器
+      const configDialog = document.createElement('div');
+      configDialog.id = 'scroll-screenshot-config-dialog';
+      configDialog.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(250, 250, 252, 0.95);
+        backdrop-filter: blur(4px);
+        border-radius: 8px;
+        border: 2px solid var(--black);
+        box-shadow: 3px 3px 0 var(--black);
+        padding: 24px;
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        color: var(--black);
+        width: 360px;
+      `;
+
+      // 创建配置内容
+      const currentWidth = Math.abs(this.endX - this.startX);
+      const currentHeight = Math.abs(this.endY - this.startY);
+      
+      const configHtml = `
+        <div style="margin-bottom: 20px;">
+          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">
+            ${I18nHelper.isZh() ? '长截图设置' : 'Long Screenshot Settings'}
+          </h3>
+          <div style="background: rgba(244, 244, 245, 0.8); border: 2px solid var(--black); padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+            <div style="font-size: 13px; color: rgba(0, 0, 0, 0.7); margin-bottom: 4px;">
+              ${I18nHelper.isZh() ? '当前选区尺寸:' : 'Current selection:'}
+            </div>
+            <div style="font-weight: 500;">
+              ${currentWidth} × ${currentHeight} 像素
+            </div>
+          </div>
+        </div>
+        
+                 <div style="margin-bottom: 20px;">
+           <label style="display: block; margin-bottom: 12px; font-weight: 500;">
+             ${I18nHelper.isZh() ? '滚动方式:' : 'Scroll Mode:'}
+           </label>
+           <div style="margin-bottom: 12px;">
+             <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 6px; background: rgba(244, 244, 245, 0.6); border: 1px solid rgba(0, 0, 0, 0.1);">
+               <input type="radio" name="scrollMode" value="auto" checked style="margin-right: 8px;">
+               ${I18nHelper.isZh() ? '自动滚动到页面底部' : 'Auto scroll to page bottom'}
+             </label>
+           </div>
+           <div>
+             <label style="display: flex; align-items: flex-start; cursor: pointer; padding: 8px; border-radius: 6px; border: 1px solid rgba(0, 0, 0, 0.1);">
+               <input type="radio" name="scrollMode" value="manual" style="margin-right: 8px; margin-top: 2px;">
+               <div>
+                 <div style="margin-bottom: 4px;">
+                   ${I18nHelper.isZh() ? '手动滚动控制' : 'Manual scroll control'}
+                 </div>
+                 <div style="font-size: 12px; color: rgba(0, 0, 0, 0.7); line-height: 1.4;">
+                   ${I18nHelper.isZh() ? 
+                     '进入滚动模式，您可以手动滚动页面到想要的位置，然后点击停止按钮完成长截图' : 
+                     'Enter scroll mode, manually scroll to desired position, then click stop to complete long screenshot'
+                   }
+                 </div>
+               </div>
+             </label>
+           </div>
+         </div>
+        
+        <div style="background: rgba(255, 243, 205, 0.8); border: 2px solid rgba(255, 234, 167, 0.8); border-radius: 6px; padding: 12px; margin-bottom: 20px;">
+          <div style="color: rgba(133, 100, 4, 0.9); font-size: 13px;">
+            <strong>注意:</strong> ${I18nHelper.isZh() ? 
+              '长截图可能需要较长时间，请耐心等待。页面内容越多，处理时间越长。' : 
+              'Long screenshot may take a while, please be patient. More content means longer processing time.'
+            }
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button id="scroll-config-cancel" style="
+            padding: 6px 12px; 
+            border: 2px solid var(--black); 
+            background: rgba(244, 244, 245, 0.92); 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--black);
+            box-shadow: 2px 2px 0 var(--black);
+            transition: all 0.2s ease;
+          ">
+            ${I18nHelper.isZh() ? '取消' : 'Cancel'}
+          </button>
+          <button id="scroll-config-confirm" style="
+            padding: 6px 12px; 
+            border: 2px solid var(--black); 
+            background: rgba(109, 40, 217, 0.92); 
+            color: var(--white); 
+            border-radius: 6px; 
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 2px 2px 0 var(--black);
+            transition: all 0.2s ease;
+          ">
+            ${I18nHelper.isZh() ? '开始长截图' : 'Start Long Screenshot'}
+          </button>
+        </div>
+      `;
+
+      configDialog.innerHTML = configHtml;
+
+      // 创建遮罩
+      const overlay = document.createElement('div');
+      overlay.id = 'scroll-screenshot-config-overlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 2147483646;
+      `;
+
+      // 添加到页面
+      document.body.appendChild(overlay);
+      document.body.appendChild(configDialog);
+
+      // 添加事件监听
+      const radioButtons = configDialog.querySelectorAll('input[name="scrollMode"]');
+      const cancelBtn = configDialog.querySelector('#scroll-config-cancel');
+      const confirmBtn = configDialog.querySelector('#scroll-config-confirm');
+
+      // 取消按钮
+      const closeDialog = () => {
+        overlay.remove();
+        configDialog.remove();
+      };
+
+      cancelBtn.addEventListener('click', closeDialog);
+      overlay.addEventListener('click', closeDialog);
+
+      // 确认按钮
+      confirmBtn.addEventListener('click', () => {
+        const selectedMode = configDialog.querySelector('input[name="scrollMode"]:checked').value;
+
+        closeDialog();
+
+        if (selectedMode === 'auto') {
+          // 自动模式：滚动到页面底部
+          const scrollHeight = Math.max(
+            document.body.scrollHeight - window.innerHeight,
+            document.documentElement.scrollHeight - window.innerHeight,
+            0
+          );
+          this.startScrollScreenshot(scrollHeight);
+        } else {
+          // 手动滚动模式：进入滚动控制状态
+          this.startManualScrollMode();
+        }
+      });
+
+      // 添加按钮悬停效果 - 符合产品风格
+      cancelBtn.addEventListener('mouseenter', () => {
+        cancelBtn.style.transform = 'translate(-1px, -1px)';
+        cancelBtn.style.boxShadow = '3px 3px 0 var(--black)';
+        cancelBtn.style.background = 'rgba(250, 250, 252, 1)';
+      });
+      cancelBtn.addEventListener('mouseleave', () => {
+        cancelBtn.style.transform = 'translate(0, 0)';
+        cancelBtn.style.boxShadow = '2px 2px 0 var(--black)';
+        cancelBtn.style.background = 'rgba(244, 244, 245, 0.92)';
+      });
+
+      confirmBtn.addEventListener('mouseenter', () => {
+        confirmBtn.style.transform = 'translate(-1px, -1px)';
+        confirmBtn.style.boxShadow = '3px 3px 0 var(--black)';
+        confirmBtn.style.background = 'rgba(124, 58, 237, 0.95)';
+      });
+      confirmBtn.addEventListener('mouseleave', () => {
+        confirmBtn.style.transform = 'translate(0, 0)';
+        confirmBtn.style.boxShadow = '2px 2px 0 var(--black)';
+        confirmBtn.style.background = 'rgba(109, 40, 217, 0.92)';
+      });
+
+      // 添加键盘事件
+      document.addEventListener('keydown', function escapeHandler(e) {
+        if (e.key === 'Escape') {
+          closeDialog();
+          document.removeEventListener('keydown', escapeHandler);
+        }
+      });
+    }
+
+    // 开始手动滚动模式
+    startManualScrollMode() {
+      if (!this.selection) {
+        console.error("未找到选择框，无法进行长截图");
+        return;
+      }
+
+      console.log("进入手动滚动模式");
+
+      // 记录起始滚动位置和选区信息
+      this.manualScrollStart = {
+        scrollY: window.scrollY,
+        selectionTop: Math.min(this.startY, this.endY),
+        selectionLeft: Math.min(this.startX, this.endX),
+        selectionWidth: Math.abs(this.endX - this.startX),
+        selectionHeight: Math.abs(this.endY - this.startY)
+      };
+
+      console.log("记录起始状态:", this.manualScrollStart);
+
+      // 创建滚动控制界面
+      this.createScrollControlPanel();
+
+      // 添加滚动监听，实时更新滚动距离
+      this.addScrollListener();
+    }
+
+    // 创建滚动控制面板
+    createScrollControlPanel() {
+      // 先清理可能存在的旧面板
+      this.removeScrollControlPanel();
+
+      const controlPanel = document.createElement('div');
+      controlPanel.id = 'scroll-control-panel';
+      controlPanel.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(250, 250, 252, 0.95);
+        color: var(--black);
+        padding: 16px 20px;
+        border-radius: 8px;
+        border: 2px solid var(--black);
+        box-shadow: 3px 3px 0 var(--black);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        backdrop-filter: blur(4px);
+        min-width: 280px;
+      `;
+
+      const panelHtml = `
+        <div style="margin-bottom: 12px; text-align: center;">
+          <div style="font-weight: 600; margin-bottom: 4px; color: var(--black);">
+            ${I18nHelper.isZh() ? '📏 长截图滚动控制' : '📏 Long Screenshot Scroll Control'}
+          </div>
+          <div style="font-size: 12px; color: rgba(0, 0, 0, 0.7);">
+            ${I18nHelper.isZh() ? '滚动页面到理想位置，然后点击停止' : 'Scroll to desired position, then click stop'}
+          </div>
+        </div>
+        
+        <div style="background: rgba(244, 244, 245, 0.8); border: 2px solid var(--black); padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+          <div style="font-size: 13px; color: rgba(0, 0, 0, 0.7); margin-bottom: 6px;">
+            ${I18nHelper.isZh() ? '当前滚动距离:' : 'Current scroll distance:'}
+          </div>
+          <div id="scroll-distance-display" style="font-size: 18px; font-weight: 600; color: #4ade80;">
+            0 像素
+          </div>
+          <div style="font-size: 12px; color: rgba(0, 0, 0, 0.7); margin-top: 4px;">
+            ${I18nHelper.isZh() ? '预计长截图高度:' : 'Estimated long screenshot height:'}
+            <span id="estimated-height-display" style="color: rgba(109, 40, 217, 0.9); font-weight: 500;">
+              ${this.manualScrollStart.selectionHeight} 像素
+            </span>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 12px;">
+          <button id="scroll-control-stop" style="
+            flex: 1;
+            padding: 6px 12px;
+            background: rgba(109, 40, 217, 0.92);
+            color: var(--white);
+            border: 2px solid var(--black);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 var(--black);
+            transition: all 0.2s ease;
+          ">
+            ${I18nHelper.isZh() ? '⏹️ 停止并截图' : '⏹️ Stop & Screenshot'}
+          </button>
+          <button id="scroll-control-cancel" style="
+            padding: 6px 12px;
+            background: rgba(244, 244, 245, 0.92);
+            color: var(--black);
+            border: 2px solid var(--black);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 2px 2px 0 var(--black);
+            transition: all 0.2s ease;
+          ">
+            ${I18nHelper.isZh() ? '❌' : '❌'}
+          </button>
+        </div>
+      `;
+
+      controlPanel.innerHTML = panelHtml;
+      document.body.appendChild(controlPanel);
+
+      // 添加按钮事件
+      const stopBtn = controlPanel.querySelector('#scroll-control-stop');
+      const cancelBtn = controlPanel.querySelector('#scroll-control-cancel');
+
+      stopBtn.addEventListener('click', () => this.stopManualScrollAndCapture());
+      cancelBtn.addEventListener('click', () => this.cancelManualScroll());
+
+      // 添加按钮悬停效果 - 符合产品风格的位移效果
+      stopBtn.addEventListener('mouseenter', () => {
+        stopBtn.style.transform = 'translate(-1px, -1px)';
+        stopBtn.style.boxShadow = '3px 3px 0 var(--black)';
+        stopBtn.style.background = 'rgba(124, 58, 237, 0.95)';
+      });
+      stopBtn.addEventListener('mouseleave', () => {
+        stopBtn.style.transform = 'translate(0, 0)';
+        stopBtn.style.boxShadow = '2px 2px 0 var(--black)';
+        stopBtn.style.background = 'rgba(109, 40, 217, 0.92)';
+      });
+
+      cancelBtn.addEventListener('mouseenter', () => {
+        cancelBtn.style.transform = 'translate(-1px, -1px)';
+        cancelBtn.style.boxShadow = '3px 3px 0 var(--black)';
+        cancelBtn.style.background = 'rgba(250, 250, 252, 1)';
+      });
+      cancelBtn.addEventListener('mouseleave', () => {
+        cancelBtn.style.transform = 'translate(0, 0)';
+        cancelBtn.style.boxShadow = '2px 2px 0 var(--black)';
+        cancelBtn.style.background = 'rgba(244, 244, 245, 0.92)';
+      });
+
+      this.scrollControlPanel = controlPanel;
+    }
+
+    // 添加滚动监听
+    addScrollListener() {
+      this.scrollListener = () => {
+        this.updateScrollDistance();
+      };
+      
+      window.addEventListener('scroll', this.scrollListener, { passive: true });
+    }
+
+    // 更新滚动距离显示
+    updateScrollDistance() {
+      if (!this.manualScrollStart || !this.scrollControlPanel) return;
+
+      const currentScrollY = window.scrollY;
+      const scrollDistance = Math.max(0, currentScrollY - this.manualScrollStart.scrollY);
+      const estimatedHeight = this.manualScrollStart.selectionHeight + scrollDistance;
+
+      const distanceDisplay = this.scrollControlPanel.querySelector('#scroll-distance-display');
+      const heightDisplay = this.scrollControlPanel.querySelector('#estimated-height-display');
+
+      if (distanceDisplay) {
+        distanceDisplay.textContent = `${scrollDistance} ${I18nHelper.isZh() ? '像素' : 'pixels'}`;
+        
+        // 根据滚动距离改变颜色
+        if (scrollDistance === 0) {
+          distanceDisplay.style.color = '#4ade80';
+        } else if (scrollDistance < 1000) {
+          distanceDisplay.style.color = '#60a5fa';
+        } else if (scrollDistance < 3000) {
+          distanceDisplay.style.color = '#f59e0b';
+        } else {
+          distanceDisplay.style.color = '#ef4444';
+        }
+      }
+
+      if (heightDisplay) {
+        heightDisplay.textContent = `${estimatedHeight} ${I18nHelper.isZh() ? '像素' : 'pixels'}`;
+      }
+    }
+
+    // 停止手动滚动并开始截图
+    stopManualScrollAndCapture() {
+      if (!this.manualScrollStart) {
+        console.error("未找到滚动起始信息");
+        return;
+      }
+
+      const currentScrollY = window.scrollY;
+      const scrollDistance = Math.max(0, currentScrollY - this.manualScrollStart.scrollY);
+
+      console.log(`用户滚动了 ${scrollDistance} 像素，开始长截图`);
+
+      // 清理滚动控制界面
+      this.removeScrollControlPanel();
+      this.removeScrollListener();
+
+      // 开始长截图
+      this.startScrollScreenshot(scrollDistance);
+    }
+
+    // 取消手动滚动
+    cancelManualScroll() {
+      console.log("用户取消了手动滚动模式");
+
+      // 恢复到原始滚动位置
+      if (this.manualScrollStart) {
+        window.scrollTo({
+          top: this.manualScrollStart.scrollY,
+          behavior: 'smooth'
+        });
+      }
+
+      // 清理滚动控制界面
+      this.removeScrollControlPanel();
+      this.removeScrollListener();
+
+      // 清理状态
+      this.manualScrollStart = null;
+    }
+
+    // 移除滚动控制面板
+    removeScrollControlPanel() {
+      if (this.scrollControlPanel) {
+        this.scrollControlPanel.remove();
+        this.scrollControlPanel = null;
+      }
+    }
+
+    // 移除滚动监听
+    removeScrollListener() {
+      if (this.scrollListener) {
+        window.removeEventListener('scroll', this.scrollListener);
+        this.scrollListener = null;
+      }
+    }
+
+    // 开始长截图处理
+    startScrollScreenshot(scrollHeight) {
+      if (!this.selection) {
+        console.error("未找到选择框，无法进行长截图");
+        return;
+      }
+
+      console.log(`开始长截图，滚动高度: ${scrollHeight}px`);
+
+      // 显示处理中提示
+      const scrollMsg = this.showNotification(
+        I18nHelper.isZh() ? "正在生成长截图，请稍候..." : "Generating long screenshot, please wait...", 
+        30000  // 30秒超时，长截图需要更长时间
+      );
+
+      // 获取当前选区的绝对坐标
+      const currentLeft = Math.min(this.startX, this.endX);
+      const currentTop = Math.min(this.startY, this.endY);
+      const currentWidth = Math.abs(this.endX - this.startX);
+      const currentHeight = Math.abs(this.endY - this.startY);
+
+      // 计算长截图的目标区域
+      // 保持左边界和宽度不变，从当前位置向下扩展
+      const targetArea = {
+        left: currentLeft,
+        top: currentTop,
+        width: currentWidth,
+        height: currentHeight + scrollHeight
+      };
+
+      console.log("长截图目标区域:", targetArea);
+      console.log("原始选区:", { left: currentLeft, top: currentTop, width: currentWidth, height: currentHeight });
+
+      // 临时隐藏UI元素
+      this.hideUIElementsForCapture();
+
+      // 添加短延迟确保DOM更新已渲染
+      setTimeout(() => {
+        // 调用background脚本进行分块截图
+        chrome.runtime.sendMessage({
+          action: 'captureFullPage',
+          targetArea: targetArea,
+          isScrollScreenshot: true  // 标记这是长截图
+        }, response => {
+          // 恢复UI元素
+          this.restoreUIElementsAfterCapture();
+
+          if (response && response.success) {
+            console.log("长截图生成成功");
+            
+            // 更新通知
+            scrollMsg.textContent = I18nHelper.isZh() ? "长截图生成完成，正在保存..." : "Long screenshot completed, saving...";
+
+            // 处理截图数据
+            const image = new Image();
+            image.onload = () => {
+              // 直接保存整个长截图（不需要裁剪，因为我们已经指定了精确的目标区域）
+                             this.processAndSaveImage(image, {
+                 left: 0,
+                 top: 0,
+                 width: image.width,
+                 height: image.height
+               }, 0); // 处理完整的长截图
+
+              // 更新最终通知
+              scrollMsg.textContent = I18nHelper.isZh() ? "长截图已保存到下载文件夹" : "Long screenshot saved to downloads";
+              setTimeout(() => scrollMsg.remove(), 3000);
+            };
+
+            image.onerror = () => {
+              console.error("长截图图像加载失败");
+              scrollMsg.textContent = I18nHelper.isZh() ? "长截图生成失败：图像加载失败" : "Long screenshot failed: Image loading error";
+              setTimeout(() => scrollMsg.remove(), 2000);
+            };
+
+            // 加载图像
+            image.src = response.dataUrl;
+          } else {
+            console.error("长截图生成失败:", response?.error || "未知错误");
+            scrollMsg.textContent = I18nHelper.isZh() ? 
+              `长截图生成失败：${response?.error || "未知错误"}` : 
+              `Long screenshot failed: ${response?.error || "Unknown error"}`;
+            setTimeout(() => scrollMsg.remove(), 3000);
+          }
+        });
+      }, 50); // 稍长的延迟，确保UI隐藏完成
+    }
+
     // 抠图功能 - 移除图像背景并复制到剪贴板
     removeBackground() {
       if (!this.selection) {
