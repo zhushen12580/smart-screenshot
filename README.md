@@ -1,4 +1,4 @@
-![精准截图_20250409_221022](https://github.com/user-attachments/assets/3b8c0ae8-f535-4311-9b94-6964fefd3d88)
+![image](https://github.com/user-attachments/assets/d26c06ab-113d-463a-bf1e-a18ebc6e917a)
 
 
 # 精准截图 - AI时代的首款智能截图工具
