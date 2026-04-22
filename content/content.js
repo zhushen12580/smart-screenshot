@@ -897,19 +897,19 @@ if (window._ratioScreenshotLoaded) {
           bottom: 20px;
           left: 50%;
           transform: translateX(-50%);
-          background-color: rgba(250, 250, 252, 0.35);
-          border-radius: 8px;
-          border: 2px solid rgba(0, 0, 0, 0.4);
-          box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
-          padding: 12px 16px;
+          background: linear-gradient(135deg, rgba(250, 245, 255, 0.92) 0%, rgba(244, 244, 245, 0.88) 100%);
+          border-radius: 14px;
+          border: none;
+          box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
+          padding: 14px 18px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
+          gap: 10px;
           z-index: 10001;
           max-width: calc(100% - 40px);
-          backdrop-filter: blur(1px);
+          backdrop-filter: blur(12px);
         }
-        
+
         .ratio-screenshot-toolbar-row {
           display: flex;
           flex-wrap: wrap;
@@ -917,59 +917,63 @@ if (window._ratioScreenshotLoaded) {
           justify-content: center;
           width: 100%;
         }
-        
+
         /* 按钮分组容器 */
         .ratio-screenshot-button-group {
           display: flex;
-          gap: 4px;
-          margin: 0 4px;
+          gap: 6px;
+          margin: 0 2px;
           position: relative;
         }
-        
+
         /* 分隔线 */
         .ratio-screenshot-divider {
           width: 1px;
-          background-color: rgba(0, 0, 0, 0.15);
-          margin: 0 4px;
+          background: linear-gradient(180deg, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
+          margin: 0 8px;
+          border-radius: 1px;
         }
-        
+
         .ratio-screenshot-button {
-          padding: 6px 12px;
-          border-radius: 6px;
+          padding: 8px 14px;
+          border-radius: 10px;
           font-size: 13px;
           font-weight: 600;
-          border: 2px solid var(--black);
+          font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          border: none;
           cursor: pointer;
-          background-color: rgba(244, 244, 245, 0.92);
-          color: var(--black);
-          box-shadow: 2px 2px 0 var(--black);
-          transition: all 0.2s ease;
+          background: rgba(255, 255, 255, 0.95);
+          color: #52525b;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           white-space: nowrap;
           display: flex;
           align-items: center;
-          gap: 5px;
+          gap: 6px;
         }
-        
+
         .ratio-screenshot-button:hover {
-          transform: translate(-1px, -1px);
-          box-shadow: 3px 3px 0 var(--black);
-          background-color: rgba(250, 250, 252, 1);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+          background: rgba(255, 255, 255, 1);
         }
-        
+
         .ratio-screenshot-button:active {
-          transform: translate(1px, 1px);
-          box-shadow: 1px 1px 0 var(--black);
+          transform: translateY(0);
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
         }
-        
+
         .ratio-screenshot-button.primary {
-          background-color: rgba(109, 40, 217, 0.92);
-          color: var(--white);
+          background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+          color: #ffffff;
+          box-shadow: 0 2px 8px rgba(147, 51, 234, 0.25);
         }
-        
+
         .ratio-screenshot-button.primary:hover {
-          background-color: rgba(124, 58, 237, 0.95);
+          background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
+          box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
         }
-        
+
         /* 按钮图标 */
         .ratio-screenshot-button-icon {
           width: 14px;
@@ -978,25 +982,37 @@ if (window._ratioScreenshotLoaded) {
           align-items: center;
           justify-content: center;
         }
-        
+
         select.ratio-screenshot-button {
-          padding: 6px 24px 6px 12px;
+          padding: 8px 28px 8px 12px;
           appearance: none;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'%3E%3Cpath fill='%23000' d='M0 0l4 4 4-4z'/%3E%3C/svg%3E");
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2371717a' d='M0 3l5 5 5-5z'/%3E%3C/svg%3E");
           background-repeat: no-repeat;
           background-position: right 10px center;
+          min-width: 100px;
+        }
+
+        select.ratio-screenshot-button:hover {
+          border: 1px solid #d8b4fe;
+        }
+
+        select.ratio-screenshot-button:focus {
+          outline: none;
+          border: 1px solid #a855f7;
         }
         
         .ratio-screenshot-selection-info {
           position: absolute;
           bottom: -25px;
           left: 0;
-          color: var(--white);
-          background-color: var(--primary-color);
-          padding: 2px 8px;
+          color: #ffffff;
+          background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+          padding: 4px 10px;
           font-size: 12px;
-          font-weight: bold;
-          border: 2px solid var(--black);
+          font-weight: 600;
+          border-radius: 6px;
+          border: none;
+          box-shadow: 0 2px 8px rgba(147, 51, 234, 0.25);
         }
         
         .ratio-screenshot-magnetic-guide {
@@ -1008,34 +1024,37 @@ if (window._ratioScreenshotLoaded) {
         
         .ratio-screenshot-magnetic-guide.horizontal {
           height: 1px;
-          background-color: #00e5ff;
+          background-color: #c084fc;
           width: 100%;
-          box-shadow: 0 0 2px rgba(0, 229, 255, 0.8);
+          box-shadow: 0 0 4px rgba(192, 132, 252, 0.6);
         }
         
         .ratio-screenshot-magnetic-guide.vertical {
           width: 1px;
-          background-color: #00e5ff;
+          background-color: #c084fc;
           height: 100%;
-          box-shadow: 0 0 2px rgba(0, 229, 255, 0.8);
+          box-shadow: 0 0 4px rgba(192, 132, 252, 0.6);
         }
         
         .ratio-screenshot-element-highlight {
           position: absolute;
-          border: 1px solid rgba(0, 229, 255, 0.5);
-          background-color: rgba(0, 229, 255, 0.1);
+          border: 2px solid rgba(168, 85, 247, 0.4);
+          background-color: rgba(168, 85, 247, 0.08);
           pointer-events: none;
           z-index: 9997;
           opacity: 0; /* 隐藏元素高亮 */
+          border-radius: 6px;
         }
         
         .ratio-screenshot-resize-handle {
           position: absolute;
-          width: 12px;
-          height: 12px;
-          background-color: var(--white);
-          border: 2px solid var(--primary-color);
+          width: 14px;
+          height: 14px;
+          background-color: #ffffff;
+          border: 2px solid #a855f7;
+          border-radius: 4px;
           z-index: 10003;
+          box-shadow: 0 2px 4px rgba(147, 51, 234, 0.25);
         }
         
         .ratio-screenshot-resize-handle.top-left {
@@ -1096,15 +1115,16 @@ if (window._ratioScreenshotLoaded) {
           top: auto;
           left: 50%;
           transform: translateX(-50%);
-          background-color: rgba(109, 40, 217, 0.9);
-          color: var(--white);
-          padding: 12px 18px;
-          border-radius: 0;
+          background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+          color: #ffffff;
+          padding: 12px 20px;
+          border-radius: 10px;
           z-index: 10002;
           font-size: 14px;
-          font-weight: bold;
-          border: 3px solid var(--black);
-          box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+          font-weight: 600;
+          font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+          border: none;
+          box-shadow: 0 4px 16px rgba(147, 51, 234, 0.3);
           transition: opacity 0.3s ease;
           max-width: 80%;
           text-align: center;
@@ -4918,17 +4938,17 @@ if (window._ratioScreenshotLoaded) {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(250, 250, 252, 0.95);
-        backdrop-filter: blur(4px);
-        border-radius: 8px;
-        border: 2px solid var(--black);
-        box-shadow: 3px 3px 0 var(--black);
+        background: linear-gradient(135deg, rgba(250, 245, 255, 0.95) 0%, rgba(255, 255, 255, 0.92) 100%);
+        backdrop-filter: blur(12px);
+        border-radius: 14px;
+        border: none;
+        box-shadow: 0 8px 32px rgba(147, 51, 234, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
         padding: 24px;
         z-index: 2147483647;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
         font-size: 14px;
-        color: var(--black);
-        width: 360px;
+        color: #52525b;
+        width: 380px;
       `;
 
       // 创建配置内容
@@ -4937,39 +4957,39 @@ if (window._ratioScreenshotLoaded) {
       
       const configHtml = `
         <div style="margin-bottom: 20px;">
-          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">
+          <h3 style="margin: 0 0 16px 0; font-size: 18px; font-weight: 700; color: #3f3f46;">
             ${I18nHelper.isZh() ? '长截图设置' : 'Long Screenshot Settings'}
           </h3>
-          <div style="background: rgba(244, 244, 245, 0.8); border: 2px solid var(--black); padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-            <div style="font-size: 13px; color: rgba(0, 0, 0, 0.7); margin-bottom: 4px;">
+          <div style="background: rgba(250, 245, 255, 0.8); border: none; padding: 12px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(147, 51, 234, 0.1);">
+            <div style="font-size: 13px; color: #71717a; margin-bottom: 4px;">
               ${I18nHelper.isZh() ? '当前选区尺寸:' : 'Current selection:'}
             </div>
-            <div style="font-weight: 500;">
+            <div style="font-weight: 600; color: #52525b;">
               ${currentWidth} × ${currentHeight} 像素
             </div>
           </div>
         </div>
         
                  <div style="margin-bottom: 20px;">
-           <label style="display: block; margin-bottom: 12px; font-weight: 500;">
+           <label style="display: block; margin-bottom: 12px; font-weight: 600; color: #52525b;">
              ${I18nHelper.isZh() ? '滚动方式:' : 'Scroll Mode:'}
            </label>
            <div style="margin-bottom: 12px;">
-             <label style="display: flex; align-items: center; cursor: pointer; padding: 8px; border-radius: 6px; background: rgba(244, 244, 245, 0.6); border: 1px solid rgba(0, 0, 0, 0.1);">
-               <input type="radio" name="scrollMode" value="auto" checked style="margin-right: 8px;">
+             <label style="display: flex; align-items: center; cursor: pointer; padding: 10px; border-radius: 10px; background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.2);">
+               <input type="radio" name="scrollMode" value="auto" checked style="margin-right: 8px; accent-color: #a855f7;">
                ${I18nHelper.isZh() ? '自动滚动到页面底部' : 'Auto scroll to page bottom'}
              </label>
            </div>
            <div>
-             <label style="display: flex; align-items: flex-start; cursor: pointer; padding: 8px; border-radius: 6px; border: 1px solid rgba(0, 0, 0, 0.1);">
-               <input type="radio" name="scrollMode" value="manual" style="margin-right: 8px; margin-top: 2px;">
+             <label style="display: flex; align-items: flex-start; cursor: pointer; padding: 10px; border-radius: 10px; border: 1px solid rgba(0, 0, 0, 0.1); background: rgba(255, 255, 255, 0.6);">
+               <input type="radio" name="scrollMode" value="manual" style="margin-right: 8px; margin-top: 2px; accent-color: #a855f7;">
                <div>
-                 <div style="margin-bottom: 4px;">
+                 <div style="margin-bottom: 4px; color: #52525b;">
                    ${I18nHelper.isZh() ? '手动滚动控制' : 'Manual scroll control'}
                  </div>
-                 <div style="font-size: 12px; color: rgba(0, 0, 0, 0.7); line-height: 1.4;">
-                   ${I18nHelper.isZh() ? 
-                     '进入滚动模式，您可以手动滚动页面到想要的位置，然后点击停止按钮完成长截图' : 
+                 <div style="font-size: 12px; color: #71717a; line-height: 1.4;">
+                   ${I18nHelper.isZh() ?
+                     '进入滚动模式，您可以手动滚动页面到想要的位置，然后点击停止按钮完成长截图' :
                      'Enter scroll mode, manually scroll to desired position, then click stop to complete long screenshot'
                    }
                  </div>
@@ -4977,11 +4997,11 @@ if (window._ratioScreenshotLoaded) {
              </label>
            </div>
          </div>
-        
-        <div style="background: rgba(255, 243, 205, 0.8); border: 2px solid rgba(255, 234, 167, 0.8); border-radius: 6px; padding: 12px; margin-bottom: 20px;">
-          <div style="color: rgba(133, 100, 4, 0.9); font-size: 13px;">
-            <strong>注意:</strong> ${I18nHelper.isZh() ? 
-              '长截图可能需要较长时间，请耐心等待。页面内容越多，处理时间越长。' : 
+
+        <div style="background: rgba(255, 243, 205, 0.8); border: none; border-radius: 10px; padding: 12px; margin-bottom: 20px; box-shadow: 0 2px 6px rgba(255, 193, 7, 0.15);">
+          <div style="color: #92400e; font-size: 13px;">
+            <strong style="color: #b45309;">注意:</strong> ${I18nHelper.isZh() ?
+              '长截图可能需要较长时间，请耐心等待。页面内容越多，处理时间越长。' :
               'Long screenshot may take a while, please be patient. More content means longer processing time.'
             }
           </div>
@@ -4989,30 +5009,32 @@ if (window._ratioScreenshotLoaded) {
         
         <div style="display: flex; gap: 12px; justify-content: flex-end;">
           <button id="scroll-config-cancel" style="
-            padding: 6px 12px; 
-            border: 2px solid var(--black); 
-            background: rgba(244, 244, 245, 0.92); 
-            border-radius: 6px; 
+            padding: 8px 16px;
+            border: none;
+            background: rgba(244, 244, 245, 0.92);
+            color: #52525b;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            color: var(--black);
-            box-shadow: 2px 2px 0 var(--black);
-            transition: all 0.2s ease;
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           ">
             ${I18nHelper.isZh() ? '取消' : 'Cancel'}
           </button>
           <button id="scroll-config-confirm" style="
-            padding: 6px 12px; 
-            border: 2px solid var(--black); 
-            background: rgba(109, 40, 217, 0.92); 
-            color: var(--white); 
-            border-radius: 6px; 
+            padding: 8px 16px;
+            border: none;
+            background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
+            color: #ffffff;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 14px;
             font-weight: 600;
-            box-shadow: 2px 2px 0 var(--black);
-            transition: all 0.2s ease;
+            font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            box-shadow: 0 2px 8px rgba(147, 51, 234, 0.25);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
           ">
             ${I18nHelper.isZh() ? '开始长截图' : 'Start Long Screenshot'}
           </button>
@@ -5030,7 +5052,8 @@ if (window._ratioScreenshotLoaded) {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
         z-index: 2147483646;
       `;
 
@@ -5072,27 +5095,27 @@ if (window._ratioScreenshotLoaded) {
         }
       });
 
-      // 添加按钮悬停效果 - 符合产品风格
+      // 添加按钮悬停效果 - 精致柔和风格
       cancelBtn.addEventListener('mouseenter', () => {
-        cancelBtn.style.transform = 'translate(-1px, -1px)';
-        cancelBtn.style.boxShadow = '3px 3px 0 var(--black)';
-        cancelBtn.style.background = 'rgba(250, 250, 252, 1)';
+        cancelBtn.style.transform = 'translateY(-1px)';
+        cancelBtn.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+        cancelBtn.style.background = 'rgba(255, 255, 255, 1)';
       });
       cancelBtn.addEventListener('mouseleave', () => {
-        cancelBtn.style.transform = 'translate(0, 0)';
-        cancelBtn.style.boxShadow = '2px 2px 0 var(--black)';
+        cancelBtn.style.transform = 'translateY(0)';
+        cancelBtn.style.boxShadow = '0 2px 6px rgba(0, 0, 0, 0.06)';
         cancelBtn.style.background = 'rgba(244, 244, 245, 0.92)';
       });
 
       confirmBtn.addEventListener('mouseenter', () => {
-        confirmBtn.style.transform = 'translate(-1px, -1px)';
-        confirmBtn.style.boxShadow = '3px 3px 0 var(--black)';
-        confirmBtn.style.background = 'rgba(124, 58, 237, 0.95)';
+        confirmBtn.style.transform = 'translateY(-1px)';
+        confirmBtn.style.boxShadow = '0 4px 16px rgba(147, 51, 234, 0.35)';
+        confirmBtn.style.background = 'linear-gradient(135deg, #c084fc 0%, #a855f7 100%)';
       });
       confirmBtn.addEventListener('mouseleave', () => {
-        confirmBtn.style.transform = 'translate(0, 0)';
-        confirmBtn.style.boxShadow = '2px 2px 0 var(--black)';
-        confirmBtn.style.background = 'rgba(109, 40, 217, 0.92)';
+        confirmBtn.style.transform = 'translateY(0)';
+        confirmBtn.style.boxShadow = '0 2px 8px rgba(147, 51, 234, 0.25)';
+        confirmBtn.style.background = 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)';
       });
 
       // 添加键盘事件
