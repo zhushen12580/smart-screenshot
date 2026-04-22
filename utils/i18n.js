@@ -1297,27 +1297,47 @@ function getRatioGroupLabel(groupKey) {
 // 获取比例选项文本
 function getRatioOptionText(groupKey, ratioKey) {
   const currentLanguage = getCurrentLanguage();
-  
+
+  // 默认显示文本（确保总有一个可见的值）
+  const defaultTexts = {
+    "16:9": "16:9 视频屏幕",
+    "4:3": "4:3 传统屏幕",
+    "1:1": "1:1 正方形",
+    "9:16": "9:16 手机竖屏",
+    "3:4": "3:4 小红书",
+    "2:1": "2:1 横图",
+    "1:2": "1:2 Pinterest",
+    "4:5": "4:5 Instagram",
+    "3:2": "3:2 SNS封面",
+    "21:9": "21:9 超宽屏",
+    "free": "自由比例"
+  };
+
   // 增强健壮性检查
-  if (i18n[currentLanguage] && 
-      i18n[currentLanguage].ratioGroups && 
-      i18n[currentLanguage].ratioGroups[groupKey] && 
-      i18n[currentLanguage].ratioGroups[groupKey].options && 
+  if (i18n[currentLanguage] &&
+      i18n[currentLanguage].ratioGroups &&
+      i18n[currentLanguage].ratioGroups[groupKey] &&
+      i18n[currentLanguage].ratioGroups[groupKey].options &&
       i18n[currentLanguage].ratioGroups[groupKey].options[ratioKey]) {
     return i18n[currentLanguage].ratioGroups[groupKey].options[ratioKey];
   }
-  
+
   // 回退到英文
-  if (i18n.en && 
-      i18n.en.ratioGroups && 
-      i18n.en.ratioGroups[groupKey] && 
-      i18n.en.ratioGroups[groupKey].options && 
+  if (i18n.en &&
+      i18n.en.ratioGroups &&
+      i18n.en.ratioGroups[groupKey] &&
+      i18n.en.ratioGroups[groupKey].options &&
       i18n.en.ratioGroups[groupKey].options[ratioKey]) {
     return i18n.en.ratioGroups[groupKey].options[ratioKey];
   }
-  
-  // 都找不到，返回原始键
-  return ratioKey;
+
+  // 回退到默认文本
+  if (defaultTexts[ratioKey]) {
+    return defaultTexts[ratioKey];
+  }
+
+  // 最后返回原始键（至少显示比例值）
+  return ratioKey || "未知";
 }
 
 // 获取标题提示文本

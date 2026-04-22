@@ -2,9 +2,13 @@
 import { getCurrentLanguage, getText, getShareIntroText, getRatioGroupLabel, getRatioOptionText, updateI18nTexts } from '../utils/i18n.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-  // 更新多语言文本
-  updateI18nTexts();
-  
+  // 先执行 i18n 更新
+  try {
+    updateI18nTexts();
+  } catch (e) {
+    console.error('i18n update error:', e);
+  }
+
   // 获取DOM元素
   const startScreenshotBtn = document.getElementById('start-screenshot');
   const ratioSelect = document.getElementById('ratio-select');
@@ -16,6 +20,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const quickShareBtn = document.getElementById('quick-share');
   const quickFeedbackBtn = document.getElementById('quick-feedback');
   const openShortcutsSettingsBtn = document.getElementById('open-shortcuts-settings');
+
+  // 确保比例选择器的文本可见
+  if (ratioSelect) {
+    ratioSelect.querySelectorAll('option').forEach(option => {
+      if (!option.textContent || option.textContent.trim() === '') {
+        const fallbackText = option.getAttribute('data-option') || option.value;
+        option.textContent = fallbackText;
+      }
+    });
+  }
   
   // 获取截图参数
   let selectedRatio = ratioSelect.value;
@@ -127,15 +141,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // 添加样式
     notification.style.cssText = `
       position: fixed;
-      bottom: 20px;
+      bottom: 16px;
       left: 50%;
       transform: translateX(-50%);
-      background-color: rgba(0, 0, 0, 0.8);
+      background: var(--gray-700, #3f3f46);
       color: white;
-      padding: 10px 15px;
-      border-radius: 6px;
+      padding: 12px 20px;
+      border-radius: 10px;
       font-size: 13px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      font-family: 'Manrope', -apple-system, system-ui, sans-serif;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       z-index: 9999;
     `;
     
