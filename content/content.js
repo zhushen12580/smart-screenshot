@@ -1587,6 +1587,7 @@ if (window._ratioScreenshotLoaded) {
         { value: '1:1', text: '1:1 (Square/Instagram)' },
         { value: '9:16', text: '9:16 (Mobile Portrait/Stories)' },
         { value: '3:4', text: '3:4 (Instagram/iPad)' },
+        { value: '2:3', text: '2:3 (Redbook/Xiaohongshu)' },
         { value: '2:1', text: '2:1 (Twitter Landscape)' },
         { value: '1:2', text: '1:2 (Pinterest)' },
         { value: '4:5', text: '4:5 (Instagram Portrait)' },
@@ -1779,22 +1780,24 @@ if (window._ratioScreenshotLoaded) {
         updatedOptions[3].text = '1:1 (正方形/Instagram)';
         updatedOptions[4].text = '9:16 (手机竖屏/故事)';
         updatedOptions[5].text = '3:4 (小红书/iPad)';
-        updatedOptions[6].text = '2:1 (小红书/Twitter横图)';
-        updatedOptions[7].text = '1:2 (Pinterest)';
-        updatedOptions[8].text = '4:5 (Instagram竖图)';
-        updatedOptions[9].text = '3:2 (SNS封面)';
-        updatedOptions[10].text = '21:9 (超宽屏)';
+        updatedOptions[6].text = '2:3 (小红书横图)';
+        updatedOptions[7].text = '2:1 (小红书/Twitter横图)';
+        updatedOptions[8].text = '1:2 (Pinterest)';
+        updatedOptions[9].text = '4:5 (Instagram竖图)';
+        updatedOptions[10].text = '3:2 (SNS封面)';
+        updatedOptions[11].text = '21:9 (超宽屏)';
       } else if (currentLang === 'es') {
         updatedOptions[1].text = '16:9 (Video/Pantalla)';
         updatedOptions[2].text = '4:3 (Pantalla Tradicional)';
         updatedOptions[3].text = '1:1 (Cuadrado/Instagram)';
         updatedOptions[4].text = '9:16 (Móvil Vertical/Historias)';
         updatedOptions[5].text = '3:4 (Instagram/iPad)';
-        updatedOptions[6].text = '2:1 (Twitter Horizontal)';
-        updatedOptions[7].text = '1:2 (Pinterest)';
-        updatedOptions[8].text = '4:5 (Instagram Vertical)';
-        updatedOptions[9].text = '3:2 (Portada Social)';
-        updatedOptions[10].text = '21:9 (Ultraancha)';
+        updatedOptions[6].text = '2:3 (Xiaohongshu Horizontal)';
+        updatedOptions[7].text = '2:1 (Twitter Horizontal)';
+        updatedOptions[8].text = '1:2 (Pinterest)';
+        updatedOptions[9].text = '4:5 (Instagram Vertical)';
+        updatedOptions[10].text = '3:2 (Portada Social)';
+        updatedOptions[11].text = '21:9 (Ultraancha)';
       }
       // 保留其他语言的处理
       
