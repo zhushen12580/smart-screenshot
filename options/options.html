@@ -7,14 +7,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="options.css">
-  <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
+  <style>
+    .icon { display: inline-block; vertical-align: middle; width: 16px; height: 16px; }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1 class="title" data-i18n="options.title">精准截图设置</h1>
 
     <div class="section">
-      <h2 class="section-title"><i class="fas fa-keyboard"></i> <span data-i18n="options.shortcuts_section">快捷键设置</span></h2>
+      <h2 class="section-title"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h.001M12 12h.001M16 12h.001M9 16h6"/></svg> <span data-i18n="options.shortcuts_section">快捷键设置</span></h2>
       <p class="section-desc" data-i18n="options.shortcuts_desc">配置常用操作的快捷键，使用更加便捷</p>
 
       <div class="form-group">
@@ -45,8 +47,8 @@
       </div>
 
       <div class="form-actions">
-        <button id="save-shortcuts" class="btn primary"><i class="fas fa-save"></i> <span data-i18n="options.save_shortcuts">保存快捷键</span></button>
-        <button id="reset-shortcuts" class="btn"><i class="fas fa-undo"></i> <span data-i18n="options.reset_defaults">恢复默认</span></button>
+        <button id="save-shortcuts" class="btn primary"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span data-i18n="options.save_shortcuts">保存快捷键</span></button>
+        <button id="reset-shortcuts" class="btn"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg> <span data-i18n="options.reset_defaults">恢复默认</span></button>
       </div>
 
       <div class="info-box">
@@ -56,7 +58,7 @@
     </div>
 
     <div class="section">
-      <h2 class="section-title"><i class="fas fa-key"></i> <span data-i18n="options.api_section">API设置</span></h2>
+      <h2 class="section-title"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 11-7.778 7.778 5.5 5.5 0 017.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> <span data-i18n="options.api_section">API设置</span></h2>
       <div class="form-group">
         <label for="glm4v-api-key" data-i18n="options.glm4v_api">智谱GLM-4V API密钥</label>
         <input type="password" id="glm4v-api-key" class="text-input" placeholder="输入API密钥" data-i18n-placeholder="options.input_api_key">
@@ -68,18 +70,18 @@
       </div>
 
       <div class="form-actions">
-        <button id="save-api-keys" class="btn primary"><i class="fas fa-save"></i> <span data-i18n="options.save_api_settings">保存API设置</span></button>
+        <button id="save-api-keys" class="btn primary"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> <span data-i18n="options.save_api_settings">保存API设置</span></button>
       </div>
     </div>
 
     <div class="section">
-      <h2 class="section-title"><i class="fas fa-info-circle"></i> <span data-i18n="options.about_section">关于</span></h2>
+      <h2 class="section-title"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> <span data-i18n="options.about_section">关于</span></h2>
       <p><span data-i18n="options.version_prefix">精准截图 版本</span> <span id="version">2.9</span></p>
       <p>© 2025 <a href="https://puzzledu.com" target="_blank">puzzleDu</a>. <span data-i18n="options.rights_reserved">保留所有权利。</span></p>
       <div class="links">
-        <a href="mailto:2270364052@qq.com"><i class="fas fa-envelope"></i><span data-i18n="options.feedback">问题反馈</span></a>
+        <a href="mailto:2270364052@qq.com"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg><span data-i18n="options.feedback">问题反馈</span></a>
         <span class="divider">|</span>
-        <a href="https://puzzledu.com/privacy" target="_blank"><i class="fas fa-shield-alt"></i><span data-i18n="options.privacy_policy">隐私政策</span></a>
+        <a href="https://puzzledu.com/privacy" target="_blank"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg><span data-i18n="options.privacy_policy">隐私政策</span></a>
       </div>
     </div>
   </div>

@@ -7,7 +7,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/fontawesome/css/all.min.css">
   <style>
     :root {
       --primary-50: #faf5ff;
@@ -36,6 +35,12 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    .icon {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
     }
 
     body {
@@ -211,8 +216,9 @@
       gap: 8px;
     }
 
-    button#start-screenshot i {
-      font-size: 14px;
+    button#start-screenshot .icon {
+      width: 16px;
+      height: 16px;
     }
 
     button#start-screenshot:hover {
@@ -263,8 +269,9 @@
       border-color: var(--primary-200);
     }
 
-    .action-button i {
-      font-size: 12px;
+    .action-button .icon {
+      width: 14px;
+      height: 14px;
     }
 
     #quick-feedback {
@@ -303,7 +310,9 @@
       gap: 6px;
     }
 
-    .shortcut-header-title i {
+    .shortcut-header-title .icon {
+      width: 14px;
+      height: 14px;
       color: var(--primary-400);
     }
 
@@ -340,8 +349,9 @@
       gap: 4px;
     }
 
-    .shortcut-name i {
-      font-size: 9px;
+    .shortcut-name .icon {
+      width: 11px;
+      height: 11px;
       color: var(--primary-300);
     }
 
@@ -384,8 +394,8 @@
     </a>
 
     <div class="mode-switch">
-      <button id="normal-mode" class="active" data-i18n="normalMode"><i class="fas fa-crop-alt"></i> <span>普通模式</span></button>
-      <button id="inspect-mode" data-i18n="inspectMode"><i class="fas fa-magic"></i> <span>智能模式</span></button>
+      <button id="normal-mode" class="active" data-i18n="normalMode"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg> <span>普通模式</span></button>
+      <button id="inspect-mode" data-i18n="inspectMode"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg> <span>智能模式</span></button>
     </div>
 
     <div class="form-card">
@@ -430,39 +440,39 @@
       </div>
     </div>
 
-    <button id="start-screenshot" data-i18n="startButton"><i class="fas fa-camera"></i> 开始截图</button>
+    <button id="start-screenshot" data-i18n="startButton"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg> 开始截图</button>
 
     <div class="quick-actions">
       <button id="quick-share" class="action-button">
-        <i class="fas fa-share-alt"></i>
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
         <span class="action-text" data-i18n="quickActions_share">分享美好</span>
       </button>
       <button id="quick-feedback" class="action-button">
-        <i class="fas fa-comment-dots"></i>
+        <svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
         <span class="action-text" data-i18n="quickActions_feedback">创造美好</span>
       </button>
     </div>
 
     <div class="shortcut-card">
       <div class="shortcut-header">
-        <span class="shortcut-header-title"><i class="fas fa-keyboard"></i> 快捷键</span>
+        <span class="shortcut-header-title"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.001M10 8h.001M14 8h.001M18 8h.001M8 12h.001M12 12h.001M16 12h.001M9 16h6"/></svg> 快捷键</span>
         <a href="#" id="open-shortcuts-settings" data-i18n="settings_link">设置</a>
       </div>
       <div class="shortcuts-list">
         <div class="shortcut-item">
-          <span class="shortcut-name" data-i18n="startScreenshot"><i class="fas fa-play"></i> 开始截图</span>
+          <span class="shortcut-name" data-i18n="startScreenshot"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="5 3 19 12 5 21 5 3"/></svg> 开始截图</span>
           <span class="shortcut-key" data-command="screenshot_start">Ctrl+Shift+S</span>
         </div>
         <div class="shortcut-item">
-          <span class="shortcut-name" data-i18n="confirmScreenshot"><i class="fas fa-check"></i> 确认截图</span>
+          <span class="shortcut-name" data-i18n="confirmScreenshot"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> 确认截图</span>
           <span class="shortcut-key">Enter</span>
         </div>
         <div class="shortcut-item">
-          <span class="shortcut-name" data-i18n="cancelScreenshot"><i class="fas fa-times"></i> 取消截图</span>
+          <span class="shortcut-name" data-i18n="cancelScreenshot"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg> 取消截图</span>
           <span class="shortcut-key">Esc</span>
         </div>
         <div class="shortcut-item">
-          <span class="shortcut-name" data-i18n="copyToClipboard"><i class="fas fa-copy"></i> 复制截图</span>
+          <span class="shortcut-name" data-i18n="copyToClipboard"><svg class="icon" xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> 复制截图</span>
           <span class="shortcut-key">Ctrl+C</span>
         </div>
       </div>
