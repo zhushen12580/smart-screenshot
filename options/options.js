@@ -153,23 +153,29 @@ async function loadSettings() {
       'glm4v_api_key',
       'deepseek_api_key'
     ], function(data) {
+      if (chrome.runtime.lastError) {
+        console.error('加载设置失败:', chrome.runtime.lastError);
+        resolve();
+        return;
+      }
+
       // 加载快捷键设置
       if (data.custom_shortcuts) {
         currentShortcuts = { ...DEFAULT_SHORTCUTS, ...data.custom_shortcuts };
       }
-      
+
       // 更新UI
       updateShortcutInputs();
-      
+
       // 加载API密钥
       if (data.glm4v_api_key) {
         elements.glm4vApiKey.value = data.glm4v_api_key;
       }
-      
+
       if (data.deepseek_api_key) {
         elements.deepseekApiKey.value = data.deepseek_api_key;
       }
-      
+
       resolve();
     });
   });
@@ -315,12 +321,33 @@ function saveShortcuts() {
 function saveApiKeys() {
   const glm4vApiKey = elements.glm4vApiKey.value.trim();
   const deepseekApiKey = elements.deepseekApiKey.value.trim();
-  
-  chrome.storage.sync.set({
-    glm4v_api_key: glm4vApiKey,
-    deepseek_api_key: deepseekApiKey
-  }, function() {
-    showSaveSuccess('API设置已保存');
+
+  // 先读取已有的密钥，避免覆盖未填写的字段
+  chrome.storage.sync.get(['glm4v_api_key', 'deepseek_api_key'], function(existingData) {
+    const updateData = {};
+
+    // 仅在用户输入了新值时才更新，否则保留已有值
+    if (glm4vApiKey !== '') {
+      updateData.glm4v_api_key = glm4vApiKey;
+    } else if (existingData.glm4v_api_key) {
+      // 用户清空了字段，表示想删除该密钥
+      updateData.glm4v_api_key = '';
+    }
+
+    if (deepseekApiKey !== '') {
+      updateData.deepseek_api_key = deepseekApiKey;
+    } else if (existingData.deepseek_api_key) {
+      updateData.deepseek_api_key = '';
+    }
+
+    chrome.storage.sync.set(updateData, function() {
+      if (chrome.runtime.lastError) {
+        console.error('保存API密钥失败:', chrome.runtime.lastError);
+        showSaveSuccess('保存失败，请重试');
+        return;
+      }
+      showSaveSuccess('API设置已保存');
+    });
   });
 }
 

@@ -1097,14 +1097,56 @@ function saveScreenshot(request, sendResponse) {
 // 调用GLM-4V-Flash API
 function callGLM4VFlashAPI(request, sendResponse) {
   console.log("准备调用GLM-4V-Flash API...");
-  
+
   // 从存储中获取API密钥
   chrome.storage.sync.get(['glm4v_api_key'], (data) => {
-    // 优先使用用户设置的API密钥，如果没有则使用默认配置
-    const apiKey = data.glm4v_api_key || config.GLM4V_API_KEY;
-    
+    if (chrome.runtime.lastError) {
+      console.error("读取GLM-4V API密钥失败:", chrome.runtime.lastError);
+      sendResponse({
+        success: false,
+        error: "读取API密钥设置失败，请重试"
+      });
+      return;
+    }
+
+    // 优先使用用户设置的API密钥
+    let apiKey = data.glm4v_api_key;
+
+    // 如果用户没有设置或设置为空，尝试使用配置文件中的密钥
+    if (!apiKey || apiKey.trim() === '') {
+      // 安全地尝试获取配置文件中的密钥
+      try {
+        apiKey = config.GLM4V_API_KEY;
+        // 检查配置文件中的密钥是否是占位符
+        if (apiKey === 'your_api_key_here' || !apiKey || apiKey.trim() === '') {
+          console.error("GLM-4V API密钥未配置");
+          sendResponse({
+            success: false,
+            error: "GLM-4V API密钥未配置，请在扩展设置页面中输入您的API密钥"
+          });
+          return;
+        }
+        console.log("使用配置文件中的GLM-4V API密钥");
+      } catch (configError) {
+        console.error("无法获取配置文件中的API密钥:", configError);
+        sendResponse({
+          success: false,
+          error: "GLM-4V API密钥未配置，请在扩展设置页面中输入您的API密钥"
+        });
+        return;
+      }
+    } else {
+      console.log("使用用户自定义的GLM-4V API密钥");
+    }
+
     // 准备API请求参数
-    const apiEndpoint = config.GLM4V_API_ENDPOINT;
+    // 安全地获取API端点
+    let apiEndpoint;
+    try {
+      apiEndpoint = config.GLM4V_API_ENDPOINT || 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+    } catch (e) {
+      apiEndpoint = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
+    }
     
     // 根据真实示例构建请求体
     const requestBody = {
@@ -1141,12 +1183,40 @@ function callGLM4VFlashAPI(request, sendResponse) {
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+        // 处理401未授权错误
+        if (response.status === 401) {
+          console.error("API请求401错误：API密钥无效或已过期");
+          throw new Error("API密钥无效或已过期，请检查您的API密钥是否正确");
+        }
+        // 处理429速率限制错误
+        if (response.status === 429) {
+          throw new Error("API请求过于频繁，请稍后再试");
+        }
+        // 处理其他错误
+        return response.text().then(errorText => {
+          let errorMsg = `API请求失败: ${response.status} ${response.statusText}`;
+          try {
+            const errorJson = JSON.parse(errorText);
+            if (errorJson.error && errorJson.error.message) {
+              errorMsg = errorJson.error.message;
+            }
+          } catch (e) {
+            // 无法解析JSON，使用默认消息
+          }
+          throw new Error(errorMsg);
+        });
       }
       return response.json();
     })
     .then(data => {
       console.log("收到API响应:", data);
+      
+      // 检查API返回的错误
+      if (data.error) {
+        const errorMsg = data.error.message || JSON.stringify(data.error);
+        console.error("API返回错误:", errorMsg);
+        throw new Error(errorMsg);
+      }
       
       if (data.choices && data.choices[0] && data.choices[0].message) {
         const aiResponse = data.choices[0].message.content;
@@ -1219,24 +1289,56 @@ function saveLastScreenshotData(dataUrl) {
 // 调用DeepSeek API
 function callDeepSeekAPI(request, sendResponse) {
   console.log("准备调用DeepSeek API...");
-  
+
   // 从存储中获取API密钥
   chrome.storage.sync.get(['deepseek_api_key'], (data) => {
-    // 优先使用用户设置的API密钥，如果没有则使用默认配置
-    const apiKey = data.deepseek_api_key || config.DEEPSEEK_API_KEY;
-    
-    // 如果没有设置API密钥，返回错误
-    if (!apiKey) {
-      console.error("DeepSeek API密钥未设置");
+    if (chrome.runtime.lastError) {
+      console.error("读取DeepSeek API密钥失败:", chrome.runtime.lastError);
       sendResponse({
         success: false,
-        error: "DeepSeek API密钥未设置，请在设置中配置"
+        error: "读取API密钥设置失败，请重试"
       });
       return;
     }
+
+    // 优先使用用户设置的API密钥
+    let apiKey = data.deepseek_api_key;
+
+    // 如果用户没有设置或设置为空，尝试使用配置文件中的密钥
+    if (!apiKey || apiKey.trim() === '') {
+      // 安全地尝试获取配置文件中的密钥
+      try {
+        apiKey = config.DEEPSEEK_API_KEY;
+        // 检查配置文件中的密钥是否是占位符或空
+        if (!apiKey || apiKey.trim() === '') {
+          console.error("DeepSeek API密钥未配置");
+          sendResponse({
+            success: false,
+            error: "DeepSeek API密钥未配置，请在扩展设置页面中输入您的API密钥"
+          });
+          return;
+        }
+        console.log("使用配置文件中的DeepSeek API密钥");
+      } catch (configError) {
+        console.error("无法获取配置文件中的API密钥:", configError);
+        sendResponse({
+          success: false,
+          error: "DeepSeek API密钥未配置，请在扩展设置页面中输入您的API密钥"
+        });
+        return;
+      }
+    } else {
+      console.log("使用用户自定义的DeepSeek API密钥");
+    }
     
     // 准备API请求参数
-    const apiEndpoint = config.DEEPSEEK_API_ENDPOINT || "https://api.deepseek.com/chat/completions";
+    // 安全地获取API端点
+    let apiEndpoint;
+    try {
+      apiEndpoint = config.DEEPSEEK_API_ENDPOINT || "https://api.deepseek.com/chat/completions";
+    } catch (e) {
+      apiEndpoint = "https://api.deepseek.com/chat/completions";
+    }
     
     // 构建请求体 - 启用流式输出
     const requestBody = {
@@ -1258,7 +1360,39 @@ function callDeepSeekAPI(request, sendResponse) {
     })
     .then(response => {
       if (!response.ok) {
-        throw new Error(`API请求失败: ${response.status} ${response.statusText}`);
+        // 处理401未授权错误
+        if (response.status === 401) {
+          console.error("DeepSeek API请求401错误：API密钥无效或已过期");
+          return response.text().then(errorText => {
+            let errorMsg = "DeepSeek API密钥无效或已过期，请检查您的API密钥是否正确";
+            try {
+              const errorJson = JSON.parse(errorText);
+              if (errorJson.error && errorJson.error.message) {
+                errorMsg = errorJson.error.message;
+              }
+            } catch (e) {
+              // 无法解析JSON，使用默认消息
+            }
+            throw new Error(errorMsg);
+          });
+        }
+        // 处理429速率限制错误
+        if (response.status === 429) {
+          throw new Error("DeepSeek API请求过于频繁，请稍后再试");
+        }
+        // 处理其他错误
+        return response.text().then(errorText => {
+          let errorMsg = `API请求失败: ${response.status} ${response.statusText}`;
+          try {
+            const errorJson = JSON.parse(errorText);
+            if (errorJson.error && errorJson.error.message) {
+              errorMsg = errorJson.error.message;
+            }
+          } catch (e) {
+            // 无法解析JSON，使用默认消息
+          }
+          throw new Error(errorMsg);
+        });
       }
       
       // 创建响应读取器

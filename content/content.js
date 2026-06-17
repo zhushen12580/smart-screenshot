@@ -893,112 +893,144 @@ if (window._ratioScreenshotLoaded) {
         }
         
         #ratio-screenshot-toolbar {
-          position: fixed;
-          bottom: 20px;
-          left: 50%;
-          transform: translateX(-50%);
-          background: linear-gradient(135deg, rgba(250, 245, 255, 0.92) 0%, rgba(244, 244, 245, 0.88) 100%);
-          border-radius: 14px;
-          border: none;
-          box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08);
-          padding: 14px 18px;
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-          z-index: 10001;
-          max-width: calc(100% - 40px);
-          backdrop-filter: blur(12px);
+          position: fixed !important;
+          bottom: 20px !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          background: linear-gradient(135deg, rgba(250, 245, 255, 0.92) 0%, rgba(244, 244, 245, 0.88) 100%) !important;
+          border-radius: 14px !important;
+          border: none !important;
+          box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+          padding: 14px 18px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: 10px !important;
+          z-index: 10001 !important;
+          max-width: calc(100% - 40px) !important;
+          backdrop-filter: blur(12px) !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+          min-width: auto !important;
+          max-height: none !important;
         }
 
-        .ratio-screenshot-toolbar-row {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          justify-content: center;
-          width: 100%;
+        #ratio-screenshot-toolbar .ratio-screenshot-toolbar-row {
+          display: flex !important;
+          flex-wrap: wrap !important;
+          gap: 8px !important;
+          justify-content: center !important;
+          width: 100% !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
         }
 
         /* 按钮分组容器 */
-        .ratio-screenshot-button-group {
-          display: flex;
-          gap: 6px;
-          margin: 0 2px;
-          position: relative;
+        #ratio-screenshot-toolbar .ratio-screenshot-button-group {
+          display: flex !important;
+          gap: 6px !important;
+          margin: 0 2px !important;
+          position: relative !important;
+          box-sizing: border-box !important;
+          padding: 0 !important;
+          border: none !important;
         }
 
         /* 分隔线 */
-        .ratio-screenshot-divider {
-          width: 1px;
-          background: linear-gradient(180deg, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%);
-          margin: 0 8px;
-          border-radius: 1px;
+        #ratio-screenshot-toolbar .ratio-screenshot-divider {
+          width: 1px !important;
+          background: linear-gradient(180deg, rgba(168, 85, 247, 0.2) 0%, rgba(168, 85, 247, 0.1) 100%) !important;
+          margin: 0 8px !important;
+          border-radius: 1px !important;
+          box-sizing: border-box !important;
+          padding: 0 !important;
+          border: none !important;
+          min-width: 1px !important;
+          min-height: auto !important;
         }
 
-        .ratio-screenshot-button {
-          padding: 8px 14px;
-          border-radius: 10px;
-          font-size: 13px;
-          font-weight: 600;
-          font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-          border: none;
-          cursor: pointer;
-          background: rgba(255, 255, 255, 0.95);
-          color: #52525b;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-          white-space: nowrap;
-          display: flex;
-          align-items: center;
-          gap: 6px;
+        #ratio-screenshot-toolbar .ratio-screenshot-button {
+          padding: 8px 14px !important;
+          border-radius: 10px !important;
+          font-size: 13px !important;
+          font-weight: 600 !important;
+          font-family: 'Manrope', -apple-system, BlinkMacSystemFont, system-ui, sans-serif !important;
+          border: none !important;
+          cursor: pointer !important;
+          background: rgba(255, 255, 255, 0.95) !important;
+          color: #52525b !important;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06) !important;
+          transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+          white-space: nowrap !important;
+          display: flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+          line-height: 1.4 !important;
+          text-align: center !important;
+          text-decoration: none !important;
+          text-transform: none !important;
+          letter-spacing: normal !important;
+          min-width: auto !important;
+          max-width: none !important;
+          min-height: auto !important;
+          max-height: none !important;
+          outline: none !important;
         }
 
-        .ratio-screenshot-button:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
-          background: rgba(255, 255, 255, 1);
+        #ratio-screenshot-toolbar .ratio-screenshot-button:hover {
+          transform: translateY(-1px) !important;
+          box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2) !important;
+          background: rgba(255, 255, 255, 1) !important;
         }
 
-        .ratio-screenshot-button:active {
-          transform: translateY(0);
-          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+        #ratio-screenshot-toolbar .ratio-screenshot-button:active {
+          transform: translateY(0) !important;
+          box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
         }
 
-        .ratio-screenshot-button.primary {
-          background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%);
-          color: #ffffff;
-          box-shadow: 0 2px 8px rgba(147, 51, 234, 0.25);
+        #ratio-screenshot-toolbar .ratio-screenshot-button.primary {
+          background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%) !important;
+          color: #ffffff !important;
+          box-shadow: 0 2px 8px rgba(147, 51, 234, 0.25) !important;
         }
 
-        .ratio-screenshot-button.primary:hover {
-          background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%);
-          box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35);
+        #ratio-screenshot-toolbar .ratio-screenshot-button.primary:hover {
+          background: linear-gradient(135deg, #c084fc 0%, #a855f7 100%) !important;
+          box-shadow: 0 4px 14px rgba(147, 51, 234, 0.35) !important;
         }
 
         /* 按钮图标 */
-        .ratio-screenshot-button-icon {
-          width: 14px;
-          height: 14px;
-          display: inline-flex;
-          align-items: center;
-          justify-content: center;
+        #ratio-screenshot-toolbar .ratio-screenshot-button-icon {
+          width: 14px !important;
+          height: 14px !important;
+          display: inline-flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          box-sizing: border-box !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
         }
 
-        select.ratio-screenshot-button {
-          padding: 8px 28px 8px 12px;
-          appearance: none;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2371717a' d='M0 3l5 5 5-5z'/%3E%3C/svg%3E");
-          background-repeat: no-repeat;
-          background-position: right 10px center;
-          min-width: 100px;
+        #ratio-screenshot-toolbar select.ratio-screenshot-button {
+          padding: 8px 28px 8px 12px !important;
+          appearance: none !important;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%2371717a' d='M0 3l5 5 5-5z'/%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: right 10px center !important;
+          min-width: 100px !important;
         }
 
-        select.ratio-screenshot-button:hover {
-          border: 1px solid #d8b4fe;
+        #ratio-screenshot-toolbar select.ratio-screenshot-button:hover {
+          border: 1px solid #d8b4fe !important;
         }
 
-        select.ratio-screenshot-button:focus {
-          outline: none;
-          border: 1px solid #a855f7;
+        #ratio-screenshot-toolbar select.ratio-screenshot-button:focus {
+          outline: none !important;
+          border: 1px solid #a855f7 !important;
         }
         
         .ratio-screenshot-selection-info {
@@ -1182,7 +1214,11 @@ if (window._ratioScreenshotLoaded) {
         'ratio-screenshot-overlay',
         'ratio-screenshot-selection',
         'ratio-screenshot-toolbar',
-        'ratio-screenshot-notification'
+        'ratio-screenshot-notification',
+        'ratio-screenshot-event-blocker',
+        'ratio-screenshot-highlight',
+        'ratio-screenshot-size-indicator',
+        'ratio-screenshot-inspect-cancel'
       ];
       
       // 检查并移除所有指定ID的元素
@@ -1355,6 +1391,32 @@ if (window._ratioScreenshotLoaded) {
       this.toolbar = document.createElement('div');
       this.toolbar.id = 'ratio-screenshot-toolbar';
       
+      // 添加样式隔离保护
+      this.toolbar.style.cssText = `
+        all: initial !important;
+        position: fixed !important;
+        bottom: 20px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        background: linear-gradient(135deg, rgba(250, 245, 255, 0.92) 0%, rgba(244, 244, 245, 0.88) 100%) !important;
+        border-radius: 14px !important;
+        border: none !important;
+        box-shadow: 0 4px 20px rgba(147, 51, 234, 0.15), 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+        padding: 14px 18px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        z-index: 10001 !important;
+        max-width: calc(100% - 40px) !important;
+        backdrop-filter: blur(12px) !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        isolation: isolate !important;
+        min-width: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+      `;
+      
       // 创建按钮行
       const primaryRow = this.createPrimaryButtonRow();
       const configRow = this.createConfigRow();
@@ -1481,7 +1543,7 @@ if (window._ratioScreenshotLoaded) {
         
         // 隐藏工具栏
         if (this.toolbar) {
-          this.toolbar.style.display = 'none';
+          this.toolbar.style.setProperty('display', 'none', 'important');
         }
         
         // 如果锁定了尺寸，记录当前尺寸
@@ -2167,7 +2229,7 @@ if (window._ratioScreenshotLoaded) {
       // 创建工具栏 - 确保工具栏可见
       this.createToolbar();
       if (this.toolbar) {
-        this.toolbar.style.display = 'flex';
+        this.toolbar.style.setProperty('display', 'flex', 'important');
         console.log("工具栏已创建并显示");
       }
       
@@ -2668,9 +2730,9 @@ if (window._ratioScreenshotLoaded) {
       setTimeout(() => {
         // 确保工具栏和所有UI元素都被隐藏
         if (this.toolbar) {
-          this.toolbar.style.display = 'none';
-          this.toolbar.style.visibility = 'hidden';
-          this.toolbar.style.opacity = '0';
+          this.toolbar.style.setProperty('display', 'none', 'important');
+          this.toolbar.style.setProperty('visibility', 'hidden', 'important');
+          this.toolbar.style.setProperty('opacity', '0', 'important');
         }
         
         // 根据区域是否在当前视口内，选择不同的截图方法
@@ -2889,11 +2951,11 @@ if (window._ratioScreenshotLoaded) {
       
       // 确保工具栏和UI元素在每个区域的截图前都被隐藏
       if (this.toolbar) {
-        this.toolbar.style.display = 'none';
-        this.toolbar.style.visibility = 'hidden';
-        this.toolbar.style.opacity = '0';
-        this.toolbar.style.position = 'absolute';
-        this.toolbar.style.left = '-9999px';
+        this.toolbar.style.setProperty('display', 'none', 'important');
+        this.toolbar.style.setProperty('visibility', 'hidden', 'important');
+        this.toolbar.style.setProperty('opacity', '0', 'important');
+        this.toolbar.style.setProperty('position', 'absolute', 'important');
+        this.toolbar.style.setProperty('left', '-9999px', 'important');
       }
       
       // 延迟一点时间确保UI隐藏生效
@@ -3493,6 +3555,9 @@ if (window._ratioScreenshotLoaded) {
         this.safeRemove('ratio-screenshot-selection');
         this.safeRemove('ratio-screenshot-toolbar');
         this.safeRemove('ratio-screenshot-inspect-cancel');
+        this.safeRemove('ratio-screenshot-event-blocker');
+        this.safeRemove('ratio-screenshot-highlight');
+        this.safeRemove('ratio-screenshot-size-indicator');
         
         // 清理长截图相关元素
         this.safeRemove('scroll-screenshot-config-dialog');
@@ -3622,9 +3687,9 @@ if (window._ratioScreenshotLoaded) {
       }
       
       if (this.eventBlocker) {
-        this.eventBlocker.style.visibility = 'hidden';
-        this.eventBlocker.style.display = 'none';
-        this.eventBlocker.style.opacity = '0';
+        this.eventBlocker.style.setProperty('visibility', 'hidden', 'important');
+        this.eventBlocker.style.setProperty('display', 'none', 'important');
+        this.eventBlocker.style.setProperty('opacity', '0', 'important');
       }
       
       // 更强力地隐藏工具栏
@@ -3633,12 +3698,12 @@ if (window._ratioScreenshotLoaded) {
         this.originalToolbarOpacity = this.toolbar.style.opacity;
         this.originalToolbarPosition = this.toolbar.style.position;
         
-        this.toolbar.style.visibility = 'hidden';
-        this.toolbar.style.display = 'none';
-        this.toolbar.style.opacity = '0';
-        this.toolbar.style.position = 'absolute';
-        this.toolbar.style.left = '-9999px';
-        this.toolbar.style.top = '-9999px';
+        this.toolbar.style.setProperty('visibility', 'hidden', 'important');
+        this.toolbar.style.setProperty('display', 'none', 'important');
+        this.toolbar.style.setProperty('opacity', '0', 'important');
+        this.toolbar.style.setProperty('position', 'absolute', 'important');
+        this.toolbar.style.setProperty('left', '-9999px', 'important');
+        this.toolbar.style.setProperty('top', '-9999px', 'important');
       }
       
       if (this.selection) {
@@ -3796,19 +3861,22 @@ if (window._ratioScreenshotLoaded) {
       }
       
       if (this.eventBlocker && this.originalEventBlockerVisibility !== null) {
-        this.eventBlocker.style.visibility = this.originalEventBlockerVisibility;
-        this.eventBlocker.style.display = '';
-        this.eventBlocker.style.opacity = '';
+        // 恢复为初始状态 - 使用 setProperty 确保 !important 生效
+        // all: initial 会将这些属性重置为初始值
+        this.eventBlocker.style.setProperty('visibility', 'visible', 'important');
+        this.eventBlocker.style.setProperty('display', 'block', 'important');
+        this.eventBlocker.style.setProperty('opacity', '1', 'important');
       }
       
       // 完全恢复工具栏
       if (this.toolbar) {
-        this.toolbar.style.visibility = this.originalToolbarVisibility || '';
-        this.toolbar.style.display = this.originalToolbarDisplay || '';
-        this.toolbar.style.opacity = this.originalToolbarOpacity || '';
-        this.toolbar.style.position = this.originalToolbarPosition || '';
-        this.toolbar.style.left = '';
-        this.toolbar.style.top = '';
+        // 恢复为工具栏的默认状态 - 使用 setProperty 确保 !important 生效
+        this.toolbar.style.setProperty('visibility', 'visible', 'important');
+        this.toolbar.style.setProperty('display', 'flex', 'important');
+        this.toolbar.style.setProperty('opacity', '1', 'important');
+        this.toolbar.style.setProperty('position', 'fixed', 'important');
+        this.toolbar.style.setProperty('left', '50%', 'important');
+        this.toolbar.style.setProperty('top', 'auto', 'important');
       }
       
       if (this.selection) {
@@ -3904,48 +3972,69 @@ if (window._ratioScreenshotLoaded) {
       this.eventBlocker = document.createElement('div');
       this.eventBlocker.id = 'ratio-screenshot-event-blocker';
       this.eventBlocker.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: transparent;
-        z-index: 9998;
-        cursor: crosshair;
-        pointer-events: all;
+        all: initial !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-color: transparent !important;
+        z-index: 9998 !important;
+        cursor: crosshair !important;
+        pointer-events: all !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        isolation: isolate !important;
       `;
       document.body.appendChild(this.eventBlocker);
       
       // 创建高亮显示的元素
       this.highlightElement = document.createElement('div');
+      this.highlightElement.id = 'ratio-screenshot-highlight';
       this.highlightElement.style.cssText = `
-        position: absolute;
-        pointer-events: none;
-        z-index: 10000;
-        background: rgba(130, 180, 230, 0.2);
-        border: 2px solid #5166d6;
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5);
-        display: none;
-        transition: all 0.2s ease;
-        border-radius: 3px;
+        all: initial !important;
+        position: absolute !important;
+        pointer-events: none !important;
+        z-index: 10000 !important;
+        background: rgba(130, 180, 230, 0.2) !important;
+        border: 2px solid #5166d6 !important;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+        display: none !important;
+        transition: all 0.2s ease !important;
+        border-radius: 3px !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        isolation: isolate !important;
       `;
       
       // 添加尺寸指示器
       const sizeIndicator = document.createElement('div');
+      sizeIndicator.id = 'ratio-screenshot-size-indicator';
       sizeIndicator.style.cssText = `
-        position: absolute;
-        top: -25px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #5166d6;
-        color: white;
-        padding: 2px 8px;
-        border-radius: 3px;
-        font-size: 12px;
-        pointer-events: none;
-        white-space: nowrap;
-        opacity: 0;
-        transition: opacity 0.2s ease;
+        all: initial !important;
+        position: absolute !important;
+        top: -25px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        background: #5166d6 !important;
+        color: white !important;
+        padding: 2px 8px !important;
+        border-radius: 3px !important;
+        font-size: 12px !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-weight: normal !important;
+        line-height: 1.4 !important;
+        pointer-events: none !important;
+        white-space: nowrap !important;
+        opacity: 0 !important;
+        transition: opacity 0.2s ease !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        border: none !important;
+        text-align: center !important;
       `;
       this.highlightElement.appendChild(sizeIndicator);
       this.sizeIndicator = sizeIndicator;
@@ -3956,29 +4045,37 @@ if (window._ratioScreenshotLoaded) {
       const cancelButton = document.createElement('div');
       cancelButton.id = 'ratio-screenshot-inspect-cancel';
       cancelButton.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: #fff;
-        color: #333;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 8px 16px;
-        font-size: 14px;
-        cursor: pointer;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        z-index: 10001;
-        user-select: none;
-        transition: all 0.2s ease;
+        all: initial !important;
+        position: fixed !important;
+        top: 20px !important;
+        right: 20px !important;
+        background: #fff !important;
+        color: #333 !important;
+        border: 1px solid #ddd !important;
+        border-radius: 4px !important;
+        padding: 8px 16px !important;
+        font-size: 14px !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-weight: normal !important;
+        line-height: 1.4 !important;
+        cursor: pointer !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+        z-index: 10001 !important;
+        user-select: none !important;
+        transition: all 0.2s ease !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        isolation: isolate !important;
+        text-align: center !important;
       `;
       cancelButton.textContent = I18nHelper.getNotificationText('escape');
       
-      // 悬停效果
+      // 悬停效果 - 使用 CSS 变量和 setProperty 来确保 !important 生效
       cancelButton.addEventListener('mouseover', () => {
-        cancelButton.style.background = '#f5f5f5';
+        cancelButton.style.setProperty('background', '#f5f5f5', 'important');
       });
       cancelButton.addEventListener('mouseout', () => {
-        cancelButton.style.background = '#fff';
+        cancelButton.style.setProperty('background', '#fff', 'important');
       });
       
       // 点击事件
@@ -4023,7 +4120,7 @@ if (window._ratioScreenshotLoaded) {
       
       // 在获取元素前临时禁用事件阻止层的指针事件
       if (this.eventBlocker) {
-        this.eventBlocker.style.pointerEvents = 'none';
+        this.eventBlocker.style.setProperty('pointer-events', 'none', 'important');
       }
       
       // 检查并高亮鼠标下方的元素
@@ -4031,7 +4128,7 @@ if (window._ratioScreenshotLoaded) {
       
       // 立即重新启用事件阻止层的指针事件
       if (this.eventBlocker) {
-        this.eventBlocker.style.pointerEvents = 'all';
+        this.eventBlocker.style.setProperty('pointer-events', 'all', 'important');
       }
       
       if (element) {
@@ -4051,32 +4148,34 @@ if (window._ratioScreenshotLoaded) {
       const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
       const scrollY = window.pageYOffset || document.documentElement.scrollTop;
 
-      // 更新高亮元素的位置和大小
-      this.highlightElement.style.display = 'block';
-      this.highlightElement.style.top = `${rect.top + scrollY}px`;
-      this.highlightElement.style.left = `${rect.left + scrollX}px`;
-      this.highlightElement.style.width = `${rect.width}px`;
-      this.highlightElement.style.height = `${rect.height}px`;
+      // 更新高亮元素的位置和大小 - 使用 setProperty 确保 !important 生效
+      this.highlightElement.style.setProperty('display', 'block', 'important');
+      this.highlightElement.style.setProperty('top', `${rect.top + scrollY}px`, 'important');
+      this.highlightElement.style.setProperty('left', `${rect.left + scrollX}px`, 'important');
+      this.highlightElement.style.setProperty('width', `${rect.width}px`, 'important');
+      this.highlightElement.style.setProperty('height', `${rect.height}px`, 'important');
       
       // 更新尺寸指示器
       if (this.sizeIndicator) {
         this.sizeIndicator.textContent = `${Math.round(rect.width)} × ${Math.round(rect.height)}`;
-        this.sizeIndicator.style.opacity = '1';
+        this.sizeIndicator.style.setProperty('opacity', '1', 'important');
         
         // 如果元素靠近顶部，将尺寸指示器显示在底部
         if (rect.top < 40) {
-          this.sizeIndicator.style.top = 'auto';
-          this.sizeIndicator.style.bottom = '-25px';
+          this.sizeIndicator.style.setProperty('top', 'auto', 'important');
+          this.sizeIndicator.style.setProperty('bottom', '-25px', 'important');
         } else {
-          this.sizeIndicator.style.top = '-25px';
-          this.sizeIndicator.style.bottom = 'auto';
+          this.sizeIndicator.style.setProperty('top', '-25px', 'important');
+          this.sizeIndicator.style.setProperty('bottom', 'auto', 'important');
         }
       }
       
       // 添加动画效果
-      this.highlightElement.style.transform = 'scale(1.02)';
+      this.highlightElement.style.setProperty('transform', 'scale(1.02)', 'important');
       setTimeout(() => {
-        this.highlightElement.style.transform = 'scale(1)';
+        if (this.highlightElement) {
+          this.highlightElement.style.setProperty('transform', 'scale(1)', 'important');
+        }
       }, 100);
     }
 
@@ -4183,9 +4282,9 @@ if (window._ratioScreenshotLoaded) {
         document.removeEventListener('keydown', this.boundHandleKeyDown);
       }
       
-      // 添加淡出动画
+      // 添加淡出动画 - 使用 setProperty 确保 !important 生效
       if (this.highlightElement) {
-        this.highlightElement.style.opacity = '0';
+        this.highlightElement.style.setProperty('opacity', '0', 'important');
         setTimeout(() => {
           if (this.highlightElement) {
             this.highlightElement.remove();

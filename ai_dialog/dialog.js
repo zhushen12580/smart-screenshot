@@ -1,13 +1,5 @@
 // AI对话界面处理逻辑
 (function() {
-    // GLM-4V API配置
-    const API_ENDPOINT = 'https://open.bigmodel.cn/api/paas/v4/chat/completions';
-    const API_KEY = '4874bbba77e241b09519b2054b93c497.lC99I4wmPzm9yxxT'; // 使用config.local.js中的默认值
-    
-    // DeepSeek API配置
-    const DEEPSEEK_API_ENDPOINT = 'https://api.deepseek.com/v1/chat/completions';
-    const DEEPSEEK_API_KEY = ''; // 需要替换为实际的API密钥
-    
     // 页面元素
     const dialogImage = document.getElementById('dialog-image');
     const imageSizeElement = document.getElementById('image-size');
